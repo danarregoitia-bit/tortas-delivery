@@ -1,413 +1,787 @@
-export const menuData = {
-  categories: [
-    {
-      id: 'tortas',
-      name: 'Tortas Ahogadas',
-      items: [
-        {
-          id: 'torta-carnitas',
-          name: 'Torta Ahogada de Carnitas',
-          description: 'Deliciosa torta ahogada tradicional con carnitas de puerco',
-          price: 65,
-          image: '/images/torta-carnitas.jpg',
-          category: 'tortas',
-          available: true,
-          preparationTime: 20
-        },
-        {
-          id: 'torta-camaron',
-          name: 'Torta Ahogada de Camarón',
-          description: 'Torta ahogada especial con camarón fresco',
-          price: 85,
-          image: '/images/torta-camaron.jpg',
-          category: 'tortas',
-          available: true,
-          preparationTime: 20
-        }
-      ]
-    },
-    {
-      id: 'tacos-dorados',
-      name: 'Tacos Dorados',
-      items: [
-        {
-          id: 'doradas-papa-sencilla',
-          name: 'Doradas de Papa Sencilla',
-          description: 'Tacos dorados de papa',
-          price: 17,
-          image: '/images/tacos-dorados.jpg',
-          category: 'tacos-dorados',
-          available: true,
-          preparationTime: 15
-        },
-        {
-          id: 'doradas-papa-carne',
-          name: 'Doradas de Papa c/Carne',
-          description: 'Tacos dorados de papa con carne',
-          price: 35,
-          image: '/images/tacos-dorados.jpg',
-          category: 'tacos-dorados',
-          available: true,
-          preparationTime: 15
-        }
-      ]
-    },
-    {
-      id: 'carnitas',
-      name: 'Órdenes de Carnitas',
-      items: [
-        {
-          id: 'media-orden-sencillas',
-          name: '1/2 Orden Sencillas',
-          description: 'Media orden de carnitas sencillas',
-          price: 30,
-          image: '/images/carnitas.jpg',
-          category: 'carnitas',
-          available: true,
-          preparationTime: 15
-        },
-        {
-          id: 'media-orden-carne',
-          name: '1/2 Orden de Carne (300g)',
-          description: 'Media orden de carnitas con carne',
-          price: 70,
-          image: '/images/carnitas.jpg',
-          category: 'carnitas',
-          available: true,
-          preparationTime: 15
-        },
-        {
-          id: 'media-orden-con-carne',
-          name: '1/2 Orden con Carne',
-          description: 'Media orden con carne',
-          price: 60,
-          image: '/images/carnitas.jpg',
-          category: 'carnitas',
-          available: true,
-          preparationTime: 15
-        },
-        {
-          id: 'orden-carnitas-sencillas',
-          name: 'Orden de Carnitas Sencillas',
-          description: 'Orden completa de carnitas sencillas',
-          price: 55,
-          image: '/images/carnitas.jpg',
-          category: 'carnitas',
-          available: true,
-          preparationTime: 20
-        },
-        {
-          id: 'orden-carnitas',
-          name: 'Orden de Carnitas',
-          description: 'Orden completa de carnitas',
-          price: 70,
-          image: '/images/carnitas.jpg',
-          category: 'carnitas',
-          available: true,
-          preparationTime: 20
-        },
-        {
-          id: 'orden-carnitas-picadas',
-          name: 'Orden de Carnitas Picadas',
-          description: 'Orden de carnitas picadas',
-          price: 75,
-          image: '/images/carnitas.jpg',
-          category: 'carnitas',
-          available: true,
-          preparationTime: 20
-        },
-        {
-          id: 'con-tomate',
-          name: 'Con Tomate',
-          description: 'Orden con tomate',
-          price: 80,
-          image: '/images/carnitas.jpg',
-          category: 'carnitas',
-          available: true,
-          preparationTime: 20
-        },
-        {
-          id: 'media-orden-sencillas-2',
-          name: '1/2 Orden Sencillas',
-          description: 'Media orden sencillas',
-          price: 35,
-          image: '/images/carnitas.jpg',
-          category: 'carnitas',
-          available: true,
-          preparationTime: 15
-        },
-        {
-          id: 'media-orden-tomate',
-          name: '1/2 Orden con Tomate',
-          description: 'Media orden con tomate',
-          price: 40,
-          image: '/images/carnitas.jpg',
-          category: 'carnitas',
-          available: true,
-          preparationTime: 15
-        },
-        {
-          id: 'taco-suave',
-          name: 'Taco Suave',
-          description: 'Taco suave de carnitas',
-          price: 30,
-          image: '/images/carnitas.jpg',
-          category: 'carnitas',
-          available: true,
-          preparationTime: 10
-        }
-      ]
-    },
-    {
-      id: 'birria',
-      name: 'Birria',
-      items: [
-        {
-          id: 'birria-plato',
-          name: 'Birria - Plato',
-          description: 'Plato de birria tradicional',
-          price: 120,
-          image: '/images/birria.jpg',
-          category: 'birria',
-          available: true,
-          preparationTime: 25
-        },
-        {
-          id: 'birria-consome',
-          name: 'Consomé',
-          description: 'Consomé de birria',
-          price: 35,
-          image: '/images/birria.jpg',
-          category: 'birria',
-          available: true,
-          preparationTime: 15
-        },
-        {
-          id: 'birria-tacos',
-          name: 'Tacos de Birria (Orden de 3)',
-          description: 'Orden de 3 tacos de birria',
-          price: 120,
-          image: '/images/birria-tacos.jpg',
-          category: 'birria',
-          available: true,
-          preparationTime: 20
-        },
-        {
-          id: 'quesabirria-maiz',
-          name: 'Quesabirria de Maíz',
-          description: 'Quesadilla de birria en tortilla de maíz',
-          price: 60,
-          image: '/images/quesabirria.jpg',
-          category: 'birria',
-          available: true,
-          preparationTime: 20
-        },
-        {
-          id: 'quesabirria-harina',
-          name: 'Quesabirria de Harina',
-          description: 'Quesadilla de birria en tortilla de harina',
-          price: 78,
-          image: '/images/quesabirria.jpg',
-          category: 'birria',
-          available: true,
-          preparationTime: 20
-        },
-        {
-          id: 'super-quesabirria',
-          name: 'Super Quesabirria',
-          description: 'Quesabirria extra grande',
-          price: 98,
-          image: '/images/quesabirria.jpg',
-          category: 'birria',
-          available: true,
-          preparationTime: 25
-        }
-      ]
-    },
-    {
-      id: 'carne-jugo',
-      name: 'Carne en su Jugo',
-      items: [
-        {
-          id: 'carne-jugo-chico',
-          name: 'Plato Chico',
-          description: 'Plato chico de carne en su jugo',
-          price: 110,
-          image: '/images/carne-jugo.jpg',
-          category: 'carne-jugo',
-          available: true,
-          preparationTime: 25
-        },
-        {
-          id: 'carne-jugo-grande',
-          name: 'Plato Grande',
-          description: 'Plato grande de carne en su jugo',
-          price: 140,
-          image: '/images/carne-jugo.jpg',
-          category: 'carne-jugo',
-          available: true,
-          preparationTime: 25
-        },
-        {
-          id: 'carne-jugo-llevar',
-          name: 'Para Llevar',
-          description: 'Carne en su jugo para llevar',
-          price: 30,
-          image: '/images/carne-jugo.jpg',
-          category: 'carne-jugo',
-          available: true,
-          preparationTime: 20
-        }
-      ]
-    },
-    {
-      id: 'tostadas',
-      name: 'Tostadas',
-      items: [
-        {
-          id: 'tostadas-pata',
-          name: 'Tostadas de Pata',
-          description: 'Deliciosas tostadas de pata',
-          price: 40,
-          image: '/images/tostadas.jpg',
-          category: 'tostadas',
-          available: true,
-          preparationTime: 15
-        }
-      ]
-    },
-    {
-      id: 'quesadillas',
-      name: 'Quesadillas',
-      items: [
-        {
-          id: 'quesadilla-maiz-sencilla',
-          name: 'Quesadilla de Maíz - Sencilla',
-          description: 'Quesadilla de maíz sencilla',
-          price: 25,
-          image: '/images/quesadilla.jpg',
-          category: 'quesadillas',
-          available: true,
-          preparationTime: 15
-        },
-        {
-          id: 'quesadilla-maiz-carnitas',
-          name: 'Quesadilla de Maíz - Con Carnitas',
-          description: 'Quesadilla de maíz con carnitas',
-          price: 40,
-          image: '/images/quesadilla.jpg',
-          category: 'quesadillas',
-          available: true,
-          preparationTime: 15
-        },
-        {
-          id: 'quesadilla-maiz-camaron',
-          name: 'Quesadilla de Maíz - Con Camarón',
-          description: 'Quesadilla de maíz con camarón',
-          price: 65,
-          image: '/images/quesadilla.jpg',
-          category: 'quesadillas',
-          available: true,
-          preparationTime: 15
-        },
-        {
-          id: 'quesadilla-harina-sencilla',
-          name: 'Quesadilla de Harina - Sencilla',
-          description: 'Quesadilla de harina sencilla',
-          price: 45,
-          image: '/images/quesadilla.jpg',
-          category: 'quesadillas',
-          available: true,
-          preparationTime: 15
-        },
-        {
-          id: 'quesadilla-harina-carnitas',
-          name: 'Quesadilla de Harina - Con Carnitas',
-          description: 'Quesadilla de harina con carnitas',
-          price: 70,
-          image: '/images/quesadilla.jpg',
-          category: 'quesadillas',
-          available: true,
-          preparationTime: 15
-        },
-        {
-          id: 'quesadilla-harina-camaron',
-          name: 'Quesadilla de Harina - Con Camarón',
-          description: 'Quesadilla de harina con camarón',
-          price: 112,
-          image: '/images/quesadilla.jpg',
-          category: 'quesadillas',
-          available: true,
-          preparationTime: 15
-        },
-        {
-          id: 'superquesadilla-sencilla',
-          name: 'Superquesadilla - Sencilla',
-          description: 'Superquesadilla sencilla',
-          price: 65,
-          image: '/images/quesadilla.jpg',
-          category: 'quesadillas',
-          available: true,
-          preparationTime: 20
-        },
-        {
-          id: 'superquesadilla-carnitas',
-          name: 'Superquesadilla - Con Carnitas',
-          description: 'Superquesadilla con carnitas',
-          price: 90,
-          image: '/images/quesadilla.jpg',
-          category: 'quesadillas',
-          available: true,
-          preparationTime: 20
-        },
-        {
-          id: 'superquesadilla-camaron',
-          name: 'Superquesadilla - Con Camarón',
-          description: 'Superquesadilla con camarón',
-          price: 120,
-          image: '/images/quesadilla.jpg',
-          category: 'quesadillas',
-          available: true,
-          preparationTime: 20
-        }
-      ]
-    },
-    {
-      id: 'consome',
-      name: 'Consomé',
-      items: [
-        {
-          id: 'tacos-consome',
-          name: 'Tacos (Orden de 3)',
-          description: 'Orden de 3 tacos de consomé',
-          price: 145,
-          image: '/images/consome.jpg',
-          category: 'consome',
-          available: true,
-          preparationTime: 25
-        }
-      ]
-    }
-  ]
-};
+export const menuData = [
+  // ==========================================
+  // TORTAS AHOGADAS GUADALAJARA
+  // ==========================================
+  {
+    id: 'torta-carnitas',
+    name: 'Torta Ahogada de Carnitas',
+    description: 'Deliciosa torta ahogada tradicional con carnitas de puerco',
+    price: 65,
+    image: '/images/torta-ahogada.jpg',
+    category: 'tortas',
+    available: true,
+    preparationTime: 20
+  },
+  {
+    id: 'torta-camaron',
+    name: 'Torta Ahogada de Camarón',
+    description: 'Torta ahogada con camarones frescos',
+    price: 95,
+    image: '/images/torta-camaron.jpg',
+    category: 'tortas',
+    available: true,
+    preparationTime: 25
+  },
 
+  // ==========================================
+  // TACOS DORADOS
+  // ==========================================
+  {
+    id: 'tacos-dorados-sencillos',
+    name: 'Tacos Dorados Sencillos (6pz)',
+    description: '6 tacos dorados sencillos',
+    price: 50,
+    image: '/images/dorados-carne.jpg',
+    category: 'tacos-dorados',
+    available: true,
+    preparationTime: 15
+  },
+  {
+    id: 'tacos-dorados-carne',
+    name: 'Tacos Dorados con Carne (6pz)',
+    description: '6 tacos dorados con carne',
+    price: 62,
+    image: '/images/dorados-ccarne.jpg',
+    category: 'tacos-dorados',
+    available: true,
+    preparationTime: 15
+  },
+  {
+    id: 'media-orden-sencillos',
+    name: '½ Orden Tacos Sencillos',
+    description: '3 tacos dorados sencillos',
+    price: 24,
+    image: '/images/taco-carne.jpg',
+    category: 'tacos-dorados',
+    available: true,
+    preparationTime: 10
+  },
+  {
+    id: 'media-orden-carne',
+    name: '½ Orden Tacos con Carne',
+    description: '3 tacos dorados con carne',
+    price: 31,
+    image: '/images/logo.jpg',
+    category: 'tacos-dorados',
+    available: true,
+    preparationTime: 10
+  },
+
+  // ==========================================
+  // CARNITAS
+  // ==========================================
+  {
+    id: 'orden-carnitas-picadas',
+    name: 'Orden de Carnitas Picadas',
+    description: 'Orden completa de carnitas picadas',
+    price: 70,
+    image: '/images/logo.jpg',
+    category: 'carnitas',
+    available: true,
+    preparationTime: 15
+  },
+  {
+    id: 'orden-carnitas-tomate',
+    name: 'Orden de Carnitas Picadas con Tomate',
+    description: 'Orden completa de carnitas con tomate',
+    price: 75,
+    image: '/images/logo.jpg',
+    category: 'carnitas',
+    available: true,
+    preparationTime: 15
+  },
+  {
+    id: 'media-carnitas-sencillas',
+    name: '½ Orden Carnitas Sencillas',
+    description: 'Media orden de carnitas',
+    price: 35,
+    image: '/images/logo.jpg',
+    category: 'carnitas',
+    available: true,
+    preparationTime: 10
+  },
+  {
+    id: 'media-carnitas-tomate',
+    name: '½ Orden Carnitas con Tomate',
+    description: 'Media orden de carnitas con tomate',
+    price: 40,
+    image: '/images/logo.jpg',
+    category: 'carnitas',
+    available: true,
+    preparationTime: 10
+  },
+  {
+    id: 'taco-suave-carnitas',
+    name: 'Taco Suave de Carnitas',
+    description: 'Taco individual suave de carnitas',
+    price: 30,
+    image: '/images/taco-carne.jpg',
+    category: 'carnitas',
+    available: true,
+    preparationTime: 5
+  },
+
+  // ==========================================
+  // CARNE EN SU JUGO (Solo Sábados y Domingos)
+  // ==========================================
+  {
+    id: 'carne-jugo-plato-grande',
+    name: 'Carne en su Jugo - Plato Grande',
+    description: 'Solo sábados y domingos',
+    price: 120,
+    image: '/images/carne-jugo.jpg',
+    category: 'carne-jugo',
+    available: true,
+    preparationTime: 20
+  },
+  {
+    id: 'carne-jugo-plato-chico',
+    name: 'Carne en su Jugo - Plato Chico',
+    description: 'Solo sábados y domingos',
+    price: 90,
+    image: '/images/logo.jpg',
+    category: 'carne-jugo',
+    available: true,
+    preparationTime: 20
+  },
+  {
+    id: 'carne-jugo-consome',
+    name: 'Carne en su Jugo - Consomé',
+    description: 'Solo sábados y domingos',
+    price: 30,
+    image: '/images/logo.jpg',
+    category: 'carne-jugo',
+    available: true,
+    preparationTime: 10
+  },
+
+  // ==========================================
+  // CECINA (Con guarnición)
+  // ==========================================
+  {
+    id: 'cecina-sabana',
+    name: 'Cecina Sabana',
+    description: 'Con guarnición',
+    price: 130,
+    image: '/images/cecina.jpg',
+    category: 'cecina',
+    available: true,
+    preparationTime: 25
+  },
+  {
+    id: 'cecina-tacos-3',
+    name: 'Cecina - Tacos (orden de 3)',
+    description: 'Orden de 3 tacos de cecina',
+    price: 140,
+    image: '/images/logo.jpg',
+    category: 'cecina',
+    available: true,
+    preparationTime: 20
+  },
+
+  // ==========================================
+  // DORADAS DE PAPA
+  // ==========================================
+  {
+    id: 'doradas-papa-sencilla',
+    name: 'Doradas de Papa Sencilla',
+    description: 'Doradas tradicionales de papa',
+    price: 17,
+    image: '/images/doradas-sencilla.jpg',
+    category: 'doradas',
+    available: true,
+    preparationTime: 15
+  },
+  {
+    id: 'doradas-papa-carne',
+    name: 'Doradas de Papa c/Carne',
+    description: 'Doradas de papa con carne',
+    price: 35,
+    image: '/images/doradaspapa-carne.jpg',
+    category: 'doradas',
+    available: true,
+    preparationTime: 15
+  },
+
+  // ==========================================
+  // BIRRIA
+  // ==========================================
+  {
+    id: 'birria-plato',
+    name: 'Birria - Plato',
+    description: 'Plato de birria tradicional',
+    price: 120,
+    image: '/images/logo.jpg',
+    category: 'birria',
+    available: true,
+    preparationTime: 20
+  },
+  {
+    id: 'birria-consome',
+    name: 'Birria - Consomé',
+    description: 'Consomé de birria',
+    price: 35,
+    image: '/images/logo.jpg',
+    category: 'birria',
+    available: true,
+    preparationTime: 10
+  },
+  {
+    id: 'birria-tacos-3',
+    name: 'Birria - Tacos (orden de 3)',
+    description: 'Orden de 3 tacos de birria',
+    price: 120,
+    image: '/images/logo.jpg',
+    category: 'birria',
+    available: true,
+    preparationTime: 20
+  },
+  {
+    id: 'quesabirria-chica',
+    name: 'Quesabirria de Maíz',
+    description: 'Quesadilla de birria con maíz',
+    price: 50,
+    image: '/images/logo.jpg',
+    category: 'birria',
+    available: true,
+    preparationTime: 15
+  },
+  {
+    id: 'quesabirria-harina',
+    name: 'Quesabirria de Harina',
+    description: 'Quesadilla de birria con harina',
+    price: 78,
+    image: '/images/logo.jpg',
+    category: 'birria',
+    available: true,
+    preparationTime: 15
+  },
+  {
+    id: 'super-quesabirria',
+    name: 'Súper Quesabirria',
+    description: 'Quesabirria extra grande',
+    price: 98,
+    image: '/images/logo.jpg',
+    category: 'birria',
+    available: true,
+    preparationTime: 20
+  },
+  {
+    id: 'tostadas-pata',
+    name: 'Tostadas de Pata',
+    description: 'Tostadas tradicionales de pata',
+    price: 50,
+    image: '/images/logo.jpg',
+    category: 'birria',
+    available: true,
+    preparationTime: 15
+  },
+
+  // ==========================================
+  // QUESADILLAS DE MAÍZ
+  // ==========================================
+  {
+    id: 'quesadilla-maiz-sencilla',
+    name: 'Quesadilla de Maíz Sencilla',
+    description: 'Quesadilla simple de maíz',
+    price: 25,
+    image: '/images/logo.jpg',
+    category: 'quesadillas-maiz',
+    available: true,
+    preparationTime: 10
+  },
+  {
+    id: 'quesadilla-maiz-carnitas',
+    name: 'Quesadilla de Maíz con Carnitas',
+    description: 'Quesadilla de maíz rellena de carnitas',
+    price: 40,
+    image: '/images/logo.jpg',
+    category: 'quesadillas-maiz',
+    available: true,
+    preparationTime: 12
+  },
+  {
+    id: 'quesadilla-maiz-camaron',
+    name: 'Quesadilla de Maíz con Camarón',
+    description: 'Quesadilla de maíz rellena de camarón',
+    price: 65,
+    image: '/images/logo.jpg',
+    category: 'quesadillas-maiz',
+    available: true,
+    preparationTime: 15
+  },
+
+  // ==========================================
+  // QUESADILLAS DE HARINA
+  // ==========================================
+  {
+    id: 'quesadilla-harina-sencilla',
+    name: 'Quesadilla de Harina Sencilla',
+    description: 'Quesadilla simple de harina',
+    price: 45,
+    image: '/images/logo.jpg',
+    category: 'quesadillas-harina',
+    available: true,
+    preparationTime: 10
+  },
+  {
+    id: 'quesadilla-harina-carnitas',
+    name: 'Quesadilla de Harina con Carnitas',
+    description: 'Quesadilla de harina rellena de carnitas',
+    price: 70,
+    image: '/images/quesadilla-harinacarne.jpg',
+    category: 'quesadillas-harina',
+    available: true,
+    preparationTime: 12
+  },
+  {
+    id: 'quesadilla-harina-camaron',
+    name: 'Quesadilla de Harina con Camarón',
+    description: 'Quesadilla de harina rellena de camarón',
+    price: 112,
+    image: '/images/logo.jpg',
+    category: 'quesadillas-harina',
+    available: true,
+    preparationTime: 15
+  },
+
+  // ==========================================
+  // SÚPER QUESADILLAS
+  // ==========================================
+  {
+    id: 'super-quesadilla-sencilla',
+    name: 'Súper Quesadilla Sencilla',
+    description: 'Quesadilla extra grande simple',
+    price: 65,
+    image: '/images/logo.jpg',
+    category: 'super-quesadillas',
+    available: true,
+    preparationTime: 15
+  },
+  {
+    id: 'super-quesadilla-carnitas',
+    name: 'Súper Quesadilla con Carnitas',
+    description: 'Quesadilla extra grande con carnitas',
+    price: 80,
+    image: '/images/quesadilla-harinacarne.jpg',
+    category: 'super-quesadillas',
+    available: true,
+    preparationTime: 15
+  },
+  {
+    id: 'super-quesadilla-camaron',
+    name: 'Súper Quesadilla con Camarón',
+    description: 'Quesadilla extra grande con camarón',
+    price: 120,
+    image: '/images/logo.jpg',
+    category: 'super-quesadillas',
+    available: true,
+    preparationTime: 18
+  },
+
+  // ==========================================
+  // BEBIDAS - AGUAS FRESCAS
+  // ==========================================
+  {
+    id: 'agua-vaso-medio',
+    name: 'Agua Fresca Vaso ½ Litro',
+    description: 'Vaso mediano de agua fresca',
+    price: 28,
+    image: '/images/logo.jpg',
+    category: 'bebidas',
+    available: true,
+    preparationTime: 2
+  },
+  {
+    id: 'agua-vaso-litro',
+    name: 'Agua Fresca Vaso Litro',
+    description: 'Vaso grande de agua fresca',
+    price: 45,
+    image: '/images/logo.jpg',
+    category: 'bebidas',
+    available: true,
+    preparationTime: 2
+  },
+  {
+    id: 'agua-helado-medio',
+    name: 'Agua Fresca con Helado ½ Litro',
+    description: 'Vaso mediano con helado',
+    price: 40,
+    image: '/images/logo.jpg',
+    category: 'bebidas',
+    available: true,
+    preparationTime: 3
+  },
+  {
+    id: 'agua-helado-litro',
+    name: 'Agua Fresca con Helado Litro',
+    description: 'Vaso grande con helado',
+    price: 60,
+    image: '/images/logo.jpg',
+    category: 'bebidas',
+    available: true,
+    preparationTime: 3
+  },
+  {
+    id: 'refresco',
+    name: 'Refresco',
+    description: 'Refresco en lata o botella',
+    price: 30,
+    image: '/images/logo.jpg',
+    category: 'bebidas',
+    available: true,
+    preparationTime: 1
+  },
+  {
+    id: 'agua-embotellada',
+    name: 'Agua Embotellada',
+    description: 'Agua purificada embotellada',
+    price: 20,
+    image: '/images/logo.jpg',
+    category: 'bebidas',
+    available: true,
+    preparationTime: 1
+  },
+  {
+    id: 'cafe-te',
+    name: 'Café o Té',
+    description: 'Café o té caliente',
+    price: 30,
+    image: '/images/logo.jpg',
+    category: 'bebidas',
+    available: true,
+    preparationTime: 5
+  },
+
+  // ==========================================
+  // CERVEZAS
+  // ==========================================
+  {
+    id: 'cerveza-embotellada',
+    name: 'Cerveza Embotellada',
+    description: 'Cerveza en botella',
+    price: 45,
+    image: '/images/logo.jpg',
+    category: 'cervezas',
+    available: true,
+    preparationTime: 1
+  },
+  {
+    id: 'cerveza-mega',
+    name: 'Cerveza Mega',
+    description: 'Cerveza Mega',
+    price: 90,
+    image: '/images/logo.jpg',
+    category: 'cervezas',
+    available: true,
+    preparationTime: 1
+  },
+  {
+    id: 'michelada-chica',
+    name: 'Michelada Chica',
+    description: 'Michelada preparada chica',
+    price: 57,
+    image: '/images/logo.jpg',
+    category: 'cervezas',
+    available: true,
+    preparationTime: 5
+  },
+  {
+    id: 'michelada-grande',
+    name: 'Michelada Grande',
+    description: 'Michelada preparada grande',
+    price: 85,
+    image: '/images/logo.jpg',
+    category: 'cervezas',
+    available: true,
+    preparationTime: 5
+  },
+  {
+    id: 'cubana-chica',
+    name: 'Cubana Chica',
+    description: 'Cerveza preparada cubana chica',
+    price: 62,
+    image: '/images/logo.jpg',
+    category: 'cervezas',
+    available: true,
+    preparationTime: 5
+  },
+  {
+    id: 'cubana-grande',
+    name: 'Cubana Grande',
+    description: 'Cerveza preparada cubana grande',
+    price: 93,
+    image: '/images/logo.jpg',
+    category: 'cervezas',
+    available: true,
+    preparationTime: 5
+  },
+  {
+    id: 'clamato-chico',
+    name: 'Clamato Chico',
+    description: 'Clamato preparado chico',
+    price: 69,
+    image: '/images/logo.jpg',
+    category: 'cervezas',
+    available: true,
+    preparationTime: 5
+  },
+  {
+    id: 'clamato-grande',
+    name: 'Clamato Grande',
+    description: 'Clamato preparado grande',
+    price: 93,
+    image: '/images/logo.jpg',
+    category: 'cervezas',
+    available: true,
+    preparationTime: 5
+  },
+  {
+    id: 'pina-brava-chica',
+    name: 'Piña Brava Chica',
+    description: 'Piña brava preparada chica',
+    price: 69,
+    image: '/images/logo.jpg',
+    category: 'cervezas',
+    available: true,
+    preparationTime: 5
+  },
+  {
+    id: 'pina-brava-grande',
+    name: 'Piña Brava Grande',
+    description: 'Piña brava preparada grande',
+    price: 93,
+    image: '/images/logo.jpg',
+    category: 'cervezas',
+    available: true,
+    preparationTime: 5
+  },
+
+  // ==========================================
+  // PREPARADAS
+  // ==========================================
+  {
+    id: 'sangria',
+    name: 'Sangría',
+    description: 'Sangría preparada',
+    price: 45,
+    image: '/images/logo.jpg',
+    category: 'preparadas',
+    available: true,
+    preparationTime: 5
+  },
+  {
+    id: 'tehuacan',
+    name: 'Tehuacán',
+    description: 'Tehuacán preparado',
+    price: 45,
+    image: '/images/logo.jpg',
+    category: 'preparadas',
+    available: true,
+    preparationTime: 5
+  },
+  {
+    id: 'toronjito',
+    name: 'Toronjito',
+    description: 'Toronjito preparado',
+    price: 60,
+    image: '/images/logo.jpg',
+    category: 'preparadas',
+    available: true,
+    preparationTime: 5
+  },
+  {
+    id: 'limonada-natural',
+    name: 'Limonada Natural/Mineral',
+    description: 'Limonada fresca',
+    price: 50,
+    image: '/images/logo.jpg',
+    category: 'preparadas',
+    available: true,
+    preparationTime: 5
+  },
+  {
+    id: 'naranjada-natural',
+    name: 'Naranjada Natural/Mineral',
+    description: 'Naranjada fresca',
+    price: 50,
+    image: '/images/logo.jpg',
+    category: 'preparadas',
+    available: true,
+    preparationTime: 5
+  },
+  {
+    id: 'arandanito',
+    name: 'Arandanito',
+    description: 'Bebida de arándano preparada',
+    price: 60,
+    image: '/images/logo.jpg',
+    category: 'preparadas',
+    available: true,
+    preparationTime: 5
+  },
+  {
+    id: 'azulito',
+    name: 'Azulito',
+    description: 'Bebida azul preparada',
+    price: 50,
+    image: '/images/logo.jpg',
+    category: 'preparadas',
+    available: true,
+    preparationTime: 5
+  },
+
+  // ==========================================
+  // TARROS
+  // ==========================================
+  {
+    id: 'tarro-michelado-chico',
+    name: 'Tarro Michelado Chico',
+    description: 'Michelada en tarro chico',
+    price: 20,
+    image: '/images/logo.jpg',
+    category: 'tarros',
+    available: true,
+    preparationTime: 5
+  },
+  {
+    id: 'tarro-michelado-grande',
+    name: 'Tarro Michelado Grande',
+    description: 'Michelada en tarro grande',
+    price: 25,
+    image: '/images/logo.jpg',
+    category: 'tarros',
+    available: true,
+    preparationTime: 5
+  },
+  {
+    id: 'tarro-cubano-chico',
+    name: 'Tarro Cubano Chico',
+    description: 'Cubana en tarro chico',
+    price: 25,
+    image: '/images/logo.jpg',
+    category: 'tarros',
+    available: true,
+    preparationTime: 5
+  },
+  {
+    id: 'tarro-cubano-grande',
+    name: 'Tarro Cubano Grande',
+    description: 'Cubana en tarro grande',
+    price: 30,
+    image: '/images/logo.jpg',
+    category: 'tarros',
+    available: true,
+    preparationTime: 5
+  },
+  {
+    id: 'tarro-clamato-chico',
+    name: 'Tarro Clamato Chico',
+    description: 'Clamato en tarro chico',
+    price: 25,
+    image: '/images/logo.jpg',
+    category: 'tarros',
+    available: true,
+    preparationTime: 5
+  },
+  {
+    id: 'tarro-clamato-grande',
+    name: 'Tarro Clamato Grande',
+    description: 'Clamato en tarro grande',
+    price: 30,
+    image: '/images/logo.jpg',
+    category: 'tarros',
+    available: true,
+    preparationTime: 5
+  },
+  {
+    id: 'tarro-pina-brava-chico',
+    name: 'Tarro Piña Brava Chico',
+    description: 'Piña brava en tarro chico',
+    price: 25,
+    image: '/images/logo.jpg',
+    category: 'tarros',
+    available: true,
+    preparationTime: 5
+  },
+  {
+    id: 'tarro-pina-brava-grande',
+    name: 'Tarro Piña Brava Grande',
+    description: 'Piña brava en tarro grande',
+    price: 30,
+    image: '/images/logo.jpg',
+    category: 'tarros',
+    available: true,
+    preparationTime: 5
+  },
+
+  // ==========================================
+  // POSTRES
+  // ==========================================
+  {
+    id: 'arroz-con-leche',
+    name: 'Arroz con Leche',
+    description: 'Arroz con leche tradicional',
+    price: 35,
+    image: '/images/arroz.jpg',
+    category: 'postres',
+    available: true,
+    preparationTime: 5
+  },
+  {
+    id: 'jericayas',
+    name: 'Jericayas',
+    description: 'Postre tradicional jericayas',
+    price: 41,
+    image: '/images/jericaya.jpg',
+    category: 'postres',
+    available: true,
+    preparationTime: 5
+  },
+  {
+    id: 'fresas-congeladas-crema',
+    name: 'Fresas Congeladas con Crema',
+    description: 'Fresas congeladas bañadas en crema',
+    price: 55,
+    image: '/images/fresas.jpg',
+    category: 'postres',
+    available: true,
+    preparationTime: 5
+  },
+  {
+    id: 'flan-napolitano',
+    name: 'Flan Napolitano o Cajeta',
+    description: 'Flan tradicional napolitano o de cajeta',
+    price: 50,
+    image: '/images/flan-caramelo.jpg',
+    category: 'postres',
+    available: true,
+    preparationTime: 5
+  },
+  {
+    id: 'volcan-chocolate',
+    name: 'Volcán de Chocolate',
+    description: 'Volcán de chocolate caliente',
+    price: 45,
+    image: '/images/logo.jpg',
+    category: 'postres',
+    available: true,
+    preparationTime: 10
+  },
+  {
+    id: 'volcan-chocolate-helado',
+    name: 'Volcán de Chocolate con Helado',
+    description: 'Volcán de chocolate con bola de helado',
+    price: 55,
+    image: '/images/volcan.jpg',
+    category: 'postres',
+    available: true,
+    preparationTime: 10
+  }
+];
 export const restaurantInfo = {
   name: 'Tortas Ahogadas Guadalajara',
-  address: 'Avenida de las Amazonas, Col. Ensueños, 54740 Cuautitlán Izcalli, Méx.',
-  phone: '5524318416',
-  schedule: {
-    lunes: { open: false },
-    martes: { open: false },
-    miercoles: { open: true, hours: '1:00 PM - 6:00 PM' },
-    jueves: { open: true, hours: '1:00 PM - 6:00 PM' },
-    viernes: { open: true, hours: '1:00 PM - 6:00 PM' },
-    sabado: { open: true, hours: '10:00 AM - 5:00 PM' },
-    domingo: { open: true, hours: '10:00 AM - 5:00 PM' }
-  },
-  delivery: {
-    baseFee: 40,
-    freeDeliveryMinimum: 1000,
-    maxDistance: 15,
-    estimatedTime: '30-45 min'
-  }
+  address: 'Colonia Ensueños',
+  phone: '5512345678',
+  hours: 'Mié-Vie 1-6 PM | Sáb-Dom 10 AM-5 PM | Lun-Mar Cerrado'
 };

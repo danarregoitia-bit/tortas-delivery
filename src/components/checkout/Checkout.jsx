@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCartStore } from '../../store/cartStore';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../../firebase';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { MapContainer, TileLayer, Marker, Popup, useMapEvents } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import '../../styles/Checkout.css';
 import L from 'leaflet';
@@ -15,6 +15,44 @@ L.Icon.Default.mergeOptions({
   iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
   shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
 });
+
+// Icono personalizado para el restaurante (rojo)
+const restaurantIcon = new L.Icon({
+  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+});
+
+// Icono para ubicación del cliente (verde)
+const customerIcon = new L.Icon({
+  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+});
+
+// Componente para capturar clicks en el mapa
+function LocationMarker({ position, setPosition }) {
+  useMapEvents({
+    click(e) {
+      setPosition({
+        lat: e.latlng.lat,
+        lng: e.latlng.lng
+      });
+    },
+  });
+
+  return position.lat && position.lng ? (
+    <Marker position={[position.lat, position.lng]} icon={customerIcon}>
+      <Popup>Tu ubicación de entrega</Popup>
+    </Marker>
+  ) : null;
+}
 
 function Checkout() {
   const navigate = useNavigate();
@@ -33,11 +71,14 @@ function Checkout() {
   });
 
   const [location, setLocation] = useState({
-    lat: 19.6497,
-    lng: -99.2178
+    lat: null,
+    lng: null
   });
 
-  // Coordenadas del restaurante
+  const [searchAddress, setSearchAddress] = useState('');
+  const [isSearching, setIsSearching] = useState(false);
+
+  // Coordenadas del restaurante (Av. Amazonas, Col. Ensueños)
   const restaurantLocation = {
     lat: 19.6497,
     lng: -99.2178
@@ -56,31 +97,125 @@ function Checkout() {
     return R * c;
   };
 
+  // Geocodificar dirección usando Nominatim (OpenStreetMap)
+  const searchLocation = async () => {
+    if (!searchAddress.trim()) {
+      alert('Por favor ingresa una dirección para buscar');
+      return;
+    }
+
+    setIsSearching(true);
+    
+    try {
+      // Intentar con múltiples formatos de búsqueda
+      const searchQueries = [
+        // Formato 1: Dirección completa con municipio
+        `${searchAddress}, Cuautitlán Izcalli, Estado de México, México`,
+        // Formato 2: Solo con municipio
+        `${searchAddress}, Cuautitlán Izcalli, México`,
+        // Formato 3: Con estado
+        `${searchAddress}, Estado de México, México`,
+        // Formato 4: Solo la dirección
+        `${searchAddress}, México`
+      ];
+
+      let foundLocation = null;
+
+      // Intentar con cada formato hasta encontrar resultados
+      for (const query of searchQueries) {
+        const response = await fetch(
+          `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=3&countrycodes=mx`
+        );
+        
+        const data = await response.json();
+        
+        if (data && data.length > 0) {
+          // Filtrar resultados que estén cerca de Cuautitlán Izcalli
+          // Coordenadas aproximadas de Cuautitlán Izcalli
+          const cuautitlanLat = 19.6497;
+          const cuautitlanLng = -99.2178;
+          
+          for (const result of data) {
+            const resultLat = parseFloat(result.lat);
+            const resultLng = parseFloat(result.lon);
+            
+            // Calcular si está dentro de un radio razonable (30km)
+            const distance = calculateDistance(cuautitlanLat, cuautitlanLng, resultLat, resultLng);
+            
+            if (distance <= 30) {
+              foundLocation = {
+                lat: resultLat,
+                lng: resultLng,
+                displayName: result.display_name
+              };
+              break;
+            }
+          }
+          
+          // Si no hay resultados cercanos, tomar el primero de todos modos
+          if (!foundLocation && data.length > 0) {
+            foundLocation = {
+              lat: parseFloat(data[0].lat),
+              lng: parseFloat(data[0].lon),
+              displayName: data[0].display_name
+            };
+          }
+          
+          if (foundLocation) break;
+        }
+        
+        // Pequeña pausa entre requests para no saturar la API
+        await new Promise(resolve => setTimeout(resolve, 300));
+      }
+      
+      if (foundLocation) {
+        setLocation({
+          lat: foundLocation.lat,
+          lng: foundLocation.lng
+        });
+        alert(`✅ ¡Ubicación encontrada!\n\n📍 ${foundLocation.displayName}\n\nVerifica el marcador verde en el mapa y ajusta si es necesario haciendo clic.`);
+      } else {
+        alert(`❌ No se encontró la dirección.\n\n💡 Intenta con:\n• Solo la colonia (ej: "Ensueños")\n• Calle principal (ej: "Av. Amazonas")\n• O haz clic directo en el mapa`);
+      }
+    } catch (error) {
+      console.error('Error al buscar ubicación:', error);
+      alert('Error al buscar la dirección. Por favor intenta de nuevo.');
+    } finally {
+      setIsSearching(false);
+    }
+  };
+
   const subtotal = getTotal();
 
-  // Calcular costo de envío basado en distancia
+  // Calcular costo de envío basado en distancia REAL
   let deliveryFee = 0;
   let deliveryZone = '';
+  let distance = 0;
   
-  if (formData.deliveryType === 'delivery') {
-    if (subtotal >= 1200) {
-      deliveryFee = 0; // Envío gratis
-      deliveryZone = 'free';
+  if (formData.deliveryType === 'delivery' && location.lat && location.lng) {
+    distance = calculateDistance(
+      restaurantLocation.lat,
+      restaurantLocation.lng,
+      location.lat,
+      location.lng
+    );
+    
+    // Aplicar tarifas según zonas definidas
+    if (distance <= 0.5) {
+      deliveryFee = 0; // Colonia Ensueños (muy cerca)
+      deliveryZone = 'Colonia Ensueños - GRATIS';
+    } else if (distance <= 2) {
+      deliveryFee = 25; // 1-2 km
+      deliveryZone = '1-2 km';
+    } else if (distance <= 4) {
+      deliveryFee = 40; // 3-4 km
+      deliveryZone = '3-4 km';
+    } else if (distance <= 9) {
+      deliveryFee = 80; // 5-9 km
+      deliveryZone = '5-9 km';
     } else {
-      const distance = calculateDistance(
-        restaurantLocation.lat,
-        restaurantLocation.lng,
-        location.lat,
-        location.lng
-      );
-      
-      if (distance <= 6) {
-        deliveryFee = 45; // Zona 1: 0-6km
-        deliveryZone = 'zone1';
-      } else {
-        deliveryFee = 75; // Zona 2: 7+ km
-        deliveryZone = 'zone2';
-      }
+      deliveryFee = 130; // 10+ km
+      deliveryZone = '10+ km';
     }
   }
 
@@ -97,21 +232,21 @@ function Checkout() {
     e.preventDefault();
 
     if (!formData.name || !formData.phone) {
-      alert('Por favor completa los campos obligatorios');
+      alert('Por favor completa los campos obligatorios (Nombre y Teléfono)');
       return;
     }
 
-    if (formData.deliveryType === 'delivery' && !formData.address) {
-      alert('Por favor ingresa tu dirección de entrega');
-      return;
+    if (formData.deliveryType === 'delivery') {
+      if (!formData.address || !formData.colonia) {
+        alert('Por favor ingresa tu dirección completa y colonia');
+        return;
+      }
+      
+      if (!location.lat || !location.lng) {
+        alert('Por favor busca tu dirección en el mapa o haz clic en tu ubicación para calcular el envío');
+        return;
+      }
     }
-
-    const distance = calculateDistance(
-      restaurantLocation.lat,
-      restaurantLocation.lng,
-      location.lat,
-      location.lng
-    );
 
     const order = {
       items: items.map(item => ({
@@ -130,14 +265,18 @@ function Checkout() {
         address: formData.deliveryType === 'delivery' ? formData.address : 'Pickup en restaurante',
         colonia: formData.colonia || '',
         references: formData.references || '',
-        distance: distance.toFixed(1)
+        distance: formData.deliveryType === 'delivery' ? distance.toFixed(2) : '0',
+        zone: deliveryZone,
+        fee: deliveryFee
       },
       location: {
-        lat: location.lat,
-        lng: location.lng
+        lat: location.lat || restaurantLocation.lat,
+        lng: location.lng || restaurantLocation.lng
       },
       payment: {
         method: formData.paymentMethod,
+        subtotal: subtotal,
+        deliveryFee: deliveryFee,
         total: total
       },
       notes: formData.notes || '',
@@ -148,19 +287,24 @@ function Checkout() {
     try {
       const docRef = await addDoc(collection(db, 'orders'), order);
       
-      alert(`¡Pedido confirmado!
+      alert(`¡Pedido confirmado! 🎉
 
 Número de pedido: ${docRef.id.slice(-6).toUpperCase()}
 
+📋 Resumen:
 Nombre: ${formData.name}
 Teléfono: ${formData.phone}
-Total: $${total}
 
 ${formData.deliveryType === 'delivery' 
-  ? `Se enviará a: ${formData.address}\nDistancia: ${distance.toFixed(1)} km\nCosto de envío: $${deliveryFee}`
-  : 'Recogerá en el restaurante'}
+  ? `📍 Dirección: ${formData.address}, ${formData.colonia}
+🚚 Distancia: ${distance.toFixed(1)} km (${deliveryZone})
+💰 Costo de envío: $${deliveryFee}`
+  : '🏪 Recogerá en el restaurante'}
 
-Método de pago: ${formData.paymentMethod === 'cash' ? 'Efectivo' : 'Transferencia'}
+💳 Pago: ${formData.paymentMethod === 'cash' ? 'Efectivo' : 'Transferencia'}
+💵 Total: $${total}
+
+⏱️ Tiempo estimado: 30-45 minutos
 
 ¡Gracias por tu pedido!`);
 
@@ -198,7 +342,7 @@ Método de pago: ${formData.paymentMethod === 'cash' ? 'Efectivo' : 'Transferenc
           <div className="checkout-form">
             <form onSubmit={handleSubmit}>
               <section className="form-section">
-                <h2>Tus Datos</h2>
+                <h2>👤 Tus Datos</h2>
                 
                 <div className="form-group">
                   <label>Nombre completo *</label>
@@ -213,7 +357,7 @@ Método de pago: ${formData.paymentMethod === 'cash' ? 'Efectivo' : 'Transferenc
                 </div>
 
                 <div className="form-group">
-                  <label>Teléfono *</label>
+                  <label>Teléfono (WhatsApp) *</label>
                   <input
                     type="tel"
                     name="phone"
@@ -237,7 +381,7 @@ Método de pago: ${formData.paymentMethod === 'cash' ? 'Efectivo' : 'Transferenc
               </section>
 
               <section className="form-section">
-                <h2>Tipo de Entrega</h2>
+                <h2>🚚 Tipo de Entrega</h2>
                 
                 <div className="delivery-options">
                   <label className={formData.deliveryType === 'delivery' ? 'active' : ''}>
@@ -248,7 +392,9 @@ Método de pago: ${formData.paymentMethod === 'cash' ? 'Efectivo' : 'Transferenc
                       checked={formData.deliveryType === 'delivery'}
                       onChange={handleChange}
                     />
-                    🏍️ Delivery (${deliveryFee > 0 ? deliveryFee : 'GRATIS'})
+                    🏍️ Delivery 
+                    {location.lat && deliveryFee > 0 && ` - $${deliveryFee}`}
+                    {location.lat && deliveryFee === 0 && ' - ¡GRATIS!'}
                   </label>
 
                   <label className={formData.deliveryType === 'pickup' ? 'active' : ''}>
@@ -265,48 +411,123 @@ Método de pago: ${formData.paymentMethod === 'cash' ? 'Efectivo' : 'Transferenc
               </section>
 
               {formData.deliveryType === 'delivery' && (
-                <section className="form-section">
-                  <h2>Dirección de Entrega</h2>
-                  
-                  <div className="form-group">
-                    <label>Calle y número *</label>
-                    <input
-                      type="text"
-                      name="address"
-                      value={formData.address}
-                      onChange={handleChange}
-                      placeholder="Av. Insurgentes 123"
-                      required
-                    />
-                  </div>
+                <>
+                  <section className="form-section">
+                    <h2>📍 Dirección de Entrega</h2>
+                    
+                    <div className="form-group">
+                      <label>Calle y número *</label>
+                      <input
+                        type="text"
+                        name="address"
+                        value={formData.address}
+                        onChange={handleChange}
+                        placeholder="Av. Insurgentes 123"
+                        required
+                      />
+                    </div>
 
-                  <div className="form-group">
-                    <label>Colonia *</label>
-                    <input
-                      type="text"
-                      name="colonia"
-                      value={formData.colonia}
-                      onChange={handleChange}
-                      placeholder="Roma Norte"
-                      required
-                    />
-                  </div>
+                    <div className="form-group">
+                      <label>Colonia *</label>
+                      <input
+                        type="text"
+                        name="colonia"
+                        value={formData.colonia}
+                        onChange={handleChange}
+                        placeholder="Roma Norte"
+                        required
+                      />
+                    </div>
 
-                  <div className="form-group">
-                    <label>Referencias</label>
-                    <input
-                      type="text"
-                      name="references"
-                      value={formData.references}
-                      onChange={handleChange}
-                      placeholder="Casa azul, portón negro"
-                    />
-                  </div>
-                </section>
+                    <div className="form-group">
+                      <label>Referencias del domicilio</label>
+                      <input
+                        type="text"
+                        name="references"
+                        value={formData.references}
+                        onChange={handleChange}
+                        placeholder="Casa azul, portón negro, entre calles..."
+                      />
+                    </div>
+
+                    {/* Buscador de dirección */}
+                    <div className="address-search">
+                      <label>🗺️ Buscar dirección en el mapa</label>
+                      <div className="search-input-group">
+                        <input
+                          type="text"
+                          value={searchAddress}
+                          onChange={(e) => setSearchAddress(e.target.value)}
+                          placeholder="Ej: Calle Morelos 123, Ensueños"
+                          onKeyPress={(e) => e.key === 'Enter' && (e.preventDefault(), searchLocation())}
+                        />
+                        <button 
+                          type="button" 
+                          onClick={searchLocation}
+                          disabled={isSearching}
+                          className="search-btn"
+                        >
+                          {isSearching ? '⏳ Buscando...' : '🔍 Buscar'}
+                        </button>
+                      </div>
+                      <div className="search-tips">
+                        <strong>💡 Formatos aceptados:</strong>
+                        <ul>
+                          <li>✅ Dirección completa: <em>"Av. Morelos 123, Col. Centro"</em></li>
+                          <li>✅ Calle y colonia: <em>"Insurgentes, Ensueños"</em></li>
+                          <li>✅ Solo colonia: <em>"Ensueños"</em> o <em>"Centro"</em></li>
+                          <li>✅ O haz <strong>clic directo en el mapa</strong> en tu casa</li>
+                        </ul>
+                        <small>💡 Si no encuentra tu dirección exacta, busca por colonia y luego haz clic en el mapa.</small>
+                      </div>
+                    </div>
+                  </section>
+
+                  {/* Mapa Interactivo */}
+                  <section className="form-section map-section">
+                    <h2>🗺️ Ubicación en el Mapa</h2>
+                    
+                    {location.lat && distance > 0 && (
+                      <div className="distance-info">
+                        <p>📏 Distancia: <strong>{distance.toFixed(1)} km</strong></p>
+                        <p>📦 Zona: <strong>{deliveryZone}</strong></p>
+                        <p>💰 Costo de envío: <strong>${deliveryFee}</strong></p>
+                      </div>
+                    )}
+
+                    <div className="map-container">
+                      <MapContainer 
+                        center={[restaurantLocation.lat, restaurantLocation.lng]} 
+                        zoom={13} 
+                        style={{ height: '400px', width: '100%' }}
+                      >
+                        <TileLayer
+                          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                        />
+                        
+                        {/* Marcador del restaurante */}
+                        <Marker 
+                          position={[restaurantLocation.lat, restaurantLocation.lng]}
+                          icon={restaurantIcon}
+                        >
+                          <Popup>
+                            <strong>🏪 Tortas Ahogadas</strong><br />
+                            Av. Amazonas<br />
+                            Col. Ensueños
+                          </Popup>
+                        </Marker>
+
+                        {/* Marcador del cliente (interactivo) */}
+                        <LocationMarker position={location} setPosition={setLocation} />
+                      </MapContainer>
+                    </div>
+                  </section>
+                </>
               )}
 
               <section className="form-section">
-                <h2>Método de Pago</h2>
+                <h2>💳 Método de Pago</h2>
                 
                 <div className="payment-options">
                   <label className={formData.paymentMethod === 'cash' ? 'active' : ''}>
@@ -334,24 +555,24 @@ Método de pago: ${formData.paymentMethod === 'cash' ? 'Efectivo' : 'Transferenc
               </section>
 
               <section className="form-section">
-                <h2>Notas Adicionales (opcional)</h2>
+                <h2>📝 Notas Adicionales (opcional)</h2>
                 <textarea
                   name="notes"
                   value={formData.notes}
                   onChange={handleChange}
-                  placeholder="Ejemplo: Sin cebolla, bien picante, etc."
+                  placeholder="Ejemplo: Sin cebolla, bien picante, con limones extra, etc."
                   rows="3"
                 />
               </section>
 
               <button type="submit" className="submit-btn">
-                Confirmar Pedido - ${total}
+                💳 Confirmar Pedido - ${total}
               </button>
             </form>
           </div>
 
           <div className="order-summary-checkout">
-            <h2>Resumen del Pedido</h2>
+            <h2>📋 Resumen del Pedido</h2>
 
             <div className="summary-items">
               {items.map((item) => (
@@ -368,16 +589,12 @@ Método de pago: ${formData.paymentMethod === 'cash' ? 'Efectivo' : 'Transferenc
                 <span>${subtotal}</span>
               </div>
 
-              <div className="summary-line">
-                <span>Envío:</span>
-                <span className={deliveryFee === 0 ? 'free' : ''}>
-                  {deliveryFee === 0 ? '¡GRATIS!' : `$${deliveryFee}`}
-                </span>
-              </div>
-
-              {subtotal < 1200 && subtotal > 0 && formData.deliveryType === 'delivery' && (
-                <div className="promo-message">
-                  💡 Agrega ${1200 - subtotal} más para envío gratis
+              {formData.deliveryType === 'delivery' && (
+                <div className="summary-line">
+                  <span>Envío:</span>
+                  <span className={deliveryFee === 0 ? 'free' : ''}>
+                    {!location.lat ? 'Calculando...' : deliveryFee === 0 ? '¡GRATIS! 🎉' : `$${deliveryFee}`}
+                  </span>
                 </div>
               )}
 
@@ -385,6 +602,18 @@ Método de pago: ${formData.paymentMethod === 'cash' ? 'Efectivo' : 'Transferenc
                 <span>Total:</span>
                 <span>${total}</span>
               </div>
+            </div>
+
+            {/* Info de zonas */}
+            <div className="delivery-zones-info">
+              <h3>📦 Tarifas de Envío</h3>
+              <ul>
+                <li>🟢 Colonia Ensueños: <strong>GRATIS</strong></li>
+                <li>🔵 1-2 km: <strong>$25</strong></li>
+                <li>🟡 3-4 km: <strong>$40</strong></li>
+                <li>🟠 5-9 km: <strong>$80</strong></li>
+                <li>🔴 10+ km: <strong>$130</strong></li>
+              </ul>
             </div>
           </div>
         </div>

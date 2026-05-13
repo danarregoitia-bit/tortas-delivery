@@ -14,9 +14,13 @@ function Home() {
     alert(`${item.name} agregado al carrito`);
   };
 
-  const filteredItems = selectedCategory === 'all' 
-    ? menuData.categories.flatMap(cat => cat.items)
-    : menuData.categories.find(cat => cat.id === selectedCategory)?.items || [];
+  // Obtener categorías únicas
+  const categories = [...new Set(menuData.map(item => item.category))];
+
+  // Filtrar productos por categoría
+  const filteredItems = selectedCategory === 'all'
+    ? menuData
+    : menuData.filter(item => item.category === selectedCategory);
 
   return (
     <div className="home">
@@ -24,109 +28,132 @@ function Home() {
       <header className="header">
         <div className="container">
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '20px' }}>
-            <img 
-              src="/images/logo.jpg" 
-              alt="Logo" 
+            <img
+              src="/images/logo.jpg"
+              alt="Logo"
               style={{ height: '80px', width: 'auto' }}
             />
             <h1>{restaurantInfo.name}</h1>
           </div>
-          <p className="subtitle">Auténticas Tortas Ahogadas de Guadalajara</p>
-          <div className="header-info">
-            <span>📍 {restaurantInfo.address}</span>
-            <span>📞 {restaurantInfo.phone}</span>
-          </div>
+          <button className="cart-button" onClick={() => navigate('/cart')}>
+            🛒 Carrito ({getTotalItems()})
+          </button>
         </div>
       </header>
 
-      {/* Horarios */}
-      <section className="schedule">
+      {/* Hero Section */}
+      <section className="hero">
         <div className="container">
-          <h3>🕐 Horarios de Atención</h3>
-          <div className="schedule-grid">
-            <div className="day">Miércoles - Viernes: <strong>1:00 PM - 6:00 PM</strong></div>
-            <div className="day">Sábado - Domingo: <strong>10:00 AM - 5:00 PM</strong></div>
-            <div className="day closed">Lunes y Martes: <strong>Cerrado</strong></div>
+          <h2>¡Bienvenidos!</h2>
+          <p>Las mejores tortas ahogadas de la ciudad</p>
+        </div>
+      </section>
+
+      {/* Info Cards */}
+      <section className="info-section">
+        <div className="container">
+          <div className="info-cards">
+            <div className="info-card">
+              <div className="card-icon">📍</div>
+              <h3>Ubicación</h3>
+              <p>Av. Amazonas</p>
+              <p>Col. Ensueños, 54740</p>
+              <p>Cuautitlán Izcalli, Méx.</p>
+            </div>
+            
+            <div className="info-card">
+              <div className="card-icon">📞</div>
+              <h3>Contacto</h3>
+              <p>{restaurantInfo.phone}</p>
+            </div>
+            
+            <div className="info-card">
+              <div className="card-icon">⏰</div>
+              <h3>Horario</h3>
+              <p>{restaurantInfo.hours}</p>
+            </div>
+          </div>
+
+          <div className="delivery-info">
+            <div className="delivery-header">
+              <h3>🏍️ Servicio a Domicilio</h3>
+              <p className="delivery-subtitle">Costos de envío desde Colonia Ensueños</p>
+            </div>
+            <div className="delivery-zones">
+              <div className="zone-item free">
+                <span className="zone-distance">Colonia Ensueños</span>
+                <span className="zone-price">GRATIS 🎉</span>
+              </div>
+              <div className="zone-item">
+                <span className="zone-distance">1-2 km</span>
+                <span className="zone-price">$25</span>
+              </div>
+              <div className="zone-item">
+                <span className="zone-distance">3-4 km</span>
+                <span className="zone-price">$40</span>
+              </div>
+              <div className="zone-item">
+                <span className="zone-distance">5-9 km</span>
+                <span className="zone-price">$80</span>
+              </div>
+              <div className="zone-item">
+                <span className="zone-distance">10+ km</span>
+                <span className="zone-price">$130</span>
+              </div>
+            </div>
+            <p className="delivery-time">⏱️ Tiempo estimado: 30-45 minutos</p>
           </div>
         </div>
       </section>
 
-      {/* Delivery Info */}
-      <section className="delivery-info">
+      {/* Category Filter */}
+      <section className="category-filter">
         <div className="container">
-          <div className="delivery-card">
-            <h3>🏍️ Servicio a Domicilio</h3>
-            <p>Costo de envío: <strong>${restaurantInfo.delivery.baseFee}</strong></p>
-            <p>Envío GRATIS en pedidos mayores a <strong>${restaurantInfo.delivery.freeDeliveryMinimum}</strong></p>
-            <p>Tiempo estimado: <strong>{restaurantInfo.delivery.estimatedTime}</strong></p>
-          </div>
-        </div>
-      </section>
-
-      {/* Categorías */}
-      <section className="categories">
-        <div className="container">
-          <h2>Nuestro Menú</h2>
-          <div className="category-buttons">
-            <button 
-              className={selectedCategory === 'all' ? 'active' : ''}
-              onClick={() => setSelectedCategory('all')}
+          <button
+            className={selectedCategory === 'all' ? 'active' : ''}
+            onClick={() => setSelectedCategory('all')}
+          >
+            Todos
+          </button>
+          {categories.map(cat => (
+            <button
+              key={cat}
+              className={selectedCategory === cat ? 'active' : ''}
+              onClick={() => setSelectedCategory(cat)}
             >
-              Todo el Menú
+              {cat.charAt(0).toUpperCase() + cat.slice(1)}
             </button>
-            {menuData.categories.map(category => (
-              <button
-                key={category.id}
-                className={selectedCategory === category.id ? 'active' : ''}
-                onClick={() => setSelectedCategory(category.id)}
-              >
-                {category.name}
-              </button>
-            ))}
-          </div>
+          ))}
         </div>
       </section>
 
-      {/* Menú Items */}
+      {/* Menu Items */}
       <section className="menu">
         <div className="container">
           <div className="menu-grid">
-            {filteredItems.map(item => (
+            {filteredItems.map((item) => (
               <div key={item.id} className="menu-item">
-                <div className="item-image">
-                  <img src={item.image} alt={item.name} />
-                </div>
-                <div className="item-info">
+                <img src={item.image} alt={item.name} />
+                <div className="menu-item-content">
                   <h3>{item.name}</h3>
                   <p className="description">{item.description}</p>
-                  <div className="item-footer">
+                  <div className="menu-item-footer">
                     <span className="price">${item.price}</span>
-                    <button 
-                      className="add-btn"
-                      onClick={() => handleAddToCart(item)}
-                    >
-                      Agregar
-                    </button>
+                    <span className="prep-time">⏱️ {item.preparationTime} min</span>
                   </div>
-                  <span className="prep-time">⏱️ {item.preparationTime} min</span>
+                  <button
+                    className="add-button"
+                    onClick={() => handleAddToCart(item)}
+                    disabled={!item.available}
+                  >
+                    {item.available ? 'Agregar' : 'No disponible'}
+                  </button>
                 </div>
               </div>
             ))}
           </div>
         </div>
       </section>
-
-      {/* Carrito flotante */}
-      {getTotalItems() > 0 && (
-        <div className="cart-float">
-          <button 
-            className="cart-button"
-            onClick={() => navigate('/cart')}
-          >
-            🛒 Ver Carrito ({getTotalItems()})
-          </button>
-        </div>
-      )}
     </div>
   );
 }

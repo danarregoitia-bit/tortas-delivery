@@ -1,70 +1,103 @@
+/* ========================================
+   CHECKOUT PRO - DISEÑO MODERNO
+   ======================================== */
+
+* {
+  box-sizing: border-box;
+}
+
 .checkout-page {
   min-height: 100vh;
-  background: #f5f5f5;
-  padding: 20px 0;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  padding-bottom: 40px;
 }
 
 .checkout-container {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
   padding: 0 20px;
 }
 
+/* Header del Checkout */
 .checkout-header {
-  margin-bottom: 30px;
+  padding: 30px 0;
+  display: flex;
+  align-items: center;
+  gap: 20px;
 }
 
 .back-button {
-  background: none;
+  background: white;
   border: none;
-  color: #d32f2f;
+  padding: 12px 24px;
+  border-radius: 12px;
   font-size: 1rem;
+  font-weight: 600;
   cursor: pointer;
-  padding: 10px 0;
-  margin-bottom: 10px;
-  font-weight: 500;
+  transition: all 0.3s;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  color: #667eea;
 }
 
 .back-button:hover {
-  text-decoration: underline;
+  transform: translateX(-5px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 
 .checkout-header h1 {
-  font-size: 2rem;
-  color: #333;
+  font-size: 2.5rem;
+  color: #1a202c;
+  margin: 0;
+  font-weight: 700;
 }
 
+/* Layout de dos columnas */
 .checkout-content {
   display: grid;
-  grid-template-columns: 1fr 400px;
+  grid-template-columns: 1fr 420px;
   gap: 30px;
+  align-items: start;
 }
 
-/* Formulario */
+/* Formulario Principal */
 .checkout-form {
   background: white;
-  border-radius: 12px;
-  padding: 30px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  border-radius: 20px;
+  padding: 0;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+  overflow: hidden;
 }
 
+.checkout-form form {
+  padding: 0;
+}
+
+/* Secciones del formulario */
 .form-section {
-  margin-bottom: 30px;
-  padding-bottom: 30px;
-  border-bottom: 1px solid #e0e0e0;
+  padding: 30px;
+  border-bottom: 2px solid #f0f0f0;
+  transition: all 0.3s;
 }
 
 .form-section:last-child {
   border-bottom: none;
-  margin-bottom: 0;
+}
+
+.form-section:hover {
+  background: #fafbfc;
 }
 
 .form-section h2 {
-  font-size: 1.3rem;
-  margin-bottom: 20px;
-  color: #333;
+  margin: 0 0 20px 0;
+  color: #1a202c;
+  font-size: 1.4rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
+/* Campos del formulario */
 .form-group {
   margin-bottom: 20px;
 }
@@ -72,233 +105,550 @@
 .form-group label {
   display: block;
   margin-bottom: 8px;
-  font-weight: 500;
-  color: #555;
+  font-weight: 600;
+  color: #2d3748;
+  font-size: 0.95rem;
 }
 
 .form-group input,
 .form-group textarea {
   width: 100%;
-  padding: 12px;
-  border: 2px solid #e0e0e0;
-  border-radius: 8px;
+  padding: 14px 16px;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
   font-size: 1rem;
+  transition: all 0.3s;
   font-family: inherit;
-  transition: border-color 0.3s;
 }
 
 .form-group input:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: #d32f2f;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
 .form-group textarea {
   resize: vertical;
+  min-height: 80px;
 }
 
-/* Delivery Options */
+/* Opciones de delivery y pago */
 .delivery-options,
 .payment-options {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 15px;
 }
 
 .delivery-options label,
 .payment-options label {
-  flex: 1;
-  padding: 15px;
-  border: 2px solid #e0e0e0;
-  border-radius: 8px;
+  padding: 20px;
+  border: 3px solid #e2e8f0;
+  border-radius: 16px;
   cursor: pointer;
-  text-align: center;
-  font-weight: 500;
   transition: all 0.3s;
+  text-align: center;
+  font-weight: 600;
+  font-size: 1.05rem;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
+  background: white;
 }
 
 .delivery-options label:hover,
 .payment-options label:hover {
-  border-color: #d32f2f;
-  background: #fff5f5;
+  border-color: #667eea;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
 }
 
 .delivery-options label.active,
 .payment-options label.active {
-  border-color: #d32f2f;
-  background: #d32f2f;
+  border-color: #667eea;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
+  transform: scale(1.02);
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
 }
 
-.delivery-options input,
-.payment-options input {
+.delivery-options input[type="radio"],
+.payment-options input[type="radio"] {
   display: none;
 }
 
-/* Mapa */
-.map-container {
-  margin-top: 20px;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+/* Buscador de dirección */
+.address-search {
+  margin-top: 25px;
+  padding: 25px;
+  background: linear-gradient(135deg, #e0f2fe 0%, #dbeafe 100%);
+  border-radius: 16px;
+  border: 2px solid #bae6fd;
 }
 
-/* Submit Button */
-.submit-btn {
-  width: 100%;
-  padding: 18px;
-  background: #2e7d32;
+.address-search label {
+  display: block;
+  margin-bottom: 12px;
+  font-weight: 700;
+  color: #1e3a8a;
+  font-size: 1.1rem;
+}
+
+.search-input-group {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.search-input-group input {
+  flex: 1;
+  padding: 16px 18px;
+  border: 2px solid #93c5fd;
+  border-radius: 12px;
+  font-size: 1rem;
+  transition: all 0.3s;
+}
+
+.search-input-group input:focus {
+  outline: none;
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+}
+
+.search-btn {
+  padding: 16px 32px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   border: none;
-  border-radius: 25px;
-  font-size: 1.2rem;
-  font-weight: bold;
+  border-radius: 12px;
+  font-weight: 700;
   cursor: pointer;
-  transition: background 0.3s;
-  margin-top: 20px;
+  transition: all 0.3s;
+  white-space: nowrap;
+  font-size: 1rem;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.search-btn:hover:not(:disabled) {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(102, 126, 234, 0.4);
+}
+
+.search-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.address-search small {
+  display: block;
+  color: #1e40af;
+  font-style: italic;
+  margin-top: 10px;
+  font-size: 0.9rem;
+}
+
+.search-tips {
+  margin-top: 15px;
+  padding: 15px;
+  background: white;
+  border-radius: 10px;
+  border-left: 4px solid #10b981;
+}
+
+.search-tips strong {
+  display: block;
+  margin-bottom: 10px;
+  color: #1e3a8a;
+  font-size: 1rem;
+}
+
+.search-tips ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.search-tips li {
+  padding: 6px 0;
+  color: #4b5563;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.search-tips li strong {
+  display: inline;
+  color: #059669;
+  font-weight: 700;
+}
+
+.search-tips em {
+  color: #667eea;
+  font-style: italic;
+  font-weight: 500;
+}
+
+.search-tips small {
+  display: block;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #e5e7eb;
+  color: #6b7280;
+  font-size: 0.85rem;
+  line-height: 1.4;
+}
+
+/* Sección del mapa */
+.map-section {
+  margin-top: 0;
+  padding-top: 30px !important;
+}
+
+.map-section h2 {
+  margin-bottom: 20px;
+}
+
+/* Info de distancia */
+.distance-info {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  padding: 25px;
+  border-radius: 16px;
+  margin-bottom: 20px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  text-align: center;
+  box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
+}
+
+.distance-info p {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 500;
+  opacity: 0.9;
+}
+
+.distance-info strong {
+  display: block;
+  font-size: 1.8rem;
+  color: #ffd700;
+  margin-top: 8px;
+  font-weight: 800;
+}
+
+/* Contenedor del mapa */
+.map-container {
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+  height: 450px;
+  border: 3px solid #e2e8f0;
+}
+
+.map-container .leaflet-container {
+  height: 100%;
+  width: 100%;
+}
+
+/* Botón de enviar */
+.submit-btn {
+  width: 100%;
+  padding: 20px;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  border: none;
+  border-radius: 16px;
+  font-size: 1.3rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.3);
+  margin: 30px;
+  margin-top: 0;
 }
 
 .submit-btn:hover {
-  background: #1b5e20;
+  transform: translateY(-3px);
+  box-shadow: 0 12px 32px rgba(16, 185, 129, 0.4);
 }
 
-/* Order Summary Checkout */
+/* Resumen del pedido - Sidebar */
 .order-summary-checkout {
   background: white;
-  border-radius: 12px;
-  padding: 25px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-  height: fit-content;
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.1);
   position: sticky;
   top: 20px;
 }
 
 .order-summary-checkout h2 {
+  margin: 0 0 25px 0;
+  color: #1a202c;
   font-size: 1.5rem;
-  margin-bottom: 20px;
-  color: #333;
+  font-weight: 700;
+  padding-bottom: 15px;
+  border-bottom: 3px solid #e2e8f0;
 }
 
+/* Items del resumen */
 .summary-items {
-  margin-bottom: 20px;
-  max-height: 300px;
-  overflow-y: auto;
+  margin-bottom: 25px;
 }
 
 .summary-item {
   display: flex;
   justify-content: space-between;
-  padding: 10px 0;
+  align-items: center;
+  padding: 15px 0;
   border-bottom: 1px solid #f0f0f0;
-  font-size: 0.95rem;
 }
 
+.summary-item:last-child {
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.summary-item span:first-child {
+  color: #4a5568;
+  font-weight: 500;
+}
+
+.summary-item span:last-child {
+  color: #1a202c;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+/* Totales */
 .summary-totals {
   margin-top: 20px;
-  padding-top: 20px;
-  border-top: 2px solid #e0e0e0;
 }
 
 .summary-line {
   display: flex;
   justify-content: space-between;
-  padding: 8px 0;
-  font-size: 1rem;
+  align-items: center;
+  padding: 12px 0;
+  font-size: 1.05rem;
+}
+
+.summary-line span:first-child {
+  color: #4a5568;
+  font-weight: 500;
+}
+
+.summary-line span:last-child {
+  color: #1a202c;
+  font-weight: 700;
+  font-size: 1.15rem;
 }
 
 .summary-line.total {
+  margin-top: 15px;
+  padding-top: 20px;
+  border-top: 3px solid #667eea;
   font-size: 1.3rem;
-  font-weight: bold;
-  color: #d32f2f;
-  margin-top: 10px;
-  padding-top: 15px;
-  border-top: 2px solid #d32f2f;
 }
 
-/* Empty State */
+.summary-line.total span {
+  color: #667eea;
+  font-weight: 800;
+  font-size: 1.8rem;
+}
+
+.summary-line .free {
+  color: #10b981;
+  font-weight: 700;
+}
+
+/* Info de zonas de delivery */
+.delivery-zones-info {
+  margin-top: 30px;
+  padding: 25px;
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  border-radius: 16px;
+  border: 2px solid #fbbf24;
+}
+
+.delivery-zones-info h3 {
+  margin: 0 0 20px 0;
+  color: #78350f;
+  font-size: 1.2rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.delivery-zones-info ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.delivery-zones-info li {
+  padding: 14px 18px;
+  margin-bottom: 10px;
+  border-radius: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  transition: all 0.3s;
+  font-weight: 600;
+}
+
+.delivery-zones-info li:hover {
+  transform: translateX(5px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+}
+
+.delivery-zones-info li:last-child {
+  margin-bottom: 0;
+}
+
+.delivery-zones-info li strong {
+  color: #667eea;
+  font-weight: 800;
+  font-size: 1.1rem;
+}
+
+/* Página vacía */
 .checkout-empty {
-  min-height: 80vh;
+  min-height: 60vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  text-align: center;
+  gap: 20px;
 }
 
 .checkout-empty h2 {
   font-size: 2rem;
-  color: #666;
-  margin-bottom: 20px;
+  color: #4a5568;
 }
 
 .btn-primary {
-  padding: 14px 32px;
-  background: #d32f2f;
+  padding: 16px 40px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
   border: none;
-  border-radius: 25px;
+  border-radius: 12px;
   font-size: 1.1rem;
-  font-weight: bold;
+  font-weight: 700;
   cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
 }
 
 .btn-primary:hover {
-  background: #b71c1c;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
 }
 
-/* Responsive */
-@media (max-width: 968px) {
-  .checkout-content {
-    grid-template-columns: 1fr;
-  }
-
-  .order-summary-checkout {
-    position: static;
-  }
-
-  .delivery-options,
-  .payment-options {
-    flex-direction: column;
-  }
-}
-/* Delivery Zone Info */
-.delivery-zone-info {
-  margin-top: 15px;
-  padding: 15px;
-  background: #f5f5f5;
-  border-radius: 8px;
-  border-left: 4px solid #d32f2f;
+/* Popups de Leaflet */
+.leaflet-popup-content-wrapper {
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.2);
 }
 
-.delivery-zone-info p {
-  margin: 5px 0;
+.leaflet-popup-content {
+  margin: 15px;
   font-size: 0.95rem;
-}
-
-.zone-message {
-  padding: 10px;
-  border-radius: 6px;
-  margin-top: 10px;
+  font-family: inherit;
   font-weight: 500;
 }
 
-.zone-free {
-  background: #e8f5e9;
-  color: #1b5e20;
-  border: 1px solid #66bb6a;
+.leaflet-popup-content strong {
+  color: #667eea;
+  font-size: 1.1rem;
+  font-weight: 700;
 }
 
-.zone-1 {
-  background: #e3f2fd;
-  color: #1565c0;
-  border: 1px solid #64b5f6;
+/* Animaciones */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-.zone-2 {
-  background: #fff3e0;
-  color: #e65100;
-  border: 1px solid #ffb74d;
+.form-section {
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .checkout-content {
+    grid-template-columns: 1fr;
+  }
+  
+  .order-summary-checkout {
+    position: static;
+  }
+}
+
+@media (max-width: 768px) {
+  .checkout-header h1 {
+    font-size: 1.8rem;
+  }
+  
+  .delivery-options,
+  .payment-options {
+    grid-template-columns: 1fr;
+  }
+  
+  .search-input-group {
+    flex-direction: column;
+  }
+  
+  .search-btn {
+    width: 100%;
+  }
+  
+  .distance-info {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  
+  .map-container {
+    height: 350px;
+  }
+  
+  .form-section {
+    padding: 20px;
+  }
+  
+  .order-summary-checkout {
+    padding: 20px;
+  }
+  
+  .summary-line.total span {
+    font-size: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .checkout-container {
+    padding: 0 10px;
+  }
+  
+  .checkout-header {
+    padding: 20px 0;
+  }
+  
+  .checkout-header h1 {
+    font-size: 1.5rem;
+  }
+  
+  .back-button {
+    padding: 10px 16px;
+    font-size: 0.9rem;
+  }
 }
