@@ -526,6 +526,41 @@ ${formData.deliveryType === 'delivery'
                 </>
               )}
 
+              {/* RESUMEN DEL PEDIDO - AHORA AQUÍ */}
+              <section className="form-section">
+                <h2>📋 Resumen del Pedido</h2>
+
+                <div className="summary-items-mobile">
+                  {items.map((item) => (
+                    <div key={item.cartId} className="summary-item">
+                      <span>{item.quantity}x {item.name}</span>
+                      <span>${item.price * item.quantity}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="summary-totals-mobile">
+                  <div className="summary-line">
+                    <span>Subtotal:</span>
+                    <span>${subtotal}</span>
+                  </div>
+
+                  {formData.deliveryType === 'delivery' && (
+                    <div className="summary-line">
+                      <span>Envío:</span>
+                      <span className={deliveryFee === 0 ? 'free' : ''}>
+                        {!location.lat ? 'Calculando...' : deliveryFee === 0 ? '¡GRATIS! 🎉' : `$${deliveryFee}`}
+                      </span>
+                    </div>
+                  )}
+
+                  <div className="summary-line total">
+                    <span>Total:</span>
+                    <span>${total}</span>
+                  </div>
+                </div>
+              </section>
+
               <section className="form-section">
                 <h2>💳 Método de Pago</h2>
                 
@@ -565,8 +600,8 @@ ${formData.deliveryType === 'delivery'
                 />
               </section>
 
-              <button type="submit" className="submit-btn">
-                💳 Confirmar Pedido - ${total}
+              <button type="submit" className="submit-btn submit-btn-mobile">
+                💳 Confirmar - ${total}
               </button>
             </form>
           </div>

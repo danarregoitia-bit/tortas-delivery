@@ -375,6 +375,57 @@
   box-shadow: 0 12px 32px rgba(16, 185, 129, 0.4);
 }
 
+/* Botón más pequeño para móvil */
+.submit-btn-mobile {
+  font-size: 1.1rem;
+  padding: 16px;
+  margin: 20px;
+}
+
+/* Resumen en el formulario (para móvil) */
+.summary-items-mobile {
+  margin-bottom: 20px;
+}
+
+.summary-items-mobile .summary-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.summary-items-mobile .summary-item:last-child {
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.summary-totals-mobile {
+  margin-top: 15px;
+}
+
+.summary-totals-mobile .summary-line {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  font-size: 1.05rem;
+}
+
+.summary-totals-mobile .summary-line.total {
+  margin-top: 10px;
+  padding-top: 15px;
+  border-top: 3px solid #667eea;
+  font-size: 1.3rem;
+}
+
+.summary-totals-mobile .summary-line.total span {
+  color: #667eea;
+  font-weight: 800;
+}
+
+.summary-totals-mobile .free {
+  color: #10b981;
+  font-weight: 700;
+}
+
 /* Resumen del pedido - Sidebar */
 .order-summary-checkout {
   background: white;
