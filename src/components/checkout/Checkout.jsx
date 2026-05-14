@@ -98,7 +98,7 @@ function Checkout() {
     return R * c;
   };
 
-  // Geocodificar dirección usando Nominatim (OpenStreetMap)
+  // Geocodificar dirección usando Google Maps Geocoding API
   const searchLocation = async () => {
     if (!searchAddress.trim()) {
       alert('Por favor ingresa una dirección para buscar');
@@ -108,75 +108,53 @@ function Checkout() {
     setIsSearching(true);
     
     try {
-      // Intentar con múltiples formatos de búsqueda
-      const searchQueries = [
-        // Formato 1: Dirección completa con municipio
-        `${searchAddress}, Cuautitlán Izcalli, Estado de México, México`,
-        // Formato 2: Solo con municipio
-        `${searchAddress}, Cuautitlán Izcalli, México`,
-        // Formato 3: Con estado
-        `${searchAddress}, Estado de México, México`,
-        // Formato 4: Solo la dirección
-        `${searchAddress}, México`
-      ];
-
-      let foundLocation = null;
-
-      // Intentar con cada formato hasta encontrar resultados
-      for (const query of searchQueries) {
-        const response = await fetch(
-          `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=3&countrycodes=mx`
+      // Construir query con contexto de México y Cuautitlán Izcalli
+      const fullAddress = `${searchAddress}, Cuautitlán Izcalli, Estado de México, México`;
+      
+      // Llamar a Google Maps Geocoding API
+      const response = await fetch(
+        `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(fullAddress)}&key=${import.meta.env.VITE_GOOGLE_MAPS_API_KEY}&region=mx&language=es`
+      );
+      
+      const data = await response.json();
+      
+      if (data.status === 'OK' && data.results && data.results.length > 0) {
+        const result = data.results[0];
+        const resultLat = result.geometry.location.lat;
+        const resultLng = result.geometry.location.lng;
+        
+        // Verificar que esté en un radio razonable de Cuautitlán Izcalli (15km)
+        const distanceFromCenter = calculateDistance(
+          restaurantLocation.lat,
+          restaurantLocation.lng,
+          resultLat,
+          resultLng
         );
         
-        const data = await response.json();
-        
-        if (data && data.length > 0) {
-          // Filtrar resultados que estén cerca de Cuautitlán Izcalli
-          // Coordenadas del restaurante (Tortas Ahogadas Guadalajara)
-          const cuautitlanLat = 19.6596152;
-          const cuautitlanLng = -99.2137028;
+        if (distanceFromCenter <= 15) {
+          setLocation({
+            lat: resultLat,
+            lng: resultLng
+          });
           
-          for (const result of data) {
-            const resultLat = parseFloat(result.lat);
-            const resultLng = parseFloat(result.lon);
-            
-            // Calcular si está dentro de un radio razonable (30km)
-            const distance = calculateDistance(cuautitlanLat, cuautitlanLng, resultLat, resultLng);
-            
-            if (distance <= 30) {
-              foundLocation = {
-                lat: resultLat,
-                lng: resultLng,
-                displayName: result.display_name
-              };
+          // Extraer nombre de colonia si está disponible
+          let coloniaName = '';
+          for (const component of result.address_components) {
+            if (component.types.includes('sublocality') || component.types.includes('neighborhood')) {
+              coloniaName = component.long_name;
               break;
             }
           }
           
-          // Si no hay resultados cercanos, tomar el primero de todos modos
-          if (!foundLocation && data.length > 0) {
-            foundLocation = {
-              lat: parseFloat(data[0].lat),
-              lng: parseFloat(data[0].lon),
-              displayName: data[0].display_name
-            };
-          }
-          
-          if (foundLocation) break;
+          alert(`✅ ¡Ubicación encontrada!\n\n📍 ${result.formatted_address}${coloniaName ? `\n🏘️ Colonia: ${coloniaName}` : ''}\n\nVerifica el marcador verde en el mapa y ajusta si es necesario haciendo clic.`);
+        } else {
+          alert(`⚠️ La dirección encontrada está muy lejos de Cuautitlán Izcalli (${distanceFromCenter.toFixed(1)} km).\n\n💡 Intenta con:\n• Solo el nombre de tu colonia\n• Una calle principal conocida\n• O haz clic directo en el mapa`);
         }
-        
-        // Pequeña pausa entre requests para no saturar la API
-        await new Promise(resolve => setTimeout(resolve, 300));
-      }
-      
-      if (foundLocation) {
-        setLocation({
-          lat: foundLocation.lat,
-          lng: foundLocation.lng
-        });
-        alert(`✅ ¡Ubicación encontrada!\n\n📍 ${foundLocation.displayName}\n\nVerifica el marcador verde en el mapa y ajusta si es necesario haciendo clic.`);
-      } else {
+      } else if (data.status === 'ZERO_RESULTS') {
         alert(`❌ No se encontró la dirección.\n\n💡 Intenta con:\n• Solo la colonia (ej: "Ensueños")\n• Calle principal (ej: "Av. Amazonas")\n• O haz clic directo en el mapa`);
+      } else {
+        console.error('Error de Google Maps API:', data.status);
+        alert('Error al buscar la dirección. Por favor intenta de nuevo.');
       }
     } catch (error) {
       console.error('Error al buscar ubicación:', error);
