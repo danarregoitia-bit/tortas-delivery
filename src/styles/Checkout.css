@@ -640,8 +640,9 @@
     grid-template-columns: 1fr;
   }
   
+  /* OCULTAR sidebar del resumen en móvil (solo mostrar versión inline) */
   .order-summary-checkout {
-    position: static;
+    display: none;
   }
 }
 

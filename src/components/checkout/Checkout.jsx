@@ -78,10 +78,11 @@ function Checkout() {
   const [searchAddress, setSearchAddress] = useState('');
   const [isSearching, setIsSearching] = useState(false);
 
-  // Coordenadas del restaurante (Av. Amazonas, Col. Ensueños)
+  // Coordenadas del restaurante (Av. Amazonas esq. Calle Orión, Col. Ensueños)
+  // Av. Amazonas, Colonia Ensueños, Cuautitlán Izcalli, CP 54740
   const restaurantLocation = {
-    lat: 19.6497,
-    lng: -99.2178
+    lat: 19.6486,
+    lng: -99.2175
   };
 
   // Calcular distancia en kilómetros (fórmula Haversine)
@@ -201,12 +202,12 @@ function Checkout() {
     );
     
     // Aplicar tarifas según zonas definidas
-    if (distance <= 0.5) {
-      deliveryFee = 0; // Colonia Ensueños (muy cerca)
+    if (distance <= 1.5) {
+      deliveryFee = 0; // Colonia Ensueños completa (hasta 1.5km)
       deliveryZone = 'Colonia Ensueños - GRATIS';
     } else if (distance <= 2) {
-      deliveryFee = 25; // 1-2 km
-      deliveryZone = '1-2 km';
+      deliveryFee = 25; // 1.5-2 km
+      deliveryZone = '1.5-2 km';
     } else if (distance <= 4) {
       deliveryFee = 40; // 3-4 km
       deliveryZone = '3-4 km';
@@ -643,8 +644,8 @@ ${formData.deliveryType === 'delivery'
             <div className="delivery-zones-info">
               <h3>📦 Tarifas de Envío</h3>
               <ul>
-                <li>🟢 Colonia Ensueños: <strong>GRATIS</strong></li>
-                <li>🔵 1-2 km: <strong>$25</strong></li>
+                <li>🟢 Colonia Ensueños (0-1.5km): <strong>GRATIS</strong></li>
+                <li>🔵 1.5-2 km: <strong>$25</strong></li>
                 <li>🟡 3-4 km: <strong>$40</strong></li>
                 <li>🟠 5-9 km: <strong>$80</strong></li>
                 <li>🔴 10+ km: <strong>$130</strong></li>
