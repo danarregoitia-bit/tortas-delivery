@@ -782,6 +782,6 @@ export const menuData = [
 export const restaurantInfo = {
   name: 'Tortas Ahogadas Guadalajara',
   address: 'Colonia Ensueños',
-  phone: '5512345678',
+  phone: '5558680712',
   hours: 'Mié-Vie 1-6 PM | Sáb-Dom 10 AM-5 PM | Lun-Mar Cerrado'
 };
