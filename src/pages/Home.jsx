@@ -9,9 +9,35 @@ function Home() {
   const { addItem, getTotalItems } = useCartStore();
   const navigate = useNavigate();
 
+  const [selectedVariant, setSelectedVariant] = useState({});
+  const [showVariantModal, setShowVariantModal] = useState(false);
+  const [currentItem, setCurrentItem] = useState(null);
+
   const handleAddToCart = (item) => {
-    addItem(item);
-    alert(`${item.name} agregado al carrito`);
+    // Si el producto tiene variantes, mostrar selector
+    if (item.variants && item.variants.length > 0) {
+      setCurrentItem(item);
+      setSelectedVariant(item.variants[0].name); // Seleccionar primera variante por defecto
+      setShowVariantModal(true);
+    } else {
+      // Si no tiene variantes, agregar directo
+      addItem(item);
+      alert(`${item.name} agregado al carrito`);
+    }
+  };
+
+  const confirmAddToCart = () => {
+    if (currentItem && selectedVariant) {
+      const itemWithVariant = {
+        ...currentItem,
+        selectedVariant: selectedVariant,
+        name: `${currentItem.name} - ${selectedVariant}`
+      };
+      addItem(itemWithVariant);
+      alert(`${itemWithVariant.name} agregado al carrito`);
+      setShowVariantModal(false);
+      setCurrentItem(null);
+    }
   };
 
   // Obtener categorías únicas
@@ -154,6 +180,92 @@ function Home() {
           </div>
         </div>
       </section>
+
+      {/* Modal de Variantes */}
+      {showVariantModal && currentItem && (
+        <div 
+          style={{
+            position: 'fixed',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            zIndex: 1000
+          }}
+          onClick={() => setShowVariantModal(false)}
+        >
+          <div 
+            style={{
+              backgroundColor: 'white',
+              padding: '30px',
+              borderRadius: '10px',
+              maxWidth: '400px',
+              width: '90%'
+            }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3>{currentItem.name}</h3>
+            <p style={{ color: '#666', marginBottom: '20px' }}>${currentItem.price}</p>
+            
+            <div style={{ marginBottom: '20px' }}>
+              <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '10px' }}>
+                Selecciona el sabor:
+              </label>
+              {currentItem.variants.map((variant) => (
+                <div key={variant.name} style={{ marginBottom: '8px' }}>
+                  <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
+                    <input
+                      type="radio"
+                      name="variant"
+                      value={variant.name}
+                      checked={selectedVariant === variant.name}
+                      onChange={(e) => setSelectedVariant(e.target.value)}
+                      style={{ marginRight: '10px' }}
+                    />
+                    {variant.name}
+                  </label>
+                </div>
+              ))}
+            </div>
+
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <button
+                onClick={confirmAddToCart}
+                style={{
+                  flex: 1,
+                  padding: '12px',
+                  backgroundColor: '#dc2626',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '5px',
+                  cursor: 'pointer',
+                  fontWeight: 'bold'
+                }}
+              >
+                Agregar al Carrito
+              </button>
+              <button
+                onClick={() => setShowVariantModal(false)}
+                style={{
+                  flex: 1,
+                  padding: '12px',
+                  backgroundColor: '#6b7280',
+                  color: 'white',
+                  border: '1px solid #ddd',
+                  borderRadius: '5px',
+                  cursor: 'pointer'
+                }}
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
