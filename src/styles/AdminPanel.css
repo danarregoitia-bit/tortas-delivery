@@ -164,10 +164,26 @@
 }
 
 .customer-info p,
-.delivery-info p,
 .payment-info p {
   margin: 5px 0;
   color: #666;
+}
+
+/* FIX: Delivery info con fondo morado - texto blanco */
+.delivery-info {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 15px;
+  border-radius: 8px;
+  color: white;
+}
+
+.delivery-info p {
+  margin: 5px 0;
+  color: white !important;
+}
+
+.delivery-info strong {
+  color: white !important;
 }
 
 .items-info {
