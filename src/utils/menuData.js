@@ -383,30 +383,40 @@ export const menuData = [
   // BEBIDAS - AGUAS FRESCAS
   // ==========================================
   {
-    id: 'agua-vaso-medio',
-    name: 'Agua Fresca Vaso ½ Litro',
-    description: 'Vaso mediano de agua fresca',
-    price: 28,
-    image: '/images/logo.jpg',
-    category: 'bebidas',
-    available: true,
-    preparationTime: 2
-  },
-  {
-    id: 'agua-vaso-litro',
-    name: 'Agua Fresca Vaso Litro',
-    description: 'Vaso grande de agua fresca',
-    price: 45,
-    image: '/images/logo.jpg',
-    category: 'bebidas',
-    available: true,
-    preparationTime: 2
-  },
+  name: "Agua Fresca ½ Litro",
+  price: 28,
+  category: "drinks",
+  image: "https://images.unsplash.com/photo-1546548970-71785318a17b?w=400",
+  description: "Aguas frescas naturales del día",
+  variants: [
+    { name: "Piña", price: 0 },
+    { name: "Piña Hierbabuena", price: 0 },
+    { name: "Pepino", price: 0 },
+    { name: "Pepino Limón", price: 0 },
+    { name: "Horchata", price: 0 },
+    { name: "Jamaica", price: 0 }
+  ]
+},
+{
+  name: "Agua Fresca Litro",
+  price: 45,
+  category: "drinks",
+  image: "https://images.unsplash.com/photo-1546548970-71785318a17b?w=400",
+  description: "Aguas frescas naturales del día",
+  variants: [
+    { name: "Piña", price: 0 },
+    { name: "Piña Hierbabuena", price: 0 },
+    { name: "Pepino", price: 0 },
+    { name: "Pepino Limón", price: 0 },
+    { name: "Horchata", price: 0 },
+    { name: "Jamaica", price: 0 }
+  ]
+
   
   // ==========================================
   // POSTRES
   // ==========================================
-  {
+  
     id: 'arroz-con-leche',
     name: 'Arroz con Leche',
     description: 'Arroz con leche tradicional',
