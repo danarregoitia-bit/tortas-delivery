@@ -51,7 +51,7 @@ export const menuData = [
     name: '½ Orden Tacos Sencillos',
     description: '3 tacos dorados sencillos',
     price: 24,
-    image: '/images/taco-carne.jpg',
+    image: '/images/dorados-carne.jpg',
     category: 'tacos-dorados',
     available: true,
     preparationTime: 10
@@ -61,7 +61,7 @@ export const menuData = [
     name: '½ Orden Tacos con Carne',
     description: '3 tacos dorados con carne',
     price: 31,
-    image: '/images/logo.jpg',
+    image: '/images/dorados-ccarne.jpg',
     category: 'tacos-dorados',
     available: true,
     preparationTime: 10
@@ -139,7 +139,7 @@ export const menuData = [
     name: 'Carne en su Jugo - Plato Chico',
     description: 'Solo sábados y domingos',
     price: 90,
-    image: '/images/logo.jpg',
+    image: '/images/carne-jugo.jpg',
     category: 'carne-jugo',
     available: true,
     preparationTime: 20

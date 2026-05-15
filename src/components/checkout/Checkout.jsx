@@ -131,7 +131,7 @@ function Checkout() {
           resultLng
         );
         
-        if (distanceFromCenter <= 15) {
+        if (distanceFromCenter <= 50) {
           setLocation({
             lat: resultLat,
             lng: resultLng
@@ -179,25 +179,47 @@ function Checkout() {
       location.lng
     );
     
-    // Aplicar tarifas según zonas definidas
-    // Radio ajustado según límites reales de Colonia Ensueños
-    if (distance <= 0.8) {
-      deliveryFee = 0; // Solo Colonia Ensueños (hasta 800m)
-      deliveryZone = 'Colonia Ensueños - GRATIS';
-    } else if (distance <= 2) {
-      deliveryFee = 25; // 0.8-2 km (colonias vecinas: Cumbria, San Antonio, etc.)
-      deliveryZone = '0.8-2 km';
-    } else if (distance <= 4) {
-      deliveryFee = 40; // 2-4 km
-      deliveryZone = '2-4 km';
-    } else if (distance <= 8) {
-      deliveryFee = 80; // 4-8 km
-      deliveryZone = '4-8 km';
-    } else {
-      deliveryFee = 130; // 8+ km
-      deliveryZone = '8+ km';
+    // Apli// Calcular tarifas según zonas definidas
+      // o ajustado según límites reales de Colonia Ensueños
+      let deliveryCost;
+      let deliveryZone;
+
+      if (distanceFromCenter <= 0.8) {
+        deliveryCost = 0; // Solo Colonia Ensueños (hasta 800m)
+        deliveryZone = 'Colonia Ensueños - GRATIS';
+      } else if (distanceFromCenter <= 2) {
+        deliveryCost = 25; // 0.8-2 km (colonias vecinas: Cumbria, San Antonio, etc.)
+        deliveryZone = '0.8-2 km';
+      } else if (distanceFromCenter <= 4) {
+        deliveryCost = 40; // 2-4 km
+        deliveryZone = '2-4 km';
+      } else if (distanceFromCenter <= 8) {
+        deliveryCost = 80; // 4-8 km
+        deliveryZone = '4-8 km';
+      } else if (distanceFromCenter <= 15) {
+        deliveryCost = 130; // 8-15 km
+        deliveryZone = '8-15 km';
+      } else if (distanceFromCenter <= 25) {
+        deliveryCost = 200; // 15-25 km (Zona Metropolitana Norte)
+        deliveryZone = '15-25 km';
+      } else if (distanceFromCenter <= 35) {
+        deliveryCost = 280; // 25-35 km (CDMX Norte)
+        deliveryZone = '25-35 km';
+      } else if (distanceFromCenter <= 50) {
+        deliveryCost = 350; // 35-50 km (CDMX Centro/Sur)
+        deliveryZone = '35-50 km';
+      } else {
+
+        // Fuera de cobertura
+        setError(`⚠️ Lo sentimos, la dirección está fuera de nuestra zona de cobertura (${distanceFromCenter.toFixed(1)} km). Zona máxima: 50 km desde Cuautitlán Izcalli`);
+        setIsSearching(false);
+        return;
+      }
+        setIsSearching(false);
+        return;
+      }
     }
-  }
+  
 
   const total = subtotal + deliveryFee;
 
@@ -635,6 +657,6 @@ ${formData.deliveryType === 'delivery'
       </div>
     </div>
   );
-}
+
 
 export default Checkout;
