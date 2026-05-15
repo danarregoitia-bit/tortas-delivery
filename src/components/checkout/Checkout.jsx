@@ -80,7 +80,52 @@ function Checkout() {
 
   const [searchAddress, setSearchAddress] = useState('');
   const [isSearching, setIsSearching] = useState(false);
+// Calcular costo automáticamente cuando cambia la ubicación
+  useEffect(() => {
+    if (location.lat && location.lng && formData.deliveryType === 'delivery') {
+      const distanceFromCenter = calculateDistance(
+        restaurantLocation.lat,
+        restaurantLocation.lng,
+        location.lat,
+        location.lng
+      );
 
+      let calculatedCost;
+      let calculatedZone;
+
+      if (distanceFromCenter <= 0.8) {
+        calculatedCost = 0;
+        calculatedZone = 'Colonia Ensueños - GRATIS';
+      } else if (distanceFromCenter <= 2) {
+        calculatedCost = 25;
+        calculatedZone = '0.8-2 km';
+      } else if (distanceFromCenter <= 4) {
+        calculatedCost = 40;
+        calculatedZone = '2-4 km';
+      } else if (distanceFromCenter <= 8) {
+        calculatedCost = 80;
+        calculatedZone = '4-8 km';
+      } else if (distanceFromCenter <= 15) {
+        calculatedCost = 130;
+        calculatedZone = '8-15 km';
+      } else if (distanceFromCenter <= 25) {
+        calculatedCost = 200;
+        calculatedZone = '15-25 km';
+      } else if (distanceFromCenter <= 35) {
+        calculatedCost = 280;
+        calculatedZone = '25-35 km';
+      } else if (distanceFromCenter <= 50) {
+        calculatedCost = 350;
+        calculatedZone = '35-50 km';
+      } else {
+        calculatedCost = 0;
+        calculatedZone = 'Fuera de cobertura';
+      }
+
+      setDeliveryCost(calculatedCost);
+      setDeliveryZone(calculatedZone);
+    }
+  }, [location.lat, location.lng, formData.deliveryType]);
   // Coordenadas del restaurante (Tortas Ahogadas Guadalajara - Google Maps)
   // Av. Amazonas esq. Orión, Colonia Ensueños, Cuautitlán Izcalli, CP 54740
   const restaurantLocation = {
