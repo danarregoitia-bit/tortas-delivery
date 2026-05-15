@@ -74,6 +74,9 @@ function Checkout() {
     lat: null,
     lng: null
   });
+  const [deliveryCost, setDeliveryCost] = useState(0);
+  const [deliveryZone, setDeliveryZone] = useState('');
+  const [error, setError] = useState('');
 
   const [searchAddress, setSearchAddress] = useState('');
   const [isSearching, setIsSearching] = useState(false);
@@ -106,6 +109,7 @@ function Checkout() {
     }
 
     setIsSearching(true);
+    setError('');
     
     try {
       // Construir query con contexto de México y Cuautitlán Izcalli
@@ -123,7 +127,7 @@ function Checkout() {
         const resultLat = result.geometry.location.lat;
         const resultLng = result.geometry.location.lng;
         
-        // Verificar que esté en un radio razonable de Cuautitlán Izcalli (15km)
+        // Verificar que esté en un radio razonable de Cuautitlán Izcalli (50km)
         const distanceFromCenter = calculateDistance(
           restaurantLocation.lat,
           restaurantLocation.lng,
@@ -137,6 +141,40 @@ function Checkout() {
             lng: resultLng
           });
           
+          // Calcular tarifas según zonas definidas
+          let calculatedCost;
+          let calculatedZone;
+
+          if (distanceFromCenter <= 0.8) {
+            calculatedCost = 0;
+            calculatedZone = 'Colonia Ensueños - GRATIS';
+          } else if (distanceFromCenter <= 2) {
+            calculatedCost = 25;
+            calculatedZone = '0.8-2 km';
+          } else if (distanceFromCenter <= 4) {
+            calculatedCost = 40;
+            calculatedZone = '2-4 km';
+          } else if (distanceFromCenter <= 8) {
+            calculatedCost = 80;
+            calculatedZone = '4-8 km';
+          } else if (distanceFromCenter <= 15) {
+            calculatedCost = 130;
+            calculatedZone = '8-15 km';
+          } else if (distanceFromCenter <= 25) {
+            calculatedCost = 200;
+            calculatedZone = '15-25 km';
+          } else if (distanceFromCenter <= 35) {
+            calculatedCost = 280;
+            calculatedZone = '25-35 km';
+          } else if (distanceFromCenter <= 50) {
+            calculatedCost = 350;
+            calculatedZone = '35-50 km';
+          }
+
+          // Guardar el costo y zona calculados en los estados
+          setDeliveryCost(calculatedCost);
+          setDeliveryZone(calculatedZone);
+          
           // Extraer nombre de colonia si está disponible
           let coloniaName = '';
           for (const component of result.address_components) {
@@ -146,8 +184,9 @@ function Checkout() {
             }
           }
           
-          alert(`✅ ¡Ubicación encontrada!\n\n📍 ${result.formatted_address}${coloniaName ? `\n🏘️ Colonia: ${coloniaName}` : ''}\n\nVerifica el marcador verde en el mapa y ajusta si es necesario haciendo clic.`);
+          alert(`✅ ¡Ubicación encontrada!\n\n📍 ${result.formatted_address}${coloniaName ? `\n🏘️ Colonia: ${coloniaName}` : ''}\n📏 Distancia: ${distanceFromCenter.toFixed(1)} km\n💰 Costo de envío: $${calculatedCost}\n\nVerifica el marcador verde en el mapa y ajusta si es necesario haciendo clic.`);
         } else {
+          setError(`⚠️ La dirección encontrada está muy lejos de Cuautitlán Izcalli (${distanceFromCenter.toFixed(1)} km).\n\n📍 Zona máxima: 50 km desde Cuautitlán Izcalli`);
           alert(`⚠️ La dirección encontrada está muy lejos de Cuautitlán Izcalli (${distanceFromCenter.toFixed(1)} km).\n\n💡 Intenta con:\n• Solo el nombre de tu colonia\n• Una calle principal conocida\n• O haz clic directo en el mapa`);
         }
       } else if (data.status === 'ZERO_RESULTS') {
@@ -168,7 +207,6 @@ function Checkout() {
 
   // Calcular costo de envío basado en distancia REAL
   let deliveryFee = 0;
-  let deliveryZone = '';
   let distance = 0;
   
   if (formData.deliveryType === 'delivery' && location.lat && location.lng) {
@@ -179,47 +217,9 @@ function Checkout() {
       location.lng
     );
     
-    // Apli// Calcular tarifas según zonas definidas
-      // o ajustado según límites reales de Colonia Ensueños
-      let deliveryCost;
-      let deliveryZone;
-
-      if (distanceFromCenter <= 0.8) {
-        deliveryCost = 0; // Solo Colonia Ensueños (hasta 800m)
-        deliveryZone = 'Colonia Ensueños - GRATIS';
-      } else if (distanceFromCenter <= 2) {
-        deliveryCost = 25; // 0.8-2 km (colonias vecinas: Cumbria, San Antonio, etc.)
-        deliveryZone = '0.8-2 km';
-      } else if (distanceFromCenter <= 4) {
-        deliveryCost = 40; // 2-4 km
-        deliveryZone = '2-4 km';
-      } else if (distanceFromCenter <= 8) {
-        deliveryCost = 80; // 4-8 km
-        deliveryZone = '4-8 km';
-      } else if (distanceFromCenter <= 15) {
-        deliveryCost = 130; // 8-15 km
-        deliveryZone = '8-15 km';
-      } else if (distanceFromCenter <= 25) {
-        deliveryCost = 200; // 15-25 km (Zona Metropolitana Norte)
-        deliveryZone = '15-25 km';
-      } else if (distanceFromCenter <= 35) {
-        deliveryCost = 280; // 25-35 km (CDMX Norte)
-        deliveryZone = '25-35 km';
-      } else if (distanceFromCenter <= 50) {
-        deliveryCost = 350; // 35-50 km (CDMX Centro/Sur)
-        deliveryZone = '35-50 km';
-      } else {
-
-        // Fuera de cobertura
-        setError(`⚠️ Lo sentimos, la dirección está fuera de nuestra zona de cobertura (${distanceFromCenter.toFixed(1)} km). Zona máxima: 50 km desde Cuautitlán Izcalli`);
-        setIsSearching(false);
-        return;
-      }
-        setIsSearching(false);
-        return;
-      }
-    }
-  
+    // Usar el costo ya calculado en searchLocation
+    deliveryFee = deliveryCost;
+  }
 
   const total = subtotal + deliveryFee;
 
@@ -645,11 +645,14 @@ ${formData.deliveryType === 'delivery'
             <div className="delivery-zones-info">
               <h3>📦 Tarifas de Envío</h3>
               <ul>
-                <li>🟢 Colonia Ensueños: <strong>GRATIS</strong></li>
+                <li>🟢 Colonia Ensueños (0-0.8 km): <strong>GRATIS</strong></li>
                 <li>🔵 0.8-2 km: <strong>$25</strong></li>
                 <li>🟡 2-4 km: <strong>$40</strong></li>
                 <li>🟠 4-8 km: <strong>$80</strong></li>
-                <li>🔴 8+ km: <strong>$130</strong></li>
+                <li>🔴 8-15 km: <strong>$130</strong></li>
+                <li>🟣 15-25 km: <strong>$200</strong></li>
+                <li>🟤 25-35 km: <strong>$280</strong></li>
+                <li>⚫ 35-50 km: <strong>$350</strong></li>
               </ul>
             </div>
           </div>
@@ -657,6 +660,6 @@ ${formData.deliveryType === 'delivery'
       </div>
     </div>
   );
-
+}
 
 export default Checkout;
