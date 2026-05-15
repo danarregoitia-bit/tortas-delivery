@@ -108,7 +108,7 @@ function Home() {
             <div className="delivery-zones">
               <div className="zone-item free">
                 <span className="zone-distance">Colonia Ensueños</span>
-                <span className="zone-price">GRATIS 🎉</span>
+                <span className="zone-price">$25</span>
               </div>
               <div className="zone-item">
                 <span className="zone-distance">1-2 km</span>

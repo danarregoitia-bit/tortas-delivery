@@ -94,8 +94,8 @@ function Checkout() {
       let calculatedZone;
 
       if (distanceFromCenter <= 0.8) {
-        calculatedCost = 0;
-        calculatedZone = 'Colonia Ensueños - GRATIS';
+        calculatedCost = 25;
+        calculatedZone = 'Colonia Ensueños';
       } else if (distanceFromCenter <= 2) {
         calculatedCost = 25;
         calculatedZone = '0.8-2 km';
@@ -191,8 +191,8 @@ function Checkout() {
           let calculatedZone;
 
           if (distanceFromCenter <= 0.8) {
-            calculatedCost = 0;
-            calculatedZone = 'Colonia Ensueños - GRATIS';
+            calculatedCost = 25;
+            calculatedZone = 'Colonia Ensueños';
           } else if (distanceFromCenter <= 2) {
             calculatedCost = 25;
             calculatedZone = '0.8-2 km';
