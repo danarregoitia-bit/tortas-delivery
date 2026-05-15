@@ -81,8 +81,8 @@ function Checkout() {
   // Coordenadas del restaurante (Tortas Ahogadas Guadalajara - Google Maps)
   // Av. Amazonas esq. Orión, Colonia Ensueños, Cuautitlán Izcalli, CP 54740
   const restaurantLocation = {
-    lat: 19.6596152,
-    lng: -99.2137028
+    lat: 19.659390,
+    lng: -99.214017
   };
 
   // Calcular distancia en kilómetros (fórmula Haversine)
