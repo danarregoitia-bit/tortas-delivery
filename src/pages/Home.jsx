@@ -1,5 +1,7 @@
-import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { db } from '../firebase';
+import { useNavigate } from 'react-router-dom';
 import { useCartStore } from '../store/cartStore';
 import { menuData, restaurantInfo } from '../utils/menuData';
 import '../styles/Home.css';
@@ -12,15 +14,24 @@ function Home() {
   const [selectedVariant, setSelectedVariant] = useState({});
   const [showVariantModal, setShowVariantModal] = useState(false);
   const [currentItem, setCurrentItem] = useState(null);
+  
+  // Estados para reservaciones
+  const [reservationData, setReservationData] = useState({
+    name: '',
+    phone: '',
+    date: '',
+    time: '',
+    guests: 2
+  });
+  const [isSubmittingReservation, setIsSubmittingReservation] = useState(false);
 
   const handleAddToCart = (item) => {
     // Si el producto tiene variantes, mostrar selector
     if (item.variants && item.variants.length > 0) {
       setCurrentItem(item);
-      setSelectedVariant(item.variants[0].name); // Seleccionar primera variante por defecto
+      setSelectedVariant(item.variants[0].name);
       setShowVariantModal(true);
     } else {
-      // Si no tiene variantes, agregar directo
       addItem(item);
       alert(`${item.name} agregado al carrito`);
     }
@@ -37,6 +48,144 @@ function Home() {
       alert(`${itemWithVariant.name} agregado al carrito`);
       setShowVariantModal(false);
       setCurrentItem(null);
+    }
+  };
+
+  // Obtener horas disponibles según el día de la semana
+  const getAvailableHours = (dateString) => {
+    if (!dateString) return [];
+    
+    const date = new Date(dateString + 'T00:00:00');
+    const dayOfWeek = date.getDay(); // 0=Domingo, 1=Lunes, ..., 6=Sábado
+    
+    // Lunes (1) y Martes (2) - Cerrado
+    if (dayOfWeek === 1 || dayOfWeek === 2) {
+      return [];
+    }
+    
+    // Sábado (6) y Domingo (0) - 10:00 AM a 5:00 PM
+    if (dayOfWeek === 0 || dayOfWeek === 6) {
+      return [
+        { value: '10:00', label: '10:00 AM' },
+        { value: '10:30', label: '10:30 AM' },
+        { value: '11:00', label: '11:00 AM' },
+        { value: '11:30', label: '11:30 AM' },
+        { value: '12:00', label: '12:00 PM' },
+        { value: '12:30', label: '12:30 PM' },
+        { value: '13:00', label: '1:00 PM' },
+        { value: '13:30', label: '1:30 PM' },
+        { value: '14:00', label: '2:00 PM' },
+        { value: '14:30', label: '2:30 PM' },
+        { value: '15:00', label: '3:00 PM' },
+        { value: '15:30', label: '3:30 PM' },
+        { value: '16:00', label: '4:00 PM' },
+        { value: '16:30', label: '4:30 PM' },
+        { value: '17:00', label: '5:00 PM' }
+      ];
+    }
+    
+    // Miércoles (3), Jueves (4), Viernes (5) - 1:00 PM a 6:00 PM
+    return [
+      { value: '13:00', label: '1:00 PM' },
+      { value: '13:30', label: '1:30 PM' },
+      { value: '14:00', label: '2:00 PM' },
+      { value: '14:30', label: '2:30 PM' },
+      { value: '15:00', label: '3:00 PM' },
+      { value: '15:30', label: '3:30 PM' },
+      { value: '16:00', label: '4:00 PM' },
+      { value: '16:30', label: '4:30 PM' },
+      { value: '17:00', label: '5:00 PM' },
+      { value: '17:30', label: '5:30 PM' },
+      { value: '18:00', label: '6:00 PM' }
+    ];
+  };
+
+  // Manejar cambios en el formulario de reservación
+  const handleReservationChange = (e) => {
+    const { name, value } = e.target;
+    
+    // Si cambia la fecha, resetear la hora seleccionada
+    if (name === 'date') {
+      setReservationData(prev => ({
+        ...prev,
+        date: value,
+        time: '' // Resetear hora
+      }));
+    } else {
+      setReservationData(prev => ({
+        ...prev,
+        [name]: value
+      }));
+    }
+  };
+
+  // Enviar reservación a Firebase
+  const handleReservationSubmit = async (e) => {
+    e.preventDefault();
+    
+    // Validaciones
+    if (!reservationData.name || !reservationData.phone) {
+      alert('Por favor completa tu nombre y teléfono');
+      return;
+    }
+    
+    if (!reservationData.date || !reservationData.time) {
+      alert('Por favor selecciona fecha y hora');
+      return;
+    }
+    
+    // Validar que no sea Lunes o Martes
+    const date = new Date(reservationData.date + 'T00:00:00');
+    const dayOfWeek = date.getDay();
+
+    if (dayOfWeek === 1 || dayOfWeek === 2) {
+      alert('❌ Lo sentimos, estamos cerrados los Lunes y Martes.\n\nHorario:\n🗓️ Miércoles-Viernes: 1:00 PM - 6:00 PM\n🗓️ Sábado-Domingo: 10:00 AM - 5:00 PM');
+      return;
+    }
+    
+    // Validar que la fecha no sea en el pasado
+    const selectedDate = new Date(`${reservationData.date}T${reservationData.time}`);
+    const now = new Date();
+    
+    if (selectedDate < now) {
+      alert('No puedes hacer una reservación en el pasado');
+      return;
+    }
+    
+    setIsSubmittingReservation(true);
+    
+    try {
+      // Guardar en Firebase
+      const reservation = {
+        customer: {
+          name: reservationData.name,
+          phone: reservationData.phone
+        },
+        date: reservationData.date,
+        time: reservationData.time,
+        guests: parseInt(reservationData.guests),
+        status: 'pending',
+        createdAt: serverTimestamp()
+      };
+      
+      await addDoc(collection(db, 'reservations'), reservation);
+      
+      alert(`✅ ¡Reservación confirmada!\n\n📅 ${reservationData.date}\n🕐 ${reservationData.time}\n👥 ${reservationData.guests} personas\n\n¡Nos vemos pronto!`);
+      
+      // Limpiar formulario
+      setReservationData({
+        name: '',
+        phone: '',
+        date: '',
+        time: '',
+        guests: 2
+      });
+      
+    } catch (error) {
+      console.error('Error al guardar reservación:', error);
+      alert('Hubo un error al guardar tu reservación. Por favor intenta de nuevo.');
+    } finally {
+      setIsSubmittingReservation(false);
     }
   };
 
@@ -100,31 +249,135 @@ function Home() {
             </div>
           </div>
 
+          {/* Componente de Reservaciones */}
+          <div className="info-card reservation-card">
+            <div className="card-icon">📅</div>
+            <h2>Hacer una Reservación</h2>
+            
+            <form onSubmit={handleReservationSubmit} className="reservation-form">
+              <div className="form-group">
+                <label>📅 Fecha</label>
+                <input
+                  type="date"
+                  name="date"
+                  value={reservationData.date}
+                  onChange={handleReservationChange}
+                  min={new Date().toISOString().split('T')[0]}
+                  required
+                />
+              </div>
+              
+              <div className="form-group">
+                <label>🕐 Hora</label>
+                <select
+                  name="time"
+                  value={reservationData.time}
+                  onChange={handleReservationChange}
+                  required
+                  disabled={!reservationData.date}
+                >
+                  <option value="">
+                    {!reservationData.date 
+                      ? 'Primero selecciona una fecha' 
+                      : getAvailableHours(reservationData.date).length === 0
+                      ? 'Cerrado este día (Lunes/Martes)'
+                      : 'Selecciona una hora'
+                    }
+                  </option>
+                  {getAvailableHours(reservationData.date).map(hour => (
+                    <option key={hour.value} value={hour.value}>
+                      {hour.label}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              
+              <div className="form-group">
+                <label>👥 Número de personas</label>
+                <select
+                  name="guests"
+                  value={reservationData.guests}
+                  onChange={handleReservationChange}
+                  required
+                >
+                  {[1,2,3,4,5,6,7,8,9,10,12,15,20].map(num => (
+                    <option key={num} value={num}>{num} {num === 1 ? 'persona' : 'personas'}</option>
+                  ))}
+                </select>
+              </div>
+              
+              <div className="form-group">
+                <label>👤 Tu nombre</label>
+                <input
+                  type="text"
+                  name="name"
+                  value={reservationData.name}
+                  onChange={handleReservationChange}
+                  placeholder="Juan Pérez"
+                  required
+                />
+              </div>
+              
+              <div className="form-group">
+                <label>📱 Teléfono (WhatsApp)</label>
+                <input
+                  type="tel"
+                  name="phone"
+                  value={reservationData.phone}
+                  onChange={handleReservationChange}
+                  placeholder="5512345678"
+                  pattern="[0-9]{10}"
+                  required
+                />
+              </div>
+              
+              <button 
+                type="submit" 
+                className="reservation-btn"
+                disabled={isSubmittingReservation}
+              >
+                {isSubmittingReservation ? '⏳ Enviando...' : '🍽️ Reservar Mesa'}
+              </button>
+            </form>
+          </div>
+
           <div className="delivery-info">
             <div className="delivery-header">
               <h3>🏍️ Servicio a Domicilio</h3>
               <p className="delivery-subtitle">Costos de envío desde Colonia Ensueños</p>
             </div>
             <div className="delivery-zones">
-              <div className="zone-item free">
-                <span className="zone-distance">Colonia Ensueños</span>
+              <div className="zone-item">
+                <span className="zone-distance">Colonia Ensueños (0-0.8 km)</span>
                 <span className="zone-price">$25</span>
               </div>
               <div className="zone-item">
-                <span className="zone-distance">1-2 km</span>
+                <span className="zone-distance">0.8-2 km</span>
                 <span className="zone-price">$25</span>
               </div>
               <div className="zone-item">
-                <span className="zone-distance">3-4 km</span>
+                <span className="zone-distance">2-4 km</span>
                 <span className="zone-price">$40</span>
               </div>
               <div className="zone-item">
-                <span className="zone-distance">5-9 km</span>
+                <span className="zone-distance">4-8 km</span>
                 <span className="zone-price">$80</span>
               </div>
               <div className="zone-item">
-                <span className="zone-distance">10+ km</span>
+                <span className="zone-distance">8-15 km</span>
                 <span className="zone-price">$130</span>
+              </div>
+              <div className="zone-item">
+                <span className="zone-distance">15-25 km</span>
+                <span className="zone-price">$200</span>
+              </div>
+              <div className="zone-item">
+                <span className="zone-distance">25-35 km</span>
+                <span className="zone-price">$280</span>
+              </div>
+              <div className="zone-item">
+                <span className="zone-distance">35-50 km</span>
+                <span className="zone-price">$350</span>
               </div>
             </div>
             <p className="delivery-time">⏱️ Tiempo estimado: 30-45 minutos</p>
