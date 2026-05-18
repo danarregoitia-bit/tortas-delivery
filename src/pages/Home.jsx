@@ -26,7 +26,6 @@ function Home() {
   const [isSubmittingReservation, setIsSubmittingReservation] = useState(false);
 
   const handleAddToCart = (item) => {
-    // Si el producto tiene variantes, mostrar selector
     if (item.variants && item.variants.length > 0) {
       setCurrentItem(item);
       setSelectedVariant(item.variants[0].name);
@@ -51,19 +50,16 @@ function Home() {
     }
   };
 
-  // Obtener horas disponibles según el día de la semana
   const getAvailableHours = (dateString) => {
     if (!dateString) return [];
     
     const date = new Date(dateString + 'T00:00:00');
-    const dayOfWeek = date.getDay(); // 0=Domingo, 1=Lunes, ..., 6=Sábado
+    const dayOfWeek = date.getDay();
     
-    // Lunes (1) y Martes (2) - Cerrado
     if (dayOfWeek === 1 || dayOfWeek === 2) {
       return [];
     }
     
-    // Sábado (6) y Domingo (0) - 10:00 AM a 5:00 PM
     if (dayOfWeek === 0 || dayOfWeek === 6) {
       return [
         { value: '10:00', label: '10:00 AM' },
@@ -84,7 +80,6 @@ function Home() {
       ];
     }
     
-    // Miércoles (3), Jueves (4), Viernes (5) - 1:00 PM a 6:00 PM
     return [
       { value: '13:00', label: '1:00 PM' },
       { value: '13:30', label: '1:30 PM' },
@@ -100,16 +95,14 @@ function Home() {
     ];
   };
 
-  // Manejar cambios en el formulario de reservación
   const handleReservationChange = (e) => {
     const { name, value } = e.target;
     
-    // Si cambia la fecha, resetear la hora seleccionada
     if (name === 'date') {
       setReservationData(prev => ({
         ...prev,
         date: value,
-        time: '' // Resetear hora
+        time: ''
       }));
     } else {
       setReservationData(prev => ({
@@ -119,11 +112,9 @@ function Home() {
     }
   };
 
-  // Enviar reservación a Firebase
   const handleReservationSubmit = async (e) => {
     e.preventDefault();
     
-    // Validaciones
     if (!reservationData.name || !reservationData.phone) {
       alert('Por favor completa tu nombre y teléfono');
       return;
@@ -134,7 +125,6 @@ function Home() {
       return;
     }
     
-    // Validar que no sea Lunes o Martes
     const date = new Date(reservationData.date + 'T00:00:00');
     const dayOfWeek = date.getDay();
 
@@ -143,7 +133,6 @@ function Home() {
       return;
     }
     
-    // Validar que la fecha no sea en el pasado
     const selectedDate = new Date(`${reservationData.date}T${reservationData.time}`);
     const now = new Date();
     
@@ -155,7 +144,6 @@ function Home() {
     setIsSubmittingReservation(true);
     
     try {
-      // Guardar en Firebase
       const reservation = {
         customer: {
           name: reservationData.name,
@@ -172,7 +160,6 @@ function Home() {
       
       alert(`✅ ¡Reservación confirmada!\n\n📅 ${reservationData.date}\n🕐 ${reservationData.time}\n👥 ${reservationData.guests} personas\n\n¡Nos vemos pronto!`);
       
-      // Limpiar formulario
       setReservationData({
         name: '',
         phone: '',
@@ -189,25 +176,15 @@ function Home() {
     }
   };
 
-  // Obtener categorías únicas
   const categories = [...new Set(menuData.map(item => item.category))];
-
-  // Filtrar productos por categoría
-  const filteredItems = selectedCategory === 'all'
-    ? menuData
-    : menuData.filter(item => item.category === selectedCategory);
+  const filteredItems = selectedCategory === 'all' ? menuData : menuData.filter(item => item.category === selectedCategory);
 
   return (
     <div className="home">
-      {/* Header */}
       <header className="header">
         <div className="container">
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '20px' }}>
-            <img
-              src="/images/logo.jpg"
-              alt="Logo"
-              style={{ height: '80px', width: 'auto' }}
-            />
+            <img src="/images/logo.jpg" alt="Logo" style={{ height: '80px', width: 'auto' }} />
             <h1>{restaurantInfo.name}</h1>
           </div>
           <button className="cart-button" onClick={() => navigate('/cart')}>
@@ -216,7 +193,6 @@ function Home() {
         </div>
       </header>
 
-      {/* Hero Section */}
       <section className="hero">
         <div className="container">
           <h2>¡Bienvenidos!</h2>
@@ -224,7 +200,6 @@ function Home() {
         </div>
       </section>
 
-      {/* Info Cards */}
       <section className="info-section">
         <div className="container">
           <div className="info-cards">
@@ -249,57 +224,29 @@ function Home() {
             </div>
           </div>
 
-          {/* Componente de Reservaciones */}
-          <div className="info-card reservation-card">
+          <div className="reservation-card">
             <div className="card-icon">📅</div>
             <h2>Hacer una Reservación</h2>
             
             <form onSubmit={handleReservationSubmit} className="reservation-form">
               <div className="form-group">
                 <label>📅 Fecha</label>
-                <input
-                  type="date"
-                  name="date"
-                  value={reservationData.date}
-                  onChange={handleReservationChange}
-                  min={new Date().toISOString().split('T')[0]}
-                  required
-                />
+                <input type="date" name="date" value={reservationData.date} onChange={handleReservationChange} min={new Date().toISOString().split('T')[0]} required />
               </div>
               
               <div className="form-group">
                 <label>🕐 Hora</label>
-                <select
-                  name="time"
-                  value={reservationData.time}
-                  onChange={handleReservationChange}
-                  required
-                  disabled={!reservationData.date}
-                >
-                  <option value="">
-                    {!reservationData.date 
-                      ? 'Primero selecciona una fecha' 
-                      : getAvailableHours(reservationData.date).length === 0
-                      ? 'Cerrado este día (Lunes/Martes)'
-                      : 'Selecciona una hora'
-                    }
-                  </option>
+                <select name="time" value={reservationData.time} onChange={handleReservationChange} required disabled={!reservationData.date}>
+                  <option value="">{!reservationData.date ? 'Primero selecciona una fecha' : getAvailableHours(reservationData.date).length === 0 ? 'Cerrado este día (Lunes/Martes)' : 'Selecciona una hora'}</option>
                   {getAvailableHours(reservationData.date).map(hour => (
-                    <option key={hour.value} value={hour.value}>
-                      {hour.label}
-                    </option>
+                    <option key={hour.value} value={hour.value}>{hour.label}</option>
                   ))}
                 </select>
               </div>
               
               <div className="form-group">
                 <label>👥 Número de personas</label>
-                <select
-                  name="guests"
-                  value={reservationData.guests}
-                  onChange={handleReservationChange}
-                  required
-                >
+                <select name="guests" value={reservationData.guests} onChange={handleReservationChange} required>
                   {[1,2,3,4,5,6,7,8,9,10,12,15,20].map(num => (
                     <option key={num} value={num}>{num} {num === 1 ? 'persona' : 'personas'}</option>
                   ))}
@@ -308,34 +255,15 @@ function Home() {
               
               <div className="form-group">
                 <label>👤 Tu nombre</label>
-                <input
-                  type="text"
-                  name="name"
-                  value={reservationData.name}
-                  onChange={handleReservationChange}
-                  placeholder="Juan Pérez"
-                  required
-                />
+                <input type="text" name="name" value={reservationData.name} onChange={handleReservationChange} placeholder="Juan Pérez" required />
               </div>
               
               <div className="form-group">
                 <label>📱 Teléfono (WhatsApp)</label>
-                <input
-                  type="tel"
-                  name="phone"
-                  value={reservationData.phone}
-                  onChange={handleReservationChange}
-                  placeholder="5512345678"
-                  pattern="[0-9]{10}"
-                  required
-                />
+                <input type="tel" name="phone" value={reservationData.phone} onChange={handleReservationChange} placeholder="5512345678" pattern="[0-9]{10}" required />
               </div>
               
-              <button 
-                type="submit" 
-                className="reservation-btn"
-                disabled={isSubmittingReservation}
-              >
+              <button type="submit" className="reservation-btn" disabled={isSubmittingReservation}>
                 {isSubmittingReservation ? '⏳ Enviando...' : '🍽️ Reservar Mesa'}
               </button>
             </form>
@@ -347,66 +275,31 @@ function Home() {
               <p className="delivery-subtitle">Costos de envío desde Colonia Ensueños</p>
             </div>
             <div className="delivery-zones">
-              <div className="zone-item">
-                <span className="zone-distance">Colonia Ensueños (0-0.8 km)</span>
-                <span className="zone-price">$25</span>
-              </div>
-              <div className="zone-item">
-                <span className="zone-distance">0.8-2 km</span>
-                <span className="zone-price">$25</span>
-              </div>
-              <div className="zone-item">
-                <span className="zone-distance">2-4 km</span>
-                <span className="zone-price">$40</span>
-              </div>
-              <div className="zone-item">
-                <span className="zone-distance">4-8 km</span>
-                <span className="zone-price">$80</span>
-              </div>
-              <div className="zone-item">
-                <span className="zone-distance">8-15 km</span>
-                <span className="zone-price">$130</span>
-              </div>
-              <div className="zone-item">
-                <span className="zone-distance">15-25 km</span>
-                <span className="zone-price">$200</span>
-              </div>
-              <div className="zone-item">
-                <span className="zone-distance">25-35 km</span>
-                <span className="zone-price">$280</span>
-              </div>
-              <div className="zone-item">
-                <span className="zone-distance">35-50 km</span>
-                <span className="zone-price">$350</span>
-              </div>
+              <div className="zone-item"><span className="zone-distance">Colonia Ensueños (0-0.8 km)</span><span className="zone-price">$25</span></div>
+              <div className="zone-item"><span className="zone-distance">0.8-2 km</span><span className="zone-price">$25</span></div>
+              <div className="zone-item"><span className="zone-distance">2-4 km</span><span className="zone-price">$40</span></div>
+              <div className="zone-item"><span className="zone-distance">4-8 km</span><span className="zone-price">$80</span></div>
+              <div className="zone-item"><span className="zone-distance">8-15 km</span><span className="zone-price">$130</span></div>
+              <div className="zone-item"><span className="zone-distance">15-25 km</span><span className="zone-price">$200</span></div>
+              <div className="zone-item"><span className="zone-distance">25-35 km</span><span className="zone-price">$280</span></div>
+              <div className="zone-item"><span className="zone-distance">35-50 km</span><span className="zone-price">$350</span></div>
             </div>
             <p className="delivery-time">⏱️ Tiempo estimado: 30-45 minutos</p>
           </div>
         </div>
       </section>
 
-      {/* Category Filter */}
       <section className="category-filter">
         <div className="container">
-          <button
-            className={selectedCategory === 'all' ? 'active' : ''}
-            onClick={() => setSelectedCategory('all')}
-          >
-            Todos
-          </button>
+          <button className={selectedCategory === 'all' ? 'active' : ''} onClick={() => setSelectedCategory('all')}>Todos</button>
           {categories.map(cat => (
-            <button
-              key={cat}
-              className={selectedCategory === cat ? 'active' : ''}
-              onClick={() => setSelectedCategory(cat)}
-            >
+            <button key={cat} className={selectedCategory === cat ? 'active' : ''} onClick={() => setSelectedCategory(cat)}>
               {cat.charAt(0).toUpperCase() + cat.slice(1)}
             </button>
           ))}
         </div>
       </section>
 
-      {/* Menu Items */}
       <section className="menu">
         <div className="container">
           <div className="menu-grid">
@@ -420,11 +313,7 @@ function Home() {
                     <span className="price">${item.price}</span>
                     <span className="prep-time">⏱️ {item.preparationTime} min</span>
                   </div>
-                  <button
-                    className="add-button"
-                    onClick={() => handleAddToCart(item)}
-                    disabled={!item.available}
-                  >
+                  <button className="add-button" onClick={() => handleAddToCart(item)} disabled={!item.available}>
                     {item.available ? 'Agregar' : 'No disponible'}
                   </button>
                 </div>
@@ -434,87 +323,25 @@ function Home() {
         </div>
       </section>
 
-      {/* Modal de Variantes */}
       {showVariantModal && currentItem && (
-        <div 
-          style={{
-            position: 'fixed',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: 'rgba(0,0,0,0.5)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 1000
-          }}
-          onClick={() => setShowVariantModal(false)}
-        >
-          <div 
-            style={{
-              backgroundColor: 'white',
-              padding: '30px',
-              borderRadius: '10px',
-              maxWidth: '400px',
-              width: '90%'
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
+        <div style={{position:'fixed',top:0,left:0,right:0,bottom:0,backgroundColor:'rgba(0,0,0,0.5)',display:'flex',alignItems:'center',justifyContent:'center',zIndex:1000}} onClick={() => setShowVariantModal(false)}>
+          <div style={{backgroundColor:'white',padding:'30px',borderRadius:'10px',maxWidth:'400px',width:'90%'}} onClick={(e) => e.stopPropagation()}>
             <h3>{currentItem.name}</h3>
-            <p style={{ color: '#666', marginBottom: '20px' }}>${currentItem.price}</p>
-            
-            <div style={{ marginBottom: '20px' }}>
-              <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '10px' }}>
-                Selecciona el sabor:
-              </label>
+            <p style={{color:'#666',marginBottom:'20px'}}>${currentItem.price}</p>
+            <div style={{marginBottom:'20px'}}>
+              <label style={{display:'block',fontWeight:'bold',marginBottom:'10px'}}>Selecciona el sabor:</label>
               {currentItem.variants.map((variant) => (
-                <div key={variant.name} style={{ marginBottom: '8px' }}>
-                  <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
-                    <input
-                      type="radio"
-                      name="variant"
-                      value={variant.name}
-                      checked={selectedVariant === variant.name}
-                      onChange={(e) => setSelectedVariant(e.target.value)}
-                      style={{ marginRight: '10px' }}
-                    />
+                <div key={variant.name} style={{marginBottom:'8px'}}>
+                  <label style={{display:'flex',alignItems:'center',cursor:'pointer'}}>
+                    <input type="radio" name="variant" value={variant.name} checked={selectedVariant === variant.name} onChange={(e) => setSelectedVariant(e.target.value)} style={{marginRight:'10px'}} />
                     {variant.name}
                   </label>
                 </div>
               ))}
             </div>
-
-            <div style={{ display: 'flex', gap: '10px' }}>
-              <button
-                onClick={confirmAddToCart}
-                style={{
-                  flex: 1,
-                  padding: '12px',
-                  backgroundColor: '#dc2626',
-                  color: 'white',
-                  border: 'none',
-                  borderRadius: '5px',
-                  cursor: 'pointer',
-                  fontWeight: 'bold'
-                }}
-              >
-                Agregar al Carrito
-              </button>
-              <button
-                onClick={() => setShowVariantModal(false)}
-                style={{
-                  flex: 1,
-                  padding: '12px',
-                  backgroundColor: '#6b7280',
-                  color: 'white',
-                  border: '1px solid #ddd',
-                  borderRadius: '5px',
-                  cursor: 'pointer'
-                }}
-              >
-                Cancelar
-              </button>
+            <div style={{display:'flex',gap:'10px'}}>
+              <button onClick={confirmAddToCart} style={{flex:1,padding:'12px',backgroundColor:'#dc2626',color:'white',border:'none',borderRadius:'5px',cursor:'pointer',fontWeight:'bold'}}>Agregar al Carrito</button>
+              <button onClick={() => setShowVariantModal(false)} style={{flex:1,padding:'12px',backgroundColor:'#6b7280',color:'white',border:'1px solid #ddd',borderRadius:'5px',cursor:'pointer'}}>Cancelar</button>
             </div>
           </div>
         </div>
