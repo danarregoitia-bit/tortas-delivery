@@ -130,7 +130,50 @@ function AdminPanel() {
       await updateDoc(doc(db, 'orders', orderId), {
         status: newStatus
       });
-      alert(`Pedido actualizado a: ${newStatus}`);
+      
+      // Si el pedido se marcó como completado, enviar WhatsApp al cliente
+      if (newStatus === 'completed') {
+        // Encontrar el pedido para obtener los datos del cliente
+        const order = orders.find(o => o.id === orderId);
+        
+        if (order) {
+          // Limpiar el número de teléfono (quitar espacios, guiones, paréntesis)
+          const phone = order.customer.phone.replace(/\D/g, '');
+          
+          // Construir mensaje según el tipo de entrega
+          let message = '';
+          
+          if (order.delivery.type === 'delivery') {
+            // Mensaje para ENTREGA A DOMICILIO
+            message = `¡Hola ${order.customer.name}! 🚗
+
+Tu pedido ya está listo y en camino a:
+📍 ${order.delivery.address}
+
+Gracias por tu preferencia 🌮
+Tortas Ahogadas Guadalajara`;
+          } else {
+            // Mensaje para PARA LLEVAR
+            message = `¡Hola ${order.customer.name}! ✅
+
+Tu pedido ya está listo para recoger 🌮
+
+Puedes pasar a recogerlo cuando gustes.
+
+Gracias por tu preferencia 🌮
+Tortas Ahogadas Guadalajara`;
+          }
+          
+          // Construir URL de WhatsApp para móvil
+          const whatsappURL = `https://api.whatsapp.com/send?phone=52${phone}&text=${encodeURIComponent(message)}`;
+          
+          // Redirigir a WhatsApp (abre la app en móvil)
+          window.location.href = whatsappURL;
+        }
+      } else {
+        // Si no es "completed", solo mostrar el alert normal
+        alert(`Pedido actualizado a: ${newStatus}`);
+      }
     } catch (error) {
       console.error('Error al actualizar:', error);
       alert('Error al actualizar el pedido');
@@ -138,53 +181,53 @@ function AdminPanel() {
   };
 
   const updateReservationStatus = async (reservationId, newStatus) => {
-  try {
-    await updateDoc(doc(db, 'reservations', reservationId), {
-      status: newStatus
-    });
-    
-    // Encontrar la reservación para obtener los datos del cliente
-    const reservation = reservations.find(r => r.id === reservationId);
-    
-    if (reservation) {
-      // Limpiar el número de teléfono (quitar espacios, guiones, paréntesis)
-      const phone = reservation.customer.phone.replace(/\D/g, '');
+    try {
+      await updateDoc(doc(db, 'reservations', reservationId), {
+        status: newStatus
+      });
       
-      let message = '';
+      // Encontrar la reservación para obtener los datos del cliente
+      const reservation = reservations.find(r => r.id === reservationId);
       
-      if (newStatus === 'confirmed') {
-        // Mensaje de CONFIRMACIÓN
-        message = `¡Hola ${reservation.customer.name}! ✅ Tu reservación ha sido *CONFIRMADA*:
+      if (reservation) {
+        // Limpiar el número de teléfono (quitar espacios, guiones, paréntesis)
+        const phone = reservation.customer.phone.replace(/\D/g, '');
+        
+        let message = '';
+        
+        if (newStatus === 'confirmed') {
+          // Mensaje de CONFIRMACIÓN
+          message = `¡Hola ${reservation.customer.name}! ✅ Tu reservación ha sido *CONFIRMADA*:
 
 📅 Fecha: ${reservation.date}
 🕐 Hora: ${reservation.time}
 👥 Personas: ${reservation.guests}
 
 ¡Te esperamos en Tortas Ahogadas Guadalajara! 🌮`;
-      } else if (newStatus === 'cancelled') {
-        // Mensaje de CANCELACIÓN (no hay mesa disponible)
-        message = `Hola ${reservation.customer.name}, gracias por tu interés. 😔
+        } else if (newStatus === 'cancelled') {
+          // Mensaje de CANCELACIÓN (no hay mesa disponible)
+          message = `Hola ${reservation.customer.name}, gracias por tu interés. 😔
 
 Lamentablemente el horario que solicitaste:
 📅 Fecha: ${reservation.date}
 🕐 Hora: ${reservation.time}
 
 Ya está ocupado. ¿Te gustaría otro horario? Contáctanos y te ayudamos a encontrar el mejor momento. 📞`;
+        }
+        
+        // Construir URL de WhatsApp para móvil
+        const whatsappURL = `https://api.whatsapp.com/send?phone=52${phone}&text=${encodeURIComponent(message)}`;
+        
+        // Redirigir a WhatsApp (abre la app en móvil)
+        window.location.href = whatsappURL;
+      } else {
+        alert(`Reservación actualizada a: ${newStatus === 'confirmed' ? 'Confirmada' : 'Cancelada'}`);
       }
-      
-      // Construir URL de WhatsApp para móvil
-      const whatsappURL = `https://api.whatsapp.com/send?phone=52${phone}&text=${encodeURIComponent(message)}`;
-      
-      // Redirigir a WhatsApp (abre la app en móvil)
-      window.location.href = whatsappURL;
-    } else {
-      alert(`Reservación actualizada a: ${newStatus === 'confirmed' ? 'Confirmada' : 'Cancelada'}`);
+    } catch (error) {
+      console.error('Error al actualizar reservación:', error);
+      alert('Error al actualizar la reservación');
     }
-  } catch (error) {
-    console.error('Error al actualizar reservación:', error);
-    alert('Error al actualizar la reservación');
-  }
-};
+  };
 
   // Filtrar items según el filtro activo
   const filteredOrders = filter === 'reservations' 
