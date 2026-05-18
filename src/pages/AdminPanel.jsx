@@ -142,6 +142,43 @@ function AdminPanel() {
       await updateDoc(doc(db, 'reservations', reservationId), {
         status: newStatus
       });
+      
+      // Encontrar la reservación para obtener los datos del cliente
+      const reservation = reservations.find(r => r.id === reservationId);
+      
+      if (reservation) {
+        // Limpiar el número de teléfono (quitar espacios, guiones, paréntesis)
+        const phone = reservation.customer.phone.replace(/\D/g, '');
+        
+        let message = '';
+        
+        if (newStatus === 'confirmed') {
+          // Mensaje de CONFIRMACIÓN
+          message = `¡Hola ${reservation.customer.name}! ✅ Tu reservación ha sido *CONFIRMADA*:
+
+📅 Fecha: ${reservation.date}
+🕐 Hora: ${reservation.time}
+👥 Personas: ${reservation.guests}
+
+¡Te esperamos en Tortas Ahogadas Guadalajara! 🌮`;
+        } else if (newStatus === 'cancelled') {
+          // Mensaje de CANCELACIÓN (no hay mesa disponible)
+          message = `Hola ${reservation.customer.name}, gracias por tu interés. 😔
+
+Lamentablemente el horario que solicitaste:
+📅 Fecha: ${reservation.date}
+🕐 Hora: ${reservation.time}
+
+Ya está ocupado. ¿Te gustaría otro horario? Contáctanos y te ayudamos a encontrar el mejor momento. 📞`;
+        }
+        
+        // Construir URL de WhatsApp (agregar 52 para código de México)
+        const whatsappURL = `https://wa.me/52${phone}?text=${encodeURIComponent(message)}`;
+        
+        // Abrir WhatsApp en nueva pestaña
+        window.open(whatsappURL, '_blank');
+      }
+      
       alert(`Reservación actualizada a: ${newStatus === 'confirmed' ? 'Confirmada' : 'Cancelada'}`);
     } catch (error) {
       console.error('Error al actualizar reservación:', error);
