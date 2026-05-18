@@ -163,7 +163,11 @@
   background: rgba(255, 255, 255, 0.95);
   color: #333;
   transition: all 0.3s;
+  width: 100%;
+  box-sizing: border-box;
+  max-width: 100%;
 }
+
 
 .reservation-form input:focus,
 .reservation-form select:focus {
@@ -419,6 +423,16 @@
   .reservation-form {
     grid-template-columns: 1fr;
     gap: 15px;
+
+  .reservation-form input,
+  .reservation-form select {
+    font-size: 16px;
+    padding: 10px;
+    width: 100%;
+    box-sizing: border-box;
+  }
+  .delivery-zones {
+    grid-template-columns: 1fr;
   }
 
   .delivery-zones {
