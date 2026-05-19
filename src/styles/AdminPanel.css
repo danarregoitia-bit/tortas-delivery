@@ -363,3 +363,28 @@
                 0 0 20px rgba(239, 68, 68, 0.8);
   }
 }
+/* Notas del cliente en pedidos */
+.order-notes {
+  margin-top: 15px;
+  padding: 12px;
+  background: #fef3c7;
+  border-left: 4px solid #f59e0b;
+  border-radius: 6px;
+}
+
+.order-notes p {
+  margin: 0;
+  color: #92400e;
+}
+
+.order-notes strong {
+  color: #78350f;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.notes-text {
+  font-style: italic;
+  color: #78350f;
+  font-weight: 500;
+}

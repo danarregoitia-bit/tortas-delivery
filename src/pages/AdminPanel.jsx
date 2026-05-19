@@ -54,7 +54,7 @@ function AdminPanel() {
         
         if (type === 'order') {
           title = '🍔 ¡Nuevo Pedido!';
-          body = `Cliente: ${data.customer.name}\nTotal: $${data.total}`;
+          body = `Cliente: ${data.customer.name}\nTotal: $${data.payment.total}`;
           icon = '🍔';
         } else if (type === 'reservation') {
           title = '📅 ¡Nueva Reservación!';
@@ -456,10 +456,18 @@ Ya está ocupado. ¿Te gustaría otro horario? Contáctanos y te ayudamos a enco
                       </li>
                     ))}
                   </ul>
+
+                  {/* NOTAS DEL CLIENTE - DENTRO DE PRODUCTS */}
+                  {item.notes && item.notes.trim() && (
+                    <div className="order-notes">
+                      <p><strong>📝 Notas del Cliente:</strong></p>
+                      <p className="notes-text">{item.notes}</p>
+                    </div>
+                  )}
                 </div>
 
                 <div className="order-total">
-                  <strong>Total: ${item.total}</strong>
+                  <strong>Total: ${item.payment.total}</strong>
                 </div>
               </div>
 
