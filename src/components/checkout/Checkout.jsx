@@ -80,7 +80,8 @@ function Checkout() {
 
   const [searchAddress, setSearchAddress] = useState('');
   const [isSearching, setIsSearching] = useState(false);
-// Calcular costo automáticamente cuando cambia la ubicación
+
+  // Calcular costo automáticamente cuando cambia la ubicación
   useEffect(() => {
     if (location.lat && location.lng && formData.deliveryType === 'delivery') {
       const distanceFromCenter = calculateDistance(
@@ -93,10 +94,7 @@ function Checkout() {
       let calculatedCost;
       let calculatedZone;
 
-      if (distanceFromCenter <= 0.8) {
-        calculatedCost = 25;
-        calculatedZone = 'Colonia Ensueños';
-      } else if (distanceFromCenter <= 2) {
+      if (distanceFromCenter <= 2) {
         calculatedCost = 25;
         calculatedZone = '0.8-2 km';
       } else if (distanceFromCenter <= 4) {
@@ -108,15 +106,6 @@ function Checkout() {
       } else if (distanceFromCenter <= 15) {
         calculatedCost = 130;
         calculatedZone = '8-15 km';
-      } else if (distanceFromCenter <= 25) {
-        calculatedCost = 200;
-        calculatedZone = '15-25 km';
-      } else if (distanceFromCenter <= 35) {
-        calculatedCost = 280;
-        calculatedZone = '25-35 km';
-      } else if (distanceFromCenter <= 50) {
-        calculatedCost = 350;
-        calculatedZone = '35-50 km';
       } else {
         calculatedCost = 0;
         calculatedZone = 'Fuera de cobertura';
@@ -126,8 +115,8 @@ function Checkout() {
       setDeliveryZone(calculatedZone);
     }
   }, [location.lat, location.lng, formData.deliveryType]);
-  // Coordenadas del restaurante (Tortas Ahogadas Guadalajara - Google Maps)
-  // Av. Amazonas esq. Orión, Colonia Ensueños, Cuautitlán Izcalli, CP 54740
+
+  // Coordenadas del restaurante
   const restaurantLocation = {
     lat: 19.659390,
     lng: -99.214017
@@ -135,7 +124,7 @@ function Checkout() {
 
   // Calcular distancia en kilómetros (fórmula Haversine)
   const calculateDistance = (lat1, lon1, lat2, lon2) => {
-    const R = 6371; // Radio de la Tierra en km
+    const R = 6371;
     const dLat = (lat2 - lat1) * Math.PI / 180;
     const dLon = (lon2 - lon1) * Math.PI / 180;
     const a = 
@@ -157,10 +146,8 @@ function Checkout() {
     setError('');
     
     try {
-      // Construir query con contexto de México y Cuautitlán Izcalli
       const fullAddress = `${searchAddress}, Cuautitlán Izcalli, Estado de México, México`;
       
-      // Llamar a Google Maps Geocoding API
       const response = await fetch(
         `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(fullAddress)}&key=${import.meta.env.VITE_GOOGLE_MAPS_API_KEY}&region=mx&language=es`
       );
@@ -172,7 +159,6 @@ function Checkout() {
         const resultLat = result.geometry.location.lat;
         const resultLng = result.geometry.location.lng;
         
-        // Verificar que esté en un radio razonable de Cuautitlán Izcalli (50km)
         const distanceFromCenter = calculateDistance(
           restaurantLocation.lat,
           restaurantLocation.lng,
@@ -186,14 +172,10 @@ function Checkout() {
             lng: resultLng
           });
           
-          // Calcular tarifas según zonas definidas
           let calculatedCost;
           let calculatedZone;
 
-          if (distanceFromCenter <= 0.8) {
-            calculatedCost = 25;
-            calculatedZone = 'Colonia Ensueños';
-          } else if (distanceFromCenter <= 2) {
+          if (distanceFromCenter <= 2) {
             calculatedCost = 25;
             calculatedZone = '0.8-2 km';
           } else if (distanceFromCenter <= 4) {
@@ -205,22 +187,14 @@ function Checkout() {
           } else if (distanceFromCenter <= 15) {
             calculatedCost = 130;
             calculatedZone = '8-15 km';
-          } else if (distanceFromCenter <= 25) {
-            calculatedCost = 200;
-            calculatedZone = '15-25 km';
-          } else if (distanceFromCenter <= 35) {
-            calculatedCost = 280;
-            calculatedZone = '25-35 km';
-          } else if (distanceFromCenter <= 50) {
-            calculatedCost = 350;
-            calculatedZone = '35-50 km';
+          } else {
+            calculatedCost = 0;
+            calculatedZone = 'Fuera de cobertura';
           }
 
-          // Guardar el costo y zona calculados en los estados
           setDeliveryCost(calculatedCost);
           setDeliveryZone(calculatedZone);
           
-          // Extraer nombre de colonia si está disponible
           let coloniaName = '';
           for (const component of result.address_components) {
             if (component.types.includes('sublocality') || component.types.includes('neighborhood')) {
@@ -250,7 +224,6 @@ function Checkout() {
 
   const subtotal = getTotal();
 
-  // Calcular costo de envío basado en distancia REAL
   let deliveryFee = 0;
   let distance = 0;
   
@@ -262,7 +235,6 @@ function Checkout() {
       location.lng
     );
     
-    // Usar el costo ya calculado en searchLocation
     deliveryFee = deliveryCost;
   }
 
@@ -497,7 +469,6 @@ ${formData.deliveryType === 'delivery'
                       />
                     </div>
 
-                    {/* Buscador de dirección */}
                     <div className="address-search">
                       <label>🗺️ Buscar dirección en el mapa</label>
                       <div className="search-input-group">
@@ -530,7 +501,6 @@ ${formData.deliveryType === 'delivery'
                     </div>
                   </section>
 
-                  {/* Mapa Interactivo */}
                   <section className="form-section map-section">
                     <h2>🗺️ Ubicación en el Mapa</h2>
                     
@@ -553,7 +523,6 @@ ${formData.deliveryType === 'delivery'
                           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
                         />
                         
-                        {/* Marcador del restaurante */}
                         <Marker 
                           position={[restaurantLocation.lat, restaurantLocation.lng]}
                           icon={restaurantIcon}
@@ -565,7 +534,6 @@ ${formData.deliveryType === 'delivery'
                           </Popup>
                         </Marker>
 
-                        {/* Marcador del cliente (interactivo) */}
                         <LocationMarker position={location} setPosition={setLocation} />
                       </MapContainer>
                     </div>
@@ -573,7 +541,6 @@ ${formData.deliveryType === 'delivery'
                 </>
               )}
 
-              {/* RESUMEN DEL PEDIDO - AHORA AQUÍ */}
               <section className="form-section">
                 <h2>📋 Resumen del Pedido</h2>
 
@@ -686,18 +653,13 @@ ${formData.deliveryType === 'delivery'
               </div>
             </div>
 
-            {/* Info de zonas */}
             <div className="delivery-zones-info">
               <h3>📦 Tarifas de Envío</h3>
               <ul>
-                
                 <li>🔵 0.8-2 km: <strong>$25</strong></li>
                 <li>🟡 2-4 km: <strong>$40</strong></li>
                 <li>🟠 4-8 km: <strong>$80</strong></li>
                 <li>🔴 8-15 km: <strong>$130</strong></li>
-                <li>🟣 15-25 km: <strong>$200</strong></li>
-                
-                
               </ul>
             </div>
           </div>
