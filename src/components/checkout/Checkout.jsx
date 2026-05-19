@@ -66,8 +66,7 @@ function Checkout() {
     colonia: '',
     references: '',
     deliveryType: 'delivery',
-    paymentMethod: 'cash',
-    notes: ''
+    paymentMethod: 'cash'
   });
 
   const [location, setLocation] = useState({
@@ -267,6 +266,9 @@ function Checkout() {
       }
     }
 
+    // Cargar notas desde localStorage
+    const orderNotes = localStorage.getItem('orderNotes') || '';
+
     const order = {
       items: items.map(item => ({
         id: item.id,
@@ -298,13 +300,16 @@ function Checkout() {
         deliveryFee: deliveryFee,
         total: total
       },
-      notes: formData.notes || '',
+      notes: orderNotes,  // ← NOTAS DESDE LOCALSTORAGE
       status: 'pending',
       createdAt: serverTimestamp()
     };
 
     try {
       const docRef = await addDoc(collection(db, 'orders'), order);
+      
+      // Limpiar las notas de localStorage después de enviar
+      localStorage.removeItem('orderNotes');
       
       alert(`¡Pedido confirmado! 🎉
 
@@ -323,7 +328,7 @@ ${formData.deliveryType === 'delivery'
 💳 Pago: ${formData.paymentMethod === 'cash' ? 'Efectivo' : 'Transferencia'}
 💵 Total: $${total}
 
-⏱️ Tiempo estimado: 30-45 minutos
+${orderNotes ? `📝 Notas: ${orderNotes}\n\n` : ''}⏱️ Tiempo estimado: 30-45 minutos
 
 ¡Gracias por tu pedido!`);
 
@@ -601,17 +606,6 @@ ${formData.deliveryType === 'delivery'
                     🏦 Transferencia/SPEI
                   </label>
                 </div>
-              </section>
-
-              <section className="form-section">
-                <h2>📝 Notas Adicionales (opcional)</h2>
-                <textarea
-                  name="notes"
-                  value={formData.notes}
-                  onChange={handleChange}
-                  placeholder="Ejemplo: Sin cebolla, bien picante, con limones extra, etc."
-                  rows="3"
-                />
               </section>
 
               <button type="submit" className="submit-btn submit-btn-mobile">
