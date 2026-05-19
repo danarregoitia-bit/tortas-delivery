@@ -11,7 +11,7 @@ function AdminPanel() {
   const [previousReservationsCount, setPreviousReservationsCount] = useState(0);
   const [notificationPermission, setNotificationPermission] = useState('default');
 
-  // Reproducir sonido de alerta
+  // Reproducir sonido de alerta con vibración como respaldo
   const playSound = (type) => {
     try {
       let audioUrl = '';
@@ -24,9 +24,23 @@ function AdminPanel() {
       
       const audio = new Audio(audioUrl);
       audio.volume = 0.7;
-      audio.play().catch(err => console.log('Error al reproducir sonido:', err));
+      audio.play().catch(err => {
+        console.log('Audio bloqueado, usando vibración:', err);
+        // Si el sonido falla, vibrar como alternativa
+        if (navigator.vibrate) {
+          if (type === 'order') {
+            navigator.vibrate([200, 100, 200]); // Vibración corta-pausa-corta
+          } else {
+            navigator.vibrate([400, 200, 400, 200, 400]); // Vibración larga (timbre)
+          }
+        }
+      });
     } catch (error) {
       console.log('Error en playSound:', error);
+      // Vibración de respaldo
+      if (navigator.vibrate) {
+        navigator.vibrate(200);
+      }
     }
   };
 
@@ -243,6 +257,10 @@ Ya está ocupado. ¿Te gustaría otro horario? Contáctanos y te ayudamos a enco
 
   const filteredItems = filter === 'reservations' ? filteredReservations : filteredOrders;
 
+  // Contar items pendientes para badges
+  const pendingOrdersCount = orders.filter(o => o.status === 'pending').length;
+  const pendingReservationsCount = reservations.filter(r => r.status === 'pending').length;
+
   const formatDate = (timestamp) => {
     if (!timestamp) return 'Sin fecha';
     const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
@@ -285,6 +303,9 @@ Ya está ocupado. ¿Te gustaría otro horario? Contáctanos y te ayudamos a enco
           onClick={() => setFilter('pending')}
         >
           Pendientes ({orders.filter(o => o.status === 'pending').length})
+          {pendingOrdersCount > 0 && (
+            <span className="badge-notification">{pendingOrdersCount}</span>
+          )}
         </button>
         <button 
           className={filter === 'completed' ? 'active' : ''} 
@@ -297,6 +318,9 @@ Ya está ocupado. ¿Te gustaría otro horario? Contáctanos y te ayudamos a enco
           onClick={() => setFilter('reservations')}
         >
           📅 Reservaciones ({reservations.length})
+          {pendingReservationsCount > 0 && (
+            <span className="badge-notification">{pendingReservationsCount}</span>
+          )}
         </button>
       </div>
 
