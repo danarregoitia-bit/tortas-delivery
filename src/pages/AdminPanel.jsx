@@ -164,17 +164,17 @@ function AdminPanel() {
 Tu pedido ya está listo y en camino a:
 📍 ${order.delivery.address}
 
-Gracias por tu preferencia 🌮
+Gracias por tu preferencia 🌶️ 
 Tortas Ahogadas Guadalajara`;
           } else {
             // Mensaje para PARA LLEVAR
             message = `¡Hola ${order.customer.name}! ✅
 
-Tu pedido ya está listo para recoger 🌮
+Tu pedido ya está listo para recoger 🌶️ 
 
 Puedes pasar a recogerlo cuando gustes.
 
-Gracias por tu preferencia 🌮
+Gracias por tu preferencia 🌶️ 
 Tortas Ahogadas Guadalajara`;
           }
           
@@ -216,8 +216,9 @@ Tortas Ahogadas Guadalajara`;
 📅 Fecha: ${reservation.date}
 🕐 Hora: ${reservation.time}
 👥 Personas: ${reservation.guests}
+⏰ Tolerancia: 10 minutos
 
-¡Te esperamos en Tortas Ahogadas Guadalajara! 🌮`;
+¡Te esperamos en Tortas Ahogadas Guadalajara! 🌶️`;
         } else if (newStatus === 'cancelled') {
           // Mensaje de CANCELACIÓN (no hay mesa disponible)
           message = `Hola ${reservation.customer.name}, gracias por tu interés. 😔
@@ -448,7 +449,7 @@ Ya está ocupado. ¿Te gustaría otro horario? Contáctanos y te ayudamos a enco
                 </div>
 
                 <div className="products">
-                  <p><strong>🌮 Productos:</strong></p>
+                  <p><strong>🌶️ Productos:</strong></p>
                   <ul>
                     {item.items.map((product, index) => (
                       <li key={index}>
