@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useCartStore } from '../../store/cartStore';
 import { useNavigate } from 'react-router-dom';
 import '../../styles/Cart.css';
@@ -5,10 +6,19 @@ import '../../styles/Cart.css';
 function Cart() {
   const navigate = useNavigate();
   const { items, removeItem, updateQuantity, getTotal, getTotalItems } = useCartStore();
+  const [notes, setNotes] = useState('');
 
   const subtotal = getTotal();
   const deliveryFee = subtotal >= 1000 ? 0 : 40;
   const total = subtotal + deliveryFee;
+
+  const handleCheckout = () => {
+    // Guardar las notas en localStorage para usarlas en el checkout
+    if (notes.trim()) {
+      localStorage.setItem('orderNotes', notes);
+    }
+    navigate('/checkout');
+  };
 
   if (items.length === 0) {
     return (
@@ -105,7 +115,7 @@ function Cart() {
             </div>
 
             <button 
-              onClick={() => navigate('/checkout')}
+              onClick={handleCheckout}
               className="checkout-btn"
             >
               Continuar a Dirección de Entrega →
@@ -117,6 +127,23 @@ function Cart() {
             >
               ← Seguir Comprando
             </button>
+
+            {/* NOTAS ADICIONALES */}
+            <div className="cart-notes-section">
+              <label htmlFor="order-notes">
+                📝 Notas Adicionales (opcional)
+              </label>
+              <textarea
+                id="order-notes"
+                className="cart-notes-input"
+                placeholder="Ejemplo: Sin cebolla, bien picante, con limones extra, etc."
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                rows="4"
+                maxLength="500"
+              />
+              <span className="character-count">{notes.length}/500</span>
+            </div>
           </div>
         </div>
       </div>
