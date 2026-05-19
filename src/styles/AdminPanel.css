@@ -59,6 +59,7 @@
   margin-bottom: 20px;
   flex-wrap: nowrap !important;
   overflow-x: scroll !important;
+  overflow: visible !important;
   overflow-y: hidden !important;
   -webkit-overflow-scrolling: touch;
   padding-bottom: 10px;
@@ -66,6 +67,8 @@
 
 .filters button {
   padding: 12px 24px;
+  position: relative;
+  overflow: visible;
   border: none;
   background: white;
   border-radius: 8px;
@@ -318,21 +321,35 @@
   position: relative;
 }
 
-.badge-notification {
+badge-notification {
   position: absolute;
-  top: -8px;
-  right: -8px;
+  top: -10px;
+  right: -10px;
   background: #ef4444;
   color: white;
   border-radius: 50%;
-  width: 20px;
-  height: 20px;
+  min-width: 24px;
+  min-height: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: bold;
+  padding: 4px;
+  box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4);
+  z-index: 100;
   animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { 
+    transform: scale(1); 
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+  }
+  50% { 
+    transform: scale(1.15); 
+    box-shadow: 0 0 0 8px rgba(239, 68, 68, 0);
+  }
 }
 
 @keyframes pulse {
