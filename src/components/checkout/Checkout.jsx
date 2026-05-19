@@ -690,14 +690,14 @@ ${formData.deliveryType === 'delivery'
             <div className="delivery-zones-info">
               <h3>📦 Tarifas de Envío</h3>
               <ul>
-                <li>🟢 Colonia Ensueños (0-0.8 km): <strong>GRATIS</strong></li>
+                
                 <li>🔵 0.8-2 km: <strong>$25</strong></li>
                 <li>🟡 2-4 km: <strong>$40</strong></li>
                 <li>🟠 4-8 km: <strong>$80</strong></li>
                 <li>🔴 8-15 km: <strong>$130</strong></li>
                 <li>🟣 15-25 km: <strong>$200</strong></li>
-                <li>🟤 25-35 km: <strong>$280</strong></li>
-                <li>⚫ 35-50 km: <strong>$350</strong></li>
+                
+                
               </ul>
             </div>
           </div>
