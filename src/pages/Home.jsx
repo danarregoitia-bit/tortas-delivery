@@ -275,14 +275,10 @@ function Home() {
               <p className="delivery-subtitle">Costos de envío desde Colonia Ensueños</p>
             </div>
             <div className="delivery-zones">
-              <div className="zone-item"><span className="zone-distance">Colonia Ensueños (0-0.8 km)</span><span className="zone-price">$25</span></div>
               <div className="zone-item"><span className="zone-distance">0.8-2 km</span><span className="zone-price">$25</span></div>
               <div className="zone-item"><span className="zone-distance">2-4 km</span><span className="zone-price">$40</span></div>
               <div className="zone-item"><span className="zone-distance">4-8 km</span><span className="zone-price">$80</span></div>
               <div className="zone-item"><span className="zone-distance">8-15 km</span><span className="zone-price">$130</span></div>
-              <div className="zone-item"><span className="zone-distance">15-25 km</span><span className="zone-price">$200</span></div>
-              <div className="zone-item"><span className="zone-distance">25-35 km</span><span className="zone-price">$280</span></div>
-              <div className="zone-item"><span className="zone-distance">35-50 km</span><span className="zone-price">$350</span></div>
             </div>
             <p className="delivery-time">⏱️ Tiempo estimado: 30-45 minutos</p>
           </div>
