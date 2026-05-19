@@ -159,19 +159,21 @@
 
 .reservation-form input,
 .reservation-form select {
-  padding: 12px;
+  padding: 14px 16px;
   border: 2px solid rgba(255, 255, 255, 0.3);
-  border-radius: 8px;
-  font-size: 1rem;
+  border-radius: 10px;
+  font-size: 16px;
   background: rgba(255, 255, 255, 0.95);
   color: #333;
   transition: all 0.3s;
   width: 100%;
+  min-height: 52px;
   box-sizing: border-box;
-  max-width: 100%;
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
+  font-family: inherit;
+  line-height: 1.5;
 }
 
 /* Fix específico para input type="date" en iOS */
