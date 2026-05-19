@@ -341,24 +341,32 @@ badge-notification {
   animation: pulse 2s infinite;
 }
 
-@keyframes pulse {
-  0%, 100% { 
-    transform: scale(1); 
-    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
-  }
-  50% { 
-    transform: scale(1.15); 
-    box-shadow: 0 0 0 8px rgba(239, 68, 68, 0);
-  }
-}
+
 
 @keyframes pulse {
-  0%, 100% { 
-    transform: scale(1); 
-    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7);
+  0% { 
+    transform: scale(1);
+    background: #ef4444;
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.9);
+  }
+  25% { 
+    transform: scale(1.15);
+    background: #b91c1c;
+    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.5);
   }
   50% { 
-    transform: scale(1.1); 
-    box-shadow: 0 0 0 6px rgba(239, 68, 68, 0);
+    transform: scale(1.3);
+    background: #ef4444;
+    box-shadow: 0 0 0 10px rgba(239, 68, 68, 0);
+  }
+  75% { 
+    transform: scale(1.15);
+    background: #b91c1c;
+    box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.5);
+  }
+  100% { 
+    transform: scale(1);
+    background: #ef4444;
+    box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.9);
   }
 }
