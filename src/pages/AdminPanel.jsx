@@ -267,26 +267,44 @@ Ya está ocupado. ¿Te gustaría otro horario? Contáctanos y te ayudamos a enco
     return date.toLocaleString('es-MX');
   };
 
+  // Verificar si una fecha es de hoy
+  const isToday = (timestamp) => {
+    if (!timestamp) return false;
+    
+    const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+    const today = new Date();
+    
+    return date.getDate() === today.getDate() &&
+           date.getMonth() === today.getMonth() &&
+           date.getFullYear() === today.getFullYear();
+  };
+
+  // Contadores de HOY para las tarjetas grandes
+  const todayOrders = orders.filter(o => isToday(o.createdAt));
+  const todayPendingOrders = todayOrders.filter(o => o.status === 'pending');
+  const todayCompletedOrders = todayOrders.filter(o => o.status === 'completed');
+  const todayReservations = reservations.filter(r => isToday(r.createdAt));
+
   return (
     <div className="admin-panel">
       <div className="admin-header">
         <h1>📊 Panel de Administración</h1>
         <div className="admin-stats">
           <div className="stat-card">
-            <span className="stat-number">{orders.length}</span>
-            <span className="stat-label">Total Pedidos</span>
+            <span className="stat-number">{todayOrders.length}</span>
+            <span className="stat-label">Pedidos de Hoy</span>
           </div>
           <div className="stat-card pending">
-            <span className="stat-number">{orders.filter(o => o.status === 'pending').length}</span>
-            <span className="stat-label">Pendientes</span>
+            <span className="stat-number">{todayPendingOrders.length}</span>
+            <span className="stat-label">Pendientes Hoy</span>
           </div>
           <div className="stat-card completed">
-            <span className="stat-number">{orders.filter(o => o.status === 'completed').length}</span>
-            <span className="stat-label">Completados</span>
+            <span className="stat-number">{todayCompletedOrders.length}</span>
+            <span className="stat-label">Completados Hoy</span>
           </div>
           <div className="stat-card" style={{background: 'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)'}}>
-            <span className="stat-number">{reservations.length}</span>
-            <span className="stat-label">Reservaciones</span>
+            <span className="stat-number">{todayReservations.length}</span>
+            <span className="stat-label">Reservaciones Hoy</span>
           </div>
         </div>
       </div>
