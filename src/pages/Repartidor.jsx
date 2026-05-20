@@ -31,34 +31,37 @@ function Repartidor() {
   }, []);
 
   // Escuchar pedidos de delivery pendientes en tiempo real
-  useEffect(() => {
-    const q = query(
-  collection(db, 'orders'),
-  where('delivery.type', '==', 'delivery'),
-  where('status', 'in', ['pending', 'preparing']),
-  orderBy('createdAt', 'desc')
-);
-    
-    const unsubscribe = onSnapshot(q, (snapshot) => {
-      const orders = [];
-      snapshot.forEach((doc) => {
+useEffect(() => {
+  const q = query(
+    collection(db, 'orders'),
+    where('delivery.type', '==', 'delivery'),
+    orderBy('createdAt', 'desc')
+  );
+  
+  const unsubscribe = onSnapshot(q, (snapshot) => {
+    const orders = [];
+    snapshot.forEach((doc) => {
+      const data = doc.data();
+      // Filtrar solo pending y preparing AQUÍ en el código
+      if (data.status === 'pending' || data.status === 'preparing') {
         orders.push({
           id: doc.id,
-          ...doc.data()
+          ...data
         });
-      });
-      
-      // Alerta si hay nuevo pedido
-      if (previousCount > 0 && orders.length > previousCount) {
-        alertNewOrder();
       }
-      
-      setPreviousCount(orders.length);
-      setDeliveryOrders(orders);
     });
+    
+    // Alerta si hay nuevo pedido
+    if (previousCount > 0 && orders.length > previousCount) {
+      alertNewOrder();
+    }
+    
+    setPreviousCount(orders.length);
+    setDeliveryOrders(orders);
+  });
 
-    return () => unsubscribe();
-  }, [previousCount]);
+  return () => unsubscribe();
+}, [previousCount]);
 
   const openInMaps = (address, colonia) => {
     const fullAddress = `${address}, ${colonia}, Cuautitlán Izcalli, Estado de México`;
