@@ -162,9 +162,15 @@ function Repartidor() {
               </div>
 
               <div className="total-section">
-                <span>💰 Total a cobrar:</span>
-                <span className="total-amount">${order.payment.total}</span>
-              </div>
+  <span>💰 Total a cobrar:</span>
+  <span className="total-amount">${order.payment.total}</span>
+</div>
+
+<div className="payment-method-section">
+  <span className="payment-label">
+    {order.payment.method === 'cash' ? '💵 Cobrar en Efectivo' : '🏦 Cobrar por Transferencia/SPEI'}
+  </span>
+</div>
 
               <button 
                 className="maps-button"
