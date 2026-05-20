@@ -1,0 +1,160 @@
+import { useState, useEffect } from 'react';
+import { collection, query, orderBy, onSnapshot, where } from 'firebase/firestore';
+import { db } from '../firebase';
+import '../styles/Repartidor.css';
+
+function Repartidor() {
+  const [deliveryOrders, setDeliveryOrders] = useState([]);
+  const [previousCount, setPreviousCount] = useState(0);
+
+  // Alerta con vibración
+  const alertNewOrder = () => {
+    // Vibración
+    if (navigator.vibrate) {
+      navigator.vibrate([400, 200, 400, 200, 400]);
+    }
+    
+    // Notificación
+    if (Notification.permission === 'granted') {
+      new Notification('🚴 ¡Nuevo Pedido de Delivery!', {
+        body: 'Hay un nuevo pedido para entregar',
+        requireInteraction: true
+      });
+    }
+  };
+
+  // Pedir permiso de notificaciones
+  useEffect(() => {
+    if ('Notification' in window && Notification.permission === 'default') {
+      Notification.requestPermission();
+    }
+  }, []);
+
+  // Escuchar pedidos de delivery pendientes en tiempo real
+  useEffect(() => {
+    const q = query(
+      collection(db, 'orders'),
+      where('delivery.type', '==', 'delivery'),
+      where('status', '==', 'pending'),
+      orderBy('createdAt', 'desc')
+    );
+    
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const orders = [];
+      snapshot.forEach((doc) => {
+        orders.push({
+          id: doc.id,
+          ...doc.data()
+        });
+      });
+      
+      // Alerta si hay nuevo pedido
+      if (previousCount > 0 && orders.length > previousCount) {
+        alertNewOrder();
+      }
+      
+      setPreviousCount(orders.length);
+      setDeliveryOrders(orders);
+    });
+
+    return () => unsubscribe();
+  }, [previousCount]);
+
+  const openInMaps = (address, colonia) => {
+    const fullAddress = `${address}, ${colonia}, Cuautitlán Izcalli, Estado de México`;
+    const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(fullAddress)}`;
+    window.open(mapsUrl, '_blank');
+  };
+
+  const formatDate = (timestamp) => {
+    if (!timestamp) return '';
+    const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+    return date.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' });
+  };
+
+  return (
+    <div className="repartidor-panel">
+      <div className="repartidor-header">
+        <h1>🚴 Panel de Repartidor</h1>
+        <div className="pending-count">
+          📦 Pedidos Pendientes: 
+          <strong>{deliveryOrders.length}</strong>
+          {deliveryOrders.length > 0 && (
+            <span className="badge-pulse">{deliveryOrders.length}</span>
+          )}
+        </div>
+      </div>
+
+      <div className="orders-list">
+        {deliveryOrders.length === 0 ? (
+          <div className="no-orders">
+            <p>✅ No hay pedidos pendientes</p>
+            <p className="subtitle">Los nuevos pedidos aparecerán aquí automáticamente</p>
+          </div>
+        ) : (
+          deliveryOrders.map((order) => (
+            <div key={order.id} className="delivery-card">
+              <div className="card-header">
+                <span className="order-id">#{order.id.slice(-6).toUpperCase()}</span>
+                <span className="order-time">🕐 {formatDate(order.createdAt)}</span>
+              </div>
+
+              <div className="customer-section">
+                <h3>👤 {order.customer.name}</h3>
+                <a href={`tel:${order.customer.phone}`} className="phone-link">
+                  📱 {order.customer.phone}
+                </a>
+              </div>
+
+              <div className="address-section">
+                <p className="address-label">📍 Dirección de Entrega:</p>
+                <p className="address-main">{order.delivery.address}</p>
+                <p className="address-colonia">{order.delivery.colonia}</p>
+                {order.delivery.references && (
+                  <p className="address-ref">
+                    📌 Referencias: {order.delivery.references}
+                  </p>
+                )}
+                <p className="distance-info">
+                  📏 Distancia: {order.delivery.distance} km ({order.delivery.zone})
+                </p>
+              </div>
+
+              {order.notes && order.notes.trim() && (
+                <div className="notes-section">
+                  <p className="notes-label">📝 Notas del Cliente:</p>
+                  <p className="notes-text">{order.notes}</p>
+                </div>
+              )}
+
+              <div className="products-section">
+                <p className="products-label">🌶️ Productos:</p>
+                <ul>
+                  {order.items.map((item, index) => (
+                    <li key={index}>
+                      {item.quantity}x {item.name}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="total-section">
+                <span>💰 Total a cobrar:</span>
+                <span className="total-amount">${order.payment.total}</span>
+              </div>
+
+              <button 
+                className="maps-button"
+                onClick={() => openInMaps(order.delivery.address, order.delivery.colonia)}
+              >
+                🗺️ Abrir en Google Maps
+              </button>
+            </div>
+          ))
+        )}
+      </div>
+    </div>
+  );
+}
+
+export default Repartidor;

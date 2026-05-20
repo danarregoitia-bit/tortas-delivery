@@ -3,6 +3,7 @@ import Home from './pages/Home';
 import Cart from './components/cart/Cart';
 import Checkout from './components/checkout/Checkout';
 import AdminPanel from './pages/AdminPanel';  // ← ESTA LÍNEA ES NUEVA
+import Repartidor from './pages/Repartidor';
 import './index.css';
 
 function App() {
@@ -13,6 +14,7 @@ function App() {
     <Route path="/cart" element={<Cart />} />
     <Route path="/checkout" element={<Checkout />} />
     <Route path="/admin" element={<AdminPanel />} />
+    <Route path="/repartidor" element={<Repartidor />} />
   </Routes>
 </BrowserRouter>
   );
