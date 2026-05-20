@@ -333,6 +333,12 @@ Ya está ocupado. ¿Te gustaría otro horario? Contáctanos y te ayudamos a enco
           Completados ({orders.filter(o => o.status === 'completed').length})
         </button>
         <button 
+  className={filter === 'preparing' ? 'active' : ''} 
+  onClick={() => setFilter('preparing')}
+>
+  👨‍🍳 Preparando ({orders.filter(o => o.status === 'preparing').length})
+</button>
+        <button 
           className={filter === 'reservations' ? 'active' : ''} 
           onClick={() => setFilter('reservations')}
         >
@@ -420,10 +426,11 @@ Ya está ocupado. ¿Te gustaría otro horario? Contáctanos y te ayudamos a enco
                   <strong>#{item.id.slice(-6).toUpperCase()}</strong>
                 </div>
                 <span className={`status-badge ${item.status}`}>
-                  {item.status === 'pending' ? '⏳ Pendiente' :
-                   item.status === 'completed' ? '✅ Completado' :
-                   item.status}
-                </span>
+  {item.status === 'pending' ? '⏳ Pendiente' :
+   item.status === 'preparing' ? '👨‍🍳 Preparando' :
+   item.status === 'completed' ? '✅ Completado' :
+   item.status}
+</span>
               </div>
 
               <div className="order-time">
@@ -473,15 +480,26 @@ Ya está ocupado. ¿Te gustaría otro horario? Contáctanos y te ayudamos a enco
               </div>
 
               {item.status === 'pending' && (
-                <div className="order-actions">
-                  <button
-                    className="btn-complete"
-                    onClick={() => updateOrderStatus(item.id, 'completed')}
-                  >
-                    ✅ Marcar como Completado
-                  </button>
-                </div>
-              )}
+  <div className="order-actions">
+    <button
+      className="btn-preparing"
+      onClick={() => updateOrderStatus(item.id, 'preparing')}
+    >
+      👨‍🍳 Listo para Entregar
+    </button>
+  </div>
+)}
+
+{item.status === 'preparing' && (
+  <div className="order-actions">
+    <button
+      className="btn-complete"
+      onClick={() => updateOrderStatus(item.id, 'completed')}
+    >
+      ✅ Marcar como Entregado (Admin)
+    </button>
+  </div>
+)}
             </div>
           );
         })}

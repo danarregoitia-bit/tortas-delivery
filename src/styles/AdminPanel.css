@@ -388,3 +388,27 @@
   color: #78350f;
   font-weight: 500;
 }
+/* Estado: Preparando */
+.order-card.preparing {
+  border-left-color: #fbbf24;
+  opacity: 1;
+}
+
+.status-badge.preparing {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.btn-preparing {
+  background: #fbbf24;
+  color: white;
+}
+
+.btn-preparing:hover {
+  background: #f59e0b;
+  transform: translateY(-2px);
+}
+
+.stat-card.preparing {
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+}

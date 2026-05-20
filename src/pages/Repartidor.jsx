@@ -33,11 +33,11 @@ function Repartidor() {
   // Escuchar pedidos de delivery pendientes en tiempo real
   useEffect(() => {
     const q = query(
-      collection(db, 'orders'),
-      where('delivery.type', '==', 'delivery'),
-      where('status', '==', 'pending'),
-      orderBy('createdAt', 'desc')
-    );
+  collection(db, 'orders'),
+  where('delivery.type', '==', 'delivery'),
+  where('status', 'in', ['pending', 'preparing']),
+  orderBy('createdAt', 'desc')
+);
     
     const unsubscribe = onSnapshot(q, (snapshot) => {
       const orders = [];
@@ -111,6 +111,9 @@ function Repartidor() {
             <div key={order.id} className="delivery-card">
               <div className="card-header">
                 <span className="order-id">#{order.id.slice(-6).toUpperCase()}</span>
+                <span className={`status-badge-repartidor ${order.status}`}>
+  {order.status === 'pending' ? '🔴 Nuevo' : '👨‍🍳 Listo'}
+</span>
                 <span className="order-time">🕐 {formatDate(order.createdAt)}</span>
               </div>
 
