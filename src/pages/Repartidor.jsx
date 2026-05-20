@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { collection, query, orderBy, onSnapshot, where } from 'firebase/firestore';
+import { collection, query, orderBy, onSnapshot, where, updateDoc, doc } from 'firebase/firestore';
 import { db } from '../firebase';
 import '../styles/Repartidor.css';
 
@@ -71,6 +71,21 @@ function Repartidor() {
     const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
     return date.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' });
   };
+  const completeOrder = async (orderId) => {
+  const confirmed = window.confirm('¿Pedido entregado al cliente?');
+  
+  if (confirmed) {
+    try {
+      await updateDoc(doc(db, 'orders', orderId), {
+        status: 'completed'
+      });
+      alert('✅ Pedido marcado como entregado');
+    } catch (error) {
+      console.error('Error al completar pedido:', error);
+      alert('❌ Error al marcar como entregado');
+    }
+  }
+};
 
   return (
     <div className="repartidor-panel">
@@ -149,6 +164,12 @@ function Repartidor() {
               >
                 🗺️ Abrir en Google Maps
               </button>
+              <button 
+  className="complete-button"
+  onClick={() => completeOrder(order.id)}
+>
+  ✅ Marcar como Entregado
+</button>
             </div>
           ))
         )}
