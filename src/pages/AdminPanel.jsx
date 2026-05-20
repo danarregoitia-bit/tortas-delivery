@@ -140,59 +140,51 @@ function AdminPanel() {
   }, [previousReservationsCount]);
 
   const updateOrderStatus = async (orderId, newStatus) => {
-    try {
-      await updateDoc(doc(db, 'orders', orderId), {
-        status: newStatus
-      });
+  try {
+    await updateDoc(doc(db, 'orders', orderId), {
+      status: newStatus
+    });
+    
+    // Si el pedido se marcó como PREPARING (listo para entregar), enviar WhatsApp al cliente
+    if (newStatus === 'preparing') {
+      const order = orders.find(o => o.id === orderId);
       
-      // Si el pedido se marcó como completado, enviar WhatsApp al cliente
-      if (newStatus === 'completed') {
-        // Encontrar el pedido para obtener los datos del cliente
-        const order = orders.find(o => o.id === orderId);
+      if (order) {
+        const phone = order.customer.phone.replace(/\D/g, '');
+        let message = '';
         
-        if (order) {
-          // Limpiar el número de teléfono (quitar espacios, guiones, paréntesis)
-          const phone = order.customer.phone.replace(/\D/g, '');
-          
-          // Construir mensaje según el tipo de entrega
-          let message = '';
-          
-          if (order.delivery.type === 'delivery') {
-            // Mensaje para ENTREGA A DOMICILIO
-            message = `¡Hola ${order.customer.name}! 🚗
+        if (order.delivery.type === 'delivery') {
+          // Mensaje para ENTREGA A DOMICILIO
+          message = `¡Hola ${order.customer.name}! 🚗
 
 Tu pedido ya está listo y en camino a:
 📍 ${order.delivery.address}
 
-Gracias por tu preferencia 🌶️ 
+Gracias por tu preferencia 🌶️
 Tortas Ahogadas Guadalajara`;
-          } else {
-            // Mensaje para PARA LLEVAR
-            message = `¡Hola ${order.customer.name}! ✅
+        } else {
+          // Mensaje para PARA LLEVAR
+          message = `¡Hola ${order.customer.name}! ✅
 
-Tu pedido ya está listo para recoger 🌶️ 
+Tu pedido ya está listo para recoger 🌶️
 
 Puedes pasar a recogerlo cuando gustes.
 
-Gracias por tu preferencia 🌶️ 
+Gracias por tu preferencia 🌶️
 Tortas Ahogadas Guadalajara`;
-          }
-          
-          // Construir URL de WhatsApp para móvil
-          const whatsappURL = `https://api.whatsapp.com/send?phone=52${phone}&text=${encodeURIComponent(message)}`;
-          
-          // Redirigir a WhatsApp (abre la app en móvil)
-          window.location.href = whatsappURL;
         }
-      } else {
-        // Si no es "completed", solo mostrar el alert normal
-        alert(`Pedido actualizado a: ${newStatus}`);
+        
+        const whatsappURL = `https://api.whatsapp.com/send?phone=52${phone}&text=${encodeURIComponent(message)}`;
+        window.location.href = whatsappURL;
       }
-    } catch (error) {
-      console.error('Error al actualizar:', error);
-      alert('Error al actualizar el pedido');
+    } else {
+      alert(`Pedido actualizado a: ${newStatus === 'completed' ? 'Entregado' : newStatus}`);
     }
-  };
+  } catch (error) {
+    console.error('Error al actualizar:', error);
+    alert('Error al actualizar el pedido');
+  }
+};
 
   const updateReservationStatus = async (reservationId, newStatus) => {
     try {
