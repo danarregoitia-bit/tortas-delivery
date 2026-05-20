@@ -4,6 +4,7 @@ import { db } from '../firebase';
 import '../styles/Repartidor.css';
 
 function Repartidor() {
+    console.log('🚀 REPARTIDOR VERSION 2.0 - SIN INDICE');
   const [deliveryOrders, setDeliveryOrders] = useState([]);
   const [previousCount, setPreviousCount] = useState(0);
 
@@ -30,38 +31,38 @@ function Repartidor() {
     }
   }, []);
 
-  // Escuchar pedidos de delivery pendientes en tiempo real
-useEffect(() => {
-  const q = query(
-    collection(db, 'orders'),
-    where('delivery.type', '==', 'delivery'),
-    orderBy('createdAt', 'desc')
-  );
-  
-  const unsubscribe = onSnapshot(q, (snapshot) => {
-    const orders = [];
-    snapshot.forEach((doc) => {
-      const data = doc.data();
-      // Filtrar solo pending y preparing AQUÍ en el código
-      if (data.status === 'pending' || data.status === 'preparing') {
-        orders.push({
-          id: doc.id,
-          ...data
-        });
+  // Escuchar pedidos de delivery en tiempo real - SIN ÍNDICE
+  useEffect(() => {
+    const q = query(
+      collection(db, 'orders'),
+      where('delivery.type', '==', 'delivery'),
+      orderBy('createdAt', 'desc')
+    );
+    
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const orders = [];
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        // Filtrar pending y preparing en JavaScript
+        if (data.status === 'pending' || data.status === 'preparing') {
+          orders.push({
+            id: doc.id,
+            ...data
+          });
+        }
+      });
+      
+      // Alerta si hay nuevo pedido
+      if (previousCount > 0 && orders.length > previousCount) {
+        alertNewOrder();
       }
+      
+      setPreviousCount(orders.length);
+      setDeliveryOrders(orders);
     });
-    
-    // Alerta si hay nuevo pedido
-    if (previousCount > 0 && orders.length > previousCount) {
-      alertNewOrder();
-    }
-    
-    setPreviousCount(orders.length);
-    setDeliveryOrders(orders);
-  });
 
-  return () => unsubscribe();
-}, [previousCount]);
+    return () => unsubscribe();
+  }, [previousCount]);
 
   const openInMaps = (address, colonia) => {
     const fullAddress = `${address}, ${colonia}, Cuautitlán Izcalli, Estado de México`;
@@ -74,21 +75,22 @@ useEffect(() => {
     const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
     return date.toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' });
   };
+
   const completeOrder = async (orderId) => {
-  const confirmed = window.confirm('¿Pedido entregado al cliente?');
-  
-  if (confirmed) {
-    try {
-      await updateDoc(doc(db, 'orders', orderId), {
-        status: 'completed'
-      });
-      alert('✅ Pedido marcado como entregado');
-    } catch (error) {
-      console.error('Error al completar pedido:', error);
-      alert('❌ Error al marcar como entregado');
+    const confirmed = window.confirm('¿Pedido entregado al cliente?');
+    
+    if (confirmed) {
+      try {
+        await updateDoc(doc(db, 'orders', orderId), {
+          status: 'completed'
+        });
+        alert('✅ Pedido marcado como entregado');
+      } catch (error) {
+        console.error('Error al completar pedido:', error);
+        alert('❌ Error al marcar como entregado');
+      }
     }
-  }
-};
+  };
 
   return (
     <div className="repartidor-panel">
@@ -115,8 +117,8 @@ useEffect(() => {
               <div className="card-header">
                 <span className="order-id">#{order.id.slice(-6).toUpperCase()}</span>
                 <span className={`status-badge-repartidor ${order.status}`}>
-  {order.status === 'pending' ? '🔴 Nuevo' : '👨‍🍳 Listo'}
-</span>
+                  {order.status === 'pending' ? '🔴 Nuevo' : '👨‍🍳 Listo'}
+                </span>
                 <span className="order-time">🕐 {formatDate(order.createdAt)}</span>
               </div>
 
@@ -170,12 +172,13 @@ useEffect(() => {
               >
                 🗺️ Abrir en Google Maps
               </button>
+              
               <button 
-  className="complete-button"
-  onClick={() => completeOrder(order.id)}
->
-  ✅ Marcar como Entregado
-</button>
+                className="complete-button"
+                onClick={() => completeOrder(order.id)}
+              >
+                ✅ Marcar como Entregado
+              </button>
             </div>
           ))
         )}

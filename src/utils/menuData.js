@@ -380,9 +380,10 @@ export const menuData = [
   },
 
   // ==========================================
-  // BEBIDAS - AGUAS FRESCAS
-  // ==========================================
-  {
+// BEBIDAS - AGUAS FRESCAS
+// ==========================================
+{
+  id: 'agua-fresca-medio-litro',
   name: "Agua Fresca ½ Litro",
   price: 28,
   category: "Bebidas",
@@ -399,6 +400,7 @@ export const menuData = [
   ]
 },
 {
+  id: 'agua-fresca-litro',
   name: "Agua Fresca Litro",
   price: 45,
   category: "Bebidas",

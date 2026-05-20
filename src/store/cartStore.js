@@ -6,15 +6,29 @@ export const useCartStore = create((set, get) => ({
 
   addItem: (product) => {
     const items = get().items;
-    const existingItem = items.find(item => item.id === product.id);
+    
+    // Crear identificador único que incluya el sabor/variante
+    const uniqueKey = product.selectedVariant 
+      ? `${product.id}-${product.selectedVariant}`
+      : product.id;
+    
+    const existingItem = items.find(item => {
+      const itemKey = item.selectedVariant 
+        ? `${item.id}-${item.selectedVariant}`
+        : item.id;
+      return itemKey === uniqueKey;
+    });
 
     if (existingItem) {
       set({
-        items: items.map(item =>
-          item.id === product.id
+        items: items.map(item => {
+          const itemKey = item.selectedVariant 
+            ? `${item.id}-${item.selectedVariant}`
+            : item.id;
+          return itemKey === uniqueKey
             ? { ...item, quantity: item.quantity + 1 }
-            : item
-        )
+            : item;
+        })
       });
     } else {
       set({
