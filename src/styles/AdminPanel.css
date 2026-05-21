@@ -110,6 +110,17 @@
   border-left-color: #f5576c;
 }
 
+/* NUEVO: Estado confirmado */
+.order-card.confirmed {
+  border-left-color: #10b981;
+  opacity: 1;
+}
+
+.order-card.preparing {
+  border-left-color: #fbbf24;
+  opacity: 1;
+}
+
 .order-card.completed {
   border-left-color: #00f2fe;
   opacity: 0.7;
@@ -149,6 +160,17 @@
 .status-badge.pending {
   background: #fff3cd;
   color: #856404;
+}
+
+/* NUEVO: Badge de confirmado */
+.status-badge.confirmed {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.status-badge.preparing {
+  background: #fef3c7;
+  color: #92400e;
 }
 
 .status-badge.completed {
@@ -257,6 +279,27 @@
   transform: translateY(-2px);
 }
 
+/* NUEVO: Botón confirmar pedido */
+.btn-confirm {
+  background: #10b981;
+  color: white;
+}
+
+.btn-confirm:hover {
+  background: #059669;
+  transform: translateY(-2px);
+}
+
+.btn-preparing {
+  background: #fbbf24;
+  color: white;
+}
+
+.btn-preparing:hover {
+  background: #f59e0b;
+  transform: translateY(-2px);
+}
+
 .btn-complete {
   background: #007bff;
   color: white;
@@ -316,6 +359,7 @@
     min-width: 100%;
   }
 }
+
 /* Badges de notificación */
 .filters button {
   position: relative;
@@ -338,10 +382,8 @@
   padding: 6px;
   border: 3px solid white;
   z-index: 100;
-  animation: pulseBadge 0.8s infinite;  /* ← Nombre específico */
+  animation: pulseBadge 0.8s infinite;
 }
-
-
 
 @keyframes pulseBadge {
   0% { 
@@ -363,6 +405,7 @@
                 0 0 20px rgba(239, 68, 68, 0.8);
   }
 }
+
 /* Notas del cliente en pedidos */
 .order-notes {
   margin-top: 15px;
@@ -388,27 +431,65 @@
   color: #78350f;
   font-weight: 500;
 }
-/* Estado: Preparando */
-.order-card.preparing {
-  border-left-color: #fbbf24;
-  opacity: 1;
-}
-
-.status-badge.preparing {
-  background: #fef3c7;
-  color: #92400e;
-}
-
-.btn-preparing {
-  background: #fbbf24;
-  color: white;
-}
-
-.btn-preparing:hover {
-  background: #f59e0b;
-  transform: translateY(-2px);
-}
 
 .stat-card.preparing {
   background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+}
+
+/* Sección de productos mejorada */
+.products {
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 8px;
+}
+
+.products p strong {
+  color: #333;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.products ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.products li {
+  padding: 8px 12px;
+  background: white;
+  margin-bottom: 5px;
+  border-radius: 6px;
+  color: #666;
+}
+
+.order-total {
+  margin-top: 15px;
+  padding: 15px;
+  background: #d4edda;
+  border-radius: 8px;
+  text-align: right;
+}
+
+.order-total strong {
+  font-size: 1.3rem;
+  color: #155724;
+}
+
+/* Mensaje sin pedidos */
+.no-orders {
+  text-align: center;
+  padding: 60px 20px;
+  background: white;
+  border-radius: 12px;
+}
+
+.no-orders p {
+  margin: 10px 0;
+  color: #666;
+}
+
+.no-orders .subtitle {
+  font-size: 0.9rem;
+  color: #999;
 }

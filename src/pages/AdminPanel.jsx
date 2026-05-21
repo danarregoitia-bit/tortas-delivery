@@ -139,32 +139,84 @@ function AdminPanel() {
     return () => unsubscribe();
   }, [previousReservationsCount]);
 
-  const updateOrderStatus = async (orderId, newStatus) => {
-  try {
-    await updateDoc(doc(db, 'orders', orderId), {
-      status: newStatus
-    });
-    
-    // Si el pedido se marcó como PREPARING (listo para entregar), enviar WhatsApp al cliente
-    if (newStatus === 'preparing') {
+  // NUEVA FUNCIÓN: Confirmar pedido (envía WhatsApp de confirmación)
+  const confirmOrder = async (orderId) => {
+    try {
       const order = orders.find(o => o.id === orderId);
       
-      if (order) {
-        const phone = order.customer.phone.replace(/\D/g, '');
-        let message = '';
+      if (!order) {
+        alert('Error: Pedido no encontrado');
+        return;
+      }
+
+      // Actualizar estado a 'confirmed'
+      await updateDoc(doc(db, 'orders', orderId), {
+        status: 'confirmed'
+      });
+
+      // Preparar mensaje de WhatsApp
+      const phone = order.customer.phone.replace(/\D/g, '');
+      
+      // Construir lista de productos
+      const productosList = order.items
+        .map(item => `• ${item.quantity}x ${item.name}`)
+        .join('\n');
+
+      const message = `¡Hola ${order.customer.name}! 👋
+
+✅ *PEDIDO CONFIRMADO* #${order.id.slice(-6).toUpperCase()}
+
+Recibimos tu pedido:
+${productosList}
+
+💰 Total: $${order.payment.total}
+💵 Método de pago: ${order.payment.method === 'cash' ? 'Efectivo' : 'Transferencia/SPEI'}
+
+${order.delivery.type === 'delivery' 
+  ? `🚗 Entrega a domicilio:\n📍 ${order.delivery.address}\n\n⏰ Tiempo estimado: 30-45 minutos`
+  : `🏃 Para llevar\n\n⏰ Listo en 30-45 minutos`
+}
+
+Te avisaremos cuando tu pedido esté listo y en camino. 🌶️
+
+Gracias por tu preferencia,
+Tortas Ahogadas Guadalajara`;
+
+      const whatsappURL = `https://api.whatsapp.com/send?phone=52${phone}&text=${encodeURIComponent(message)}`;
+      window.location.href = whatsappURL;
+
+    } catch (error) {
+      console.error('Error al confirmar pedido:', error);
+      alert('Error al confirmar el pedido');
+    }
+  };
+
+  const updateOrderStatus = async (orderId, newStatus) => {
+    try {
+      await updateDoc(doc(db, 'orders', orderId), {
+        status: newStatus
+      });
+      
+      // Si el pedido se marcó como PREPARING (listo para entregar), enviar WhatsApp al cliente
+      if (newStatus === 'preparing') {
+        const order = orders.find(o => o.id === orderId);
         
-        if (order.delivery.type === 'delivery') {
-          // Mensaje para ENTREGA A DOMICILIO
-          message = `¡Hola ${order.customer.name}! 🚗
+        if (order) {
+          const phone = order.customer.phone.replace(/\D/g, '');
+          let message = '';
+          
+          if (order.delivery.type === 'delivery') {
+            // Mensaje para ENTREGA A DOMICILIO
+            message = `¡Hola ${order.customer.name}! 🚗
 
 Tu pedido ya está listo y en camino a:
 📍 ${order.delivery.address}
 
 Gracias por tu preferencia 🌶️
 Tortas Ahogadas Guadalajara`;
-        } else {
-          // Mensaje para PARA LLEVAR
-          message = `¡Hola ${order.customer.name}! ✅
+          } else {
+            // Mensaje para PARA LLEVAR
+            message = `¡Hola ${order.customer.name}! ✅
 
 Tu pedido ya está listo para recoger 🌶️
 
@@ -172,19 +224,19 @@ Puedes pasar a recogerlo cuando gustes.
 
 Gracias por tu preferencia 🌶️
 Tortas Ahogadas Guadalajara`;
+          }
+          
+          const whatsappURL = `https://api.whatsapp.com/send?phone=52${phone}&text=${encodeURIComponent(message)}`;
+          window.location.href = whatsappURL;
         }
-        
-        const whatsappURL = `https://api.whatsapp.com/send?phone=52${phone}&text=${encodeURIComponent(message)}`;
-        window.location.href = whatsappURL;
+      } else {
+        alert(`Pedido actualizado a: ${newStatus === 'completed' ? 'Entregado' : newStatus}`);
       }
-    } else {
-      alert(`Pedido actualizado a: ${newStatus === 'completed' ? 'Entregado' : newStatus}`);
+    } catch (error) {
+      console.error('Error al actualizar:', error);
+      alert('Error al actualizar el pedido');
     }
-  } catch (error) {
-    console.error('Error al actualizar:', error);
-    alert('Error al actualizar el pedido');
-  }
-};
+  };
 
   const updateReservationStatus = async (reservationId, newStatus) => {
     try {
@@ -313,10 +365,22 @@ Ya está ocupado. ¿Te gustaría otro horario? Contáctanos y te ayudamos a enco
           className={filter === 'pending' ? 'active' : ''} 
           onClick={() => setFilter('pending')}
         >
-          Pendientes ({orders.filter(o => o.status === 'pending').length})
+          🆕 Nuevos ({orders.filter(o => o.status === 'pending').length})
           {pendingOrdersCount > 0 && (
             <span className="badge-notification">{pendingOrdersCount}</span>
           )}
+        </button>
+        <button 
+          className={filter === 'confirmed' ? 'active' : ''} 
+          onClick={() => setFilter('confirmed')}
+        >
+          ✅ Confirmados ({orders.filter(o => o.status === 'confirmed').length})
+        </button>
+        <button 
+          className={filter === 'preparing' ? 'active' : ''} 
+          onClick={() => setFilter('preparing')}
+        >
+          👨‍🍳 Preparando ({orders.filter(o => o.status === 'preparing').length})
         </button>
         <button 
           className={filter === 'completed' ? 'active' : ''} 
@@ -324,12 +388,6 @@ Ya está ocupado. ¿Te gustaría otro horario? Contáctanos y te ayudamos a enco
         >
           Completados ({orders.filter(o => o.status === 'completed').length})
         </button>
-        <button 
-  className={filter === 'preparing' ? 'active' : ''} 
-  onClick={() => setFilter('preparing')}
->
-  👨‍🍳 Preparando ({orders.filter(o => o.status === 'preparing').length})
-</button>
         <button 
           className={filter === 'reservations' ? 'active' : ''} 
           onClick={() => setFilter('reservations')}
@@ -418,11 +476,12 @@ Ya está ocupado. ¿Te gustaría otro horario? Contáctanos y te ayudamos a enco
                   <strong>#{item.id.slice(-6).toUpperCase()}</strong>
                 </div>
                 <span className={`status-badge ${item.status}`}>
-  {item.status === 'pending' ? '⏳ Pendiente' :
-   item.status === 'preparing' ? '👨‍🍳 Preparando' :
-   item.status === 'completed' ? '✅ Completado' :
-   item.status}
-</span>
+                  {item.status === 'pending' ? '🆕 Nuevo' :
+                   item.status === 'confirmed' ? '✅ Confirmado' :
+                   item.status === 'preparing' ? '👨‍🍳 Preparando' :
+                   item.status === 'completed' ? '✅ Completado' :
+                   item.status}
+                </span>
               </div>
 
               <div className="order-time">
@@ -471,27 +530,39 @@ Ya está ocupado. ¿Te gustaría otro horario? Contáctanos y te ayudamos a enco
                 </div>
               </div>
 
+              {/* BOTONES SEGÚN EL ESTADO */}
               {item.status === 'pending' && (
-  <div className="order-actions">
-    <button
-      className="btn-preparing"
-      onClick={() => updateOrderStatus(item.id, 'preparing')}
-    >
-      👨‍🍳 Listo para Entregar
-    </button>
-  </div>
-)}
+                <div className="order-actions">
+                  <button
+                    className="btn-confirm"
+                    onClick={() => confirmOrder(item.id)}
+                  >
+                    ✅ Confirmar Pedido
+                  </button>
+                </div>
+              )}
 
-{item.status === 'preparing' && (
-  <div className="order-actions">
-    <button
-      className="btn-complete"
-      onClick={() => updateOrderStatus(item.id, 'completed')}
-    >
-      ✅ Marcar como Entregado (Admin)
-    </button>
-  </div>
-)}
+              {item.status === 'confirmed' && (
+                <div className="order-actions">
+                  <button
+                    className="btn-preparing"
+                    onClick={() => updateOrderStatus(item.id, 'preparing')}
+                  >
+                    👨‍🍳 Listo para Entregar
+                  </button>
+                </div>
+              )}
+
+              {item.status === 'preparing' && (
+                <div className="order-actions">
+                  <button
+                    className="btn-complete"
+                    onClick={() => updateOrderStatus(item.id, 'completed')}
+                  >
+                    ✅ Marcar como Entregado
+                  </button>
+                </div>
+              )}
             </div>
           );
         })}
