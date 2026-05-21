@@ -377,11 +377,11 @@ Ya está ocupado. ¿Te gustaría otro horario? Contáctanos y te ayudamos a enco
           ✅ Confirmados ({orders.filter(o => o.status === 'confirmed').length})
         </button>
         <button 
-          className={filter === 'preparing' ? 'active' : ''} 
-          onClick={() => setFilter('preparing')}
-        >
-          👨‍🍳 Preparando ({orders.filter(o => o.status === 'preparing').length})
-        </button>
+  className={filter === 'preparing' ? 'active' : ''} 
+  onClick={() => setFilter('preparing')}
+>
+  🚚 En Ruta ({orders.filter(o => o.status === 'preparing').length})
+</button>
         <button 
           className={filter === 'completed' ? 'active' : ''} 
           onClick={() => setFilter('completed')}
@@ -476,12 +476,12 @@ Ya está ocupado. ¿Te gustaría otro horario? Contáctanos y te ayudamos a enco
                   <strong>#{item.id.slice(-6).toUpperCase()}</strong>
                 </div>
                 <span className={`status-badge ${item.status}`}>
-                  {item.status === 'pending' ? '🆕 Nuevo' :
-                   item.status === 'confirmed' ? '✅ Confirmado' :
-                   item.status === 'preparing' ? '👨‍🍳 Preparando' :
-                   item.status === 'completed' ? '✅ Completado' :
-                   item.status}
-                </span>
+  {item.status === 'pending' ? '🆕 Nuevo' :
+   item.status === 'confirmed' ? '✅ Confirmado' :
+   item.status === 'preparing' ? '🚚 En Ruta' :
+   item.status === 'completed' ? '✅ Completado' :
+   item.status}
+</span>
               </div>
 
               <div className="order-time">
