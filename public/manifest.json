@@ -1,8 +1,8 @@
 {
   "name": "Tortas Ahogadas Guadalajara",
-  "short_name": "Tortas GDL",
+  "short_name": "Tortas",
   "description": "Las mejores tortas ahogadas de la ciudad - Pedidos a domicilio",
-  "start_url": "/",
+  "start_url": "/?v=2",
   "display": "standalone",
   "background_color": "#c41e3a",
   "theme_color": "#c41e3a",
