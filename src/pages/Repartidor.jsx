@@ -44,7 +44,7 @@ function Repartidor() {
       snapshot.forEach((doc) => {
         const data = doc.data();
         // Filtrar pending y preparing en JavaScript
-        if (data.status === 'pending' || data.status === 'preparing') {
+        if (data.status === 'pending' || data.status === 'confirmed' || data.status === 'preparing') {
           orders.push({
             id: doc.id,
             ...data
