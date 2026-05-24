@@ -272,7 +272,7 @@ export const menuData = [
     description: 'Tostadas tradicionales de pata',
     price: 50,
     image: '/images/logo.jpg',
-    category: 'birria',
+    category: 'tostadas',
     available: true,
     preparationTime: 15
   },
