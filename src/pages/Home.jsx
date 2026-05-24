@@ -50,6 +50,16 @@ function Home() {
     }
   };
 
+  const scrollToReservations = () => {
+    const reservationsSection = document.getElementById('reservations-section');
+    if (reservationsSection) {
+      reservationsSection.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
+  };
+
   const getAvailableHours = (dateString) => {
     if (!dateString) return [];
     
@@ -200,6 +210,16 @@ function Home() {
         </div>
       </section>
 
+      {/* Botón para ir a reservaciones */}
+      <div className="reservation-cta">
+        <button 
+          className="btn-reserve-now"
+          onClick={scrollToReservations}
+        >
+          📅 Hacer mi Reservación
+        </button>
+      </div>
+
       <section className="info-section">
         <div className="container">
           <div className="info-cards">
@@ -222,51 +242,6 @@ function Home() {
               <h3>Horario</h3>
               <p>{restaurantInfo.hours}</p>
             </div>
-          </div>
-
-          <div className="reservation-card">
-            <div className="card-icon">📅</div>
-            <h2>Hacer una Reservación</h2>
-            
-            <form onSubmit={handleReservationSubmit} className="reservation-form">
-              <div className="form-group">
-                <label>📅 Fecha</label>
-                <input type="date" name="date" value={reservationData.date} onChange={handleReservationChange} min={new Date().toISOString().split('T')[0]} required />
-              </div>
-              
-              <div className="form-group">
-                <label>🕐 Hora</label>
-                <select name="time" value={reservationData.time} onChange={handleReservationChange} required disabled={!reservationData.date}>
-                  <option value="">{!reservationData.date ? 'Primero selecciona una fecha' : getAvailableHours(reservationData.date).length === 0 ? 'Cerrado este día (Lunes/Martes)' : 'Selecciona una hora'}</option>
-                  {getAvailableHours(reservationData.date).map(hour => (
-                    <option key={hour.value} value={hour.value}>{hour.label}</option>
-                  ))}
-                </select>
-              </div>
-              
-              <div className="form-group">
-                <label>👥 Número de personas</label>
-                <select name="guests" value={reservationData.guests} onChange={handleReservationChange} required>
-                  {[1,2,3,4,5,6,7,8,9,10,12,15,20].map(num => (
-                    <option key={num} value={num}>{num} {num === 1 ? 'persona' : 'personas'}</option>
-                  ))}
-                </select>
-              </div>
-              
-              <div className="form-group">
-                <label>👤 Tu nombre</label>
-                <input type="text" name="name" value={reservationData.name} onChange={handleReservationChange} placeholder="Juan Pérez" required />
-              </div>
-              
-              <div className="form-group">
-                <label>📱 Teléfono (WhatsApp)</label>
-                <input type="tel" name="phone" value={reservationData.phone} onChange={handleReservationChange} placeholder="5512345678" pattern="[0-9]{10}" required />
-              </div>
-              
-              <button type="submit" className="reservation-btn" disabled={isSubmittingReservation}>
-                {isSubmittingReservation ? '⏳ Enviando...' : '🍽️ Reservar Mesa'}
-              </button>
-            </form>
           </div>
 
           <div className="delivery-info">
@@ -315,6 +290,56 @@ function Home() {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Sistema de Reservaciones - Movido al final */}
+      <section id="reservations-section" className="info-section" style={{ paddingTop: '3rem' }}>
+        <div className="container">
+          <div className="reservation-card">
+            <div className="card-icon">📅</div>
+            <h2>Hacer una Reservación</h2>
+            
+            <form onSubmit={handleReservationSubmit} className="reservation-form">
+              <div className="form-group">
+                <label>📅 Fecha</label>
+                <input type="date" name="date" value={reservationData.date} onChange={handleReservationChange} min={new Date().toISOString().split('T')[0]} required />
+              </div>
+              
+              <div className="form-group">
+                <label>🕐 Hora</label>
+                <select name="time" value={reservationData.time} onChange={handleReservationChange} required disabled={!reservationData.date}>
+                  <option value="">{!reservationData.date ? 'Primero selecciona una fecha' : getAvailableHours(reservationData.date).length === 0 ? 'Cerrado este día (Lunes/Martes)' : 'Selecciona una hora'}</option>
+                  {getAvailableHours(reservationData.date).map(hour => (
+                    <option key={hour.value} value={hour.value}>{hour.label}</option>
+                  ))}
+                </select>
+              </div>
+              
+              <div className="form-group">
+                <label>👥 Número de personas</label>
+                <select name="guests" value={reservationData.guests} onChange={handleReservationChange} required>
+                  {[1,2,3,4,5,6,7,8,9,10,12,15,20].map(num => (
+                    <option key={num} value={num}>{num} {num === 1 ? 'persona' : 'personas'}</option>
+                  ))}
+                </select>
+              </div>
+              
+              <div className="form-group">
+                <label>👤 Tu nombre</label>
+                <input type="text" name="name" value={reservationData.name} onChange={handleReservationChange} placeholder="Juan Pérez" required />
+              </div>
+              
+              <div className="form-group">
+                <label>📱 Teléfono (WhatsApp)</label>
+                <input type="tel" name="phone" value={reservationData.phone} onChange={handleReservationChange} placeholder="5512345678" pattern="[0-9]{10}" required />
+              </div>
+              
+              <button type="submit" className="reservation-btn" disabled={isSubmittingReservation}>
+                {isSubmittingReservation ? '⏳ Enviando...' : '🍽️ Reservar Mesa'}
+              </button>
+            </form>
           </div>
         </div>
       </section>
