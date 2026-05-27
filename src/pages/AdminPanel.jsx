@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { collection, query, orderBy, onSnapshot, updateDoc, doc } from 'firebase/firestore';
 import { db } from '../firebase';
 import '../styles/AdminPanel.css';
@@ -7,8 +7,8 @@ function AdminPanel() {
   const [orders, setOrders] = useState([]);
   const [filter, setFilter] = useState('all');
   const [reservations, setReservations] = useState([]);
-  const [previousOrdersCount, setPreviousOrdersCount] = useState(0);
-  const [previousReservationsCount, setPreviousReservationsCount] = useState(0);
+  const previousOrdersCount = useRef(0);
+  const previousReservationsCount = useRef(0);
   const [notificationPermission, setNotificationPermission] = useState('default');
 
   // Reproducir sonido de alerta con vibración como respaldo
@@ -99,19 +99,19 @@ function AdminPanel() {
           ...doc.data()
         });
       });
-      
-      if (previousOrdersCount > 0 && ordersData.length > previousOrdersCount) {
+
+      if (previousOrdersCount.current > 0 && ordersData.length > previousOrdersCount.current) {
         const newOrder = ordersData[0];
         playSound('order');
         showNotification('order', newOrder);
       }
-      
-      setPreviousOrdersCount(ordersData.length);
+
+      previousOrdersCount.current = ordersData.length;
       setOrders(ordersData);
     });
 
     return () => unsubscribe();
-  }, [previousOrdersCount]);
+  }, []);
 
   // Escuchar reservaciones en tiempo real
   useEffect(() => {
@@ -125,19 +125,19 @@ function AdminPanel() {
           ...doc.data()
         });
       });
-      
-      if (previousReservationsCount > 0 && reservationsData.length > previousReservationsCount) {
+
+      if (previousReservationsCount.current > 0 && reservationsData.length > previousReservationsCount.current) {
         const newReservation = reservationsData[0];
         playSound('reservation');
         showNotification('reservation', newReservation);
       }
-      
-      setPreviousReservationsCount(reservationsData.length);
+
+      previousReservationsCount.current = reservationsData.length;
       setReservations(reservationsData);
     });
 
     return () => unsubscribe();
-  }, [previousReservationsCount]);
+  }, []);
 
   // NUEVA FUNCIÓN: Confirmar pedido (envía WhatsApp de confirmación)
   const confirmOrder = async (orderId) => {

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { collection, query, orderBy, onSnapshot, where, updateDoc, doc } from 'firebase/firestore';
 import { db } from '../firebase';
 import '../styles/Repartidor.css';
@@ -6,7 +6,7 @@ import '../styles/Repartidor.css';
 function Repartidor() {
     console.log('🚀 REPARTIDOR VERSION 2.0 - SIN INDICE');
   const [deliveryOrders, setDeliveryOrders] = useState([]);
-  const [previousCount, setPreviousCount] = useState(0);
+  const previousCount = useRef(0);
 
   // Alerta con vibración
   const alertNewOrder = () => {
@@ -53,16 +53,16 @@ function Repartidor() {
       });
       
       // Alerta si hay nuevo pedido
-      if (previousCount > 0 && orders.length > previousCount) {
+      if (previousCount.current > 0 && orders.length > previousCount.current) {
         alertNewOrder();
       }
-      
-      setPreviousCount(orders.length);
+
+      previousCount.current = orders.length;
       setDeliveryOrders(orders);
     });
 
     return () => unsubscribe();
-  }, [previousCount]);
+  }, []);
 
   const openInMaps = (address, colonia) => {
     const fullAddress = `${address}, ${colonia}, Cuautitlán Izcalli, Estado de México`;
