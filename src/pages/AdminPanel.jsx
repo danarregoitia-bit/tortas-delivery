@@ -177,7 +177,7 @@ ${order.delivery.type === 'delivery'
   : `🏃 Para llevar\n\n⏰ Listo en 30-45 minutos`
 }
 
-Te avisaremos cuando tu pedido esté listo para recoger. 🌶️
+Te avisaremos cuando tu pedido esté listo. 🌶️
 
 Gracias por tu preferencia,
 Tortas Ahogadas Guadalajara`;
