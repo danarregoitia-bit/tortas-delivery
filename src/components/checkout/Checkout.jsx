@@ -36,12 +36,10 @@ const customerIcon = new L.Icon({
   shadowSize: [41, 41]
 });
 
-const SPECIAL_COLONIES = ['arcos de la hacienda', 'san isidro', 'parques', 'cumbria'];
-
 function calcDeliveryCost(distanceKm, coloniaName) {
   const lower = (coloniaName || '').toLowerCase();
-  if (SPECIAL_COLONIES.some(c => lower.includes(c))) return 35;
-  return Math.max(35, Math.round(distanceKm * 12));
+  if (lower.includes('ensueños') || lower.includes('ensuenos')) return 25;
+  return Math.round(25 + 12 * distanceKm);
 }
 
 // Componente para capturar clicks en el mapa
@@ -88,23 +86,29 @@ function Checkout() {
 
   const [searchAddress, setSearchAddress] = useState('');
   const [isSearching, setIsSearching] = useState(false);
+  const [actualDistanceKm, setActualDistanceKm] = useState(0);
 
   // Calcular costo automáticamente cuando cambia la ubicación o la colonia
   useEffect(() => {
     if (location.lat && location.lng && formData.deliveryType === 'delivery') {
-      const distanceFromCenter = calculateDistance(
-        restaurantLocation.lat,
-        restaurantLocation.lng,
-        location.lat,
-        location.lng
-      );
+      const updateDeliveryCost = async () => {
+        let distKm = calculateDistance(
+          restaurantLocation.lat,
+          restaurantLocation.lng,
+          location.lat,
+          location.lng
+        );
+        try {
+          const roadKm = await getRoadDistanceKm(location.lat, location.lng);
+          if (roadKm !== null) distKm = roadKm;
+        } catch (_) {}
 
-      const coloniaParaCosto = formData.colonia || detectedColonia;
-      const calculatedCost = calcDeliveryCost(distanceFromCenter, coloniaParaCosto);
-      const calculatedZone = `${distanceFromCenter.toFixed(1)} km`;
-
-      setDeliveryCost(calculatedCost);
-      setDeliveryZone(calculatedZone);
+        setActualDistanceKm(distKm);
+        const coloniaParaCosto = formData.colonia || detectedColonia;
+        setDeliveryCost(calcDeliveryCost(distKm, coloniaParaCosto));
+        setDeliveryZone(`${distKm.toFixed(1)} km`);
+      };
+      updateDeliveryCost();
     }
   }, [location.lat, location.lng, formData.deliveryType, formData.colonia, detectedColonia]);
 
@@ -125,6 +129,18 @@ function Checkout() {
       Math.sin(dLon/2) * Math.sin(dLon/2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
     return R * c;
+  };
+
+  // Obtener distancia real por carretera usando Distance Matrix API
+  const getRoadDistanceKm = async (destLat, destLng) => {
+    const response = await fetch(
+      `https://maps.googleapis.com/maps/api/distancematrix/json?origins=${restaurantLocation.lat},${restaurantLocation.lng}&destinations=${destLat},${destLng}&key=${import.meta.env.VITE_GOOGLE_MAPS_API_KEY}&units=metric&region=mx`
+    );
+    const data = await response.json();
+    if (data.status === 'OK' && data.rows?.[0]?.elements?.[0]?.status === 'OK') {
+      return data.rows[0].elements[0].distance.value / 1000;
+    }
+    return null;
   };
 
   // Geocodificar dirección usando Google Maps Geocoding API
@@ -177,19 +193,27 @@ function Checkout() {
             }
           }
 
+          // Obtener distancia real por carretera
+          let finalDistanceKm = distanceFromCenter;
+          try {
+            const roadKm = await getRoadDistanceKm(resultLat, resultLng);
+            if (roadKm !== null) finalDistanceKm = roadKm;
+          } catch (_) {}
+
           setDetectedColonia(coloniaName);
+          setActualDistanceKm(finalDistanceKm);
           setLocation({
             lat: resultLat,
             lng: resultLng
           });
 
           const coloniaParaCosto = formData.colonia || coloniaName;
-          const calculatedCost = calcDeliveryCost(distanceFromCenter, coloniaParaCosto);
+          const calculatedCost = calcDeliveryCost(finalDistanceKm, coloniaParaCosto);
 
           setDeliveryCost(calculatedCost);
-          setDeliveryZone(`${distanceFromCenter.toFixed(1)} km`);
+          setDeliveryZone(`${finalDistanceKm.toFixed(1)} km`);
 
-          alert(`✅ ¡Ubicación encontrada!\n\n📍 ${result.formatted_address}${coloniaName ? `\n🏘️ Colonia: ${coloniaName}` : ''}\n📏 Distancia: ${distanceFromCenter.toFixed(1)} km\n💰 Costo de envío: $${calculatedCost}\n\nVerifica el marcador verde en el mapa y ajusta si es necesario haciendo clic.`);
+          alert(`✅ ¡Ubicación encontrada!\n\n📍 ${result.formatted_address}${coloniaName ? `\n🏘️ Colonia: ${coloniaName}` : ''}\n📏 Distancia: ${finalDistanceKm.toFixed(1)} km\n💰 Costo de envío: $${calculatedCost}\n\nVerifica el marcador verde en el mapa y ajusta si es necesario haciendo clic.`);
         } else {
           setError(`⚠️ La dirección encontrada está muy lejos de Cuautitlán Izcalli (${distanceFromCenter.toFixed(1)} km).\n\n📍 Zona máxima: 50 km desde Cuautitlán Izcalli`);
           alert(`⚠️ La dirección encontrada está muy lejos de Cuautitlán Izcalli (${distanceFromCenter.toFixed(1)} km).\n\n💡 Intenta con:\n• Solo el nombre de tu colonia\n• Una calle principal conocida\n• O haz clic directo en el mapa`);
@@ -212,15 +236,15 @@ function Checkout() {
 
   let deliveryFee = 0;
   let distance = 0;
-  
+
   if (formData.deliveryType === 'delivery' && location.lat && location.lng) {
-    distance = calculateDistance(
+    distance = actualDistanceKm || calculateDistance(
       restaurantLocation.lat,
       restaurantLocation.lng,
       location.lat,
       location.lng
     );
-    
+
     deliveryFee = deliveryCost;
   }
 
