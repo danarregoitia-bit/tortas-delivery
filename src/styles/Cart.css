@@ -194,6 +194,12 @@
   font-weight: bold;
 }
 
+.summary-line .delivery-pending {
+  font-size: 0.82rem;
+  color: #888;
+  font-style: italic;
+}
+
 .promo-message {
   background: #fff3e0;
   padding: 12px;

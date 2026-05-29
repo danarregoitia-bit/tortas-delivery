@@ -527,6 +527,12 @@ Ya está ocupado. ¿Te gustaría otro horario? Contáctanos y te ayudamos a enco
 
                 <div className="order-total">
                   <strong>Total: ${item.payment.total}</strong>
+                  {item.delivery.type === 'delivery' && (
+                    <div className="order-total-breakdown">
+                      <span>Subtotal productos: ${item.payment.subtotal ?? (item.payment.total - (item.payment.deliveryFee ?? 0))}</span>
+                      <span>Envío: {item.payment.deliveryFee === 0 ? '¡GRATIS!' : `$${item.payment.deliveryFee ?? 0}`}</span>
+                    </div>
+                  )}
                 </div>
               </div>
 

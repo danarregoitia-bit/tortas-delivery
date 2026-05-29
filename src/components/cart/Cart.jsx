@@ -9,8 +9,6 @@ function Cart() {
   const [notes, setNotes] = useState('');
 
   const subtotal = getTotal();
-  const deliveryFee = subtotal >= 1000 ? 0 : 40;
-  const total = subtotal + deliveryFee;
 
   const handleCheckout = () => {
     // Guardar las notas en localStorage para usarlas en el checkout
@@ -98,20 +96,12 @@ function Cart() {
 
             <div className="summary-line">
               <span>Envío:</span>
-              <span className={deliveryFee === 0 ? 'free' : ''}>
-                {deliveryFee === 0 ? '¡GRATIS!' : `$${deliveryFee}`}
-              </span>
+              <span className="delivery-pending">Se calcula al ingresar tu dirección</span>
             </div>
-
-            {subtotal < 1000 && subtotal > 0 && (
-              <div className="promo-message">
-                💡 Agrega ${1000 - subtotal} más para envío gratis
-              </div>
-            )}
 
             <div className="summary-line total">
               <span>Total:</span>
-              <span>${total}</span>
+              <span>${subtotal}</span>
             </div>
 
             <button 
