@@ -84,6 +84,7 @@ function Checkout() {
   const [deliveryCost, setDeliveryCost] = useState(0);
   const [deliveryZone, setDeliveryZone] = useState('');
   const [error, setError] = useState('');
+  const [detectedColonia, setDetectedColonia] = useState('');
 
   const [searchAddress, setSearchAddress] = useState('');
   const [isSearching, setIsSearching] = useState(false);
@@ -98,13 +99,14 @@ function Checkout() {
         location.lng
       );
 
-      const calculatedCost = calcDeliveryCost(distanceFromCenter, formData.colonia);
+      const coloniaParaCosto = formData.colonia || detectedColonia;
+      const calculatedCost = calcDeliveryCost(distanceFromCenter, coloniaParaCosto);
       const calculatedZone = `${distanceFromCenter.toFixed(1)} km`;
 
       setDeliveryCost(calculatedCost);
       setDeliveryZone(calculatedZone);
     }
-  }, [location.lat, location.lng, formData.deliveryType, formData.colonia]);
+  }, [location.lat, location.lng, formData.deliveryType, formData.colonia, detectedColonia]);
 
   // Coordenadas del restaurante
   const restaurantLocation = {
@@ -158,13 +160,24 @@ function Checkout() {
         
         if (distanceFromCenter <= 50) {
           let coloniaName = '';
+          // Primero buscar sublocality_level_1 (colonia exacta en México)
           for (const component of result.address_components) {
-            if (component.types.includes('sublocality') || component.types.includes('neighborhood')) {
+            if (component.types.includes('sublocality_level_1')) {
               coloniaName = component.long_name;
               break;
             }
           }
+          // Fallback: cualquier sublocality o neighborhood
+          if (!coloniaName) {
+            for (const component of result.address_components) {
+              if (component.types.includes('sublocality') || component.types.includes('neighborhood')) {
+                coloniaName = component.long_name;
+                break;
+              }
+            }
+          }
 
+          setDetectedColonia(coloniaName);
           setLocation({
             lat: resultLat,
             lng: resultLng
