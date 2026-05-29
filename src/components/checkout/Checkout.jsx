@@ -632,14 +632,6 @@ ${orderNotes ? `📝 Notas: ${orderNotes}\n\n` : ''}⏱️ Tiempo estimado: 30-4
                 <span>${!location.lat && formData.deliveryType === 'delivery' ? subtotal : total}</span>
               </div>
             </div>
-
-            <div className="delivery-zones-info">
-              <h3>📦 Tarifas de Envío</h3>
-              <ul>
-                <li>🏘️ Arcos de la Hacienda, San Isidro, Parques, Cumbria: <strong>$35</strong></li>
-                <li>📍 Resto de colonias: <strong>$12/km</strong> (mínimo $35)</li>
-              </ul>
-            </div>
           </div>
         </div>
       </div>
