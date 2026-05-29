@@ -567,15 +567,15 @@ ${orderNotes ? `📝 Notas: ${orderNotes}\n\n` : ''}⏱️ Tiempo estimado: 30-4
                   {formData.deliveryType === 'delivery' && (
                     <div className="summary-line">
                       <span>Envío:</span>
-                      <span className={deliveryFee === 0 ? 'free' : ''}>
-                        {!location.lat ? 'Calculando...' : deliveryFee === 0 ? '¡GRATIS! 🎉' : `$${deliveryFee}`}
+                      <span className={!location.lat ? 'delivery-pending' : deliveryFee === 0 ? 'free' : ''}>
+                        {!location.lat ? 'Se calcula al ingresar tu dirección' : deliveryFee === 0 ? '¡GRATIS! 🎉' : `$${deliveryFee}`}
                       </span>
                     </div>
                   )}
 
                   <div className="summary-line total">
                     <span>Total:</span>
-                    <span>${total}</span>
+                    <span>${!location.lat && formData.deliveryType === 'delivery' ? subtotal : total}</span>
                   </div>
                 </div>
               </section>
@@ -635,15 +635,15 @@ ${orderNotes ? `📝 Notas: ${orderNotes}\n\n` : ''}⏱️ Tiempo estimado: 30-4
               {formData.deliveryType === 'delivery' && (
                 <div className="summary-line">
                   <span>Envío:</span>
-                  <span className={deliveryFee === 0 ? 'free' : ''}>
-                    {!location.lat ? 'Calculando...' : deliveryFee === 0 ? '¡GRATIS! 🎉' : `$${deliveryFee}`}
+                  <span className={!location.lat ? 'delivery-pending' : deliveryFee === 0 ? 'free' : ''}>
+                    {!location.lat ? 'Se calcula al ingresar tu dirección' : deliveryFee === 0 ? '¡GRATIS! 🎉' : `$${deliveryFee}`}
                   </span>
                 </div>
               )}
 
               <div className="summary-line total">
                 <span>Total:</span>
-                <span>${total}</span>
+                <span>${!location.lat && formData.deliveryType === 'delivery' ? subtotal : total}</span>
               </div>
             </div>
 

@@ -426,6 +426,13 @@
   font-weight: 700;
 }
 
+.summary-totals-mobile .delivery-pending,
+.summary-line .delivery-pending {
+  font-size: 0.82rem;
+  color: #888;
+  font-style: italic;
+}
+
 /* Resumen del pedido - Sidebar */
 .order-summary-checkout {
   background: white;
