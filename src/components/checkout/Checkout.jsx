@@ -36,6 +36,14 @@ const customerIcon = new L.Icon({
   shadowSize: [41, 41]
 });
 
+const SPECIAL_COLONIES = ['arcos de la hacienda', 'san isidro', 'parques', 'cumbria'];
+
+function calcDeliveryCost(distanceKm, coloniaName) {
+  const lower = (coloniaName || '').toLowerCase();
+  if (SPECIAL_COLONIES.some(c => lower.includes(c))) return 35;
+  return Math.max(35, Math.round(distanceKm * 12));
+}
+
 // Componente para capturar clicks en el mapa
 function LocationMarker({ position, setPosition }) {
   useMapEvents({
@@ -80,7 +88,7 @@ function Checkout() {
   const [searchAddress, setSearchAddress] = useState('');
   const [isSearching, setIsSearching] = useState(false);
 
-  // Calcular costo automáticamente cuando cambia la ubicación
+  // Calcular costo automáticamente cuando cambia la ubicación o la colonia
   useEffect(() => {
     if (location.lat && location.lng && formData.deliveryType === 'delivery') {
       const distanceFromCenter = calculateDistance(
@@ -90,30 +98,13 @@ function Checkout() {
         location.lng
       );
 
-      let calculatedCost;
-      let calculatedZone;
-
-      if (distanceFromCenter <= 2) {
-        calculatedCost = 25;
-        calculatedZone = '0.8-2 km';
-      } else if (distanceFromCenter <= 4) {
-        calculatedCost = 40;
-        calculatedZone = '2-4 km';
-      } else if (distanceFromCenter <= 8) {
-        calculatedCost = 80;
-        calculatedZone = '4-8 km';
-      } else if (distanceFromCenter <= 15) {
-        calculatedCost = 130;
-        calculatedZone = '8-15 km';
-      } else {
-        calculatedCost = 0;
-        calculatedZone = 'Fuera de cobertura';
-      }
+      const calculatedCost = calcDeliveryCost(distanceFromCenter, formData.colonia);
+      const calculatedZone = `${distanceFromCenter.toFixed(1)} km`;
 
       setDeliveryCost(calculatedCost);
       setDeliveryZone(calculatedZone);
     }
-  }, [location.lat, location.lng, formData.deliveryType]);
+  }, [location.lat, location.lng, formData.deliveryType, formData.colonia]);
 
   // Coordenadas del restaurante
   const restaurantLocation = {
@@ -166,34 +157,6 @@ function Checkout() {
         );
         
         if (distanceFromCenter <= 50) {
-          setLocation({
-            lat: resultLat,
-            lng: resultLng
-          });
-          
-          let calculatedCost;
-          let calculatedZone;
-
-          if (distanceFromCenter <= 2) {
-            calculatedCost = 25;
-            calculatedZone = '0.8-2 km';
-          } else if (distanceFromCenter <= 4) {
-            calculatedCost = 40;
-            calculatedZone = '2-4 km';
-          } else if (distanceFromCenter <= 8) {
-            calculatedCost = 80;
-            calculatedZone = '4-8 km';
-          } else if (distanceFromCenter <= 15) {
-            calculatedCost = 130;
-            calculatedZone = '8-15 km';
-          } else {
-            calculatedCost = 0;
-            calculatedZone = 'Fuera de cobertura';
-          }
-
-          setDeliveryCost(calculatedCost);
-          setDeliveryZone(calculatedZone);
-          
           let coloniaName = '';
           for (const component of result.address_components) {
             if (component.types.includes('sublocality') || component.types.includes('neighborhood')) {
@@ -201,7 +164,18 @@ function Checkout() {
               break;
             }
           }
-          
+
+          setLocation({
+            lat: resultLat,
+            lng: resultLng
+          });
+
+          const coloniaParaCosto = formData.colonia || coloniaName;
+          const calculatedCost = calcDeliveryCost(distanceFromCenter, coloniaParaCosto);
+
+          setDeliveryCost(calculatedCost);
+          setDeliveryZone(`${distanceFromCenter.toFixed(1)} km`);
+
           alert(`✅ ¡Ubicación encontrada!\n\n📍 ${result.formatted_address}${coloniaName ? `\n🏘️ Colonia: ${coloniaName}` : ''}\n📏 Distancia: ${distanceFromCenter.toFixed(1)} km\n💰 Costo de envío: $${calculatedCost}\n\nVerifica el marcador verde en el mapa y ajusta si es necesario haciendo clic.`);
         } else {
           setError(`⚠️ La dirección encontrada está muy lejos de Cuautitlán Izcalli (${distanceFromCenter.toFixed(1)} km).\n\n📍 Zona máxima: 50 km desde Cuautitlán Izcalli`);
@@ -512,7 +486,6 @@ ${orderNotes ? `📝 Notas: ${orderNotes}\n\n` : ''}⏱️ Tiempo estimado: 30-4
                     {location.lat && distance > 0 && (
                       <div className="distance-info">
                         <p>📏 Distancia: <strong>{distance.toFixed(1)} km</strong></p>
-                        <p>📦 Zona: <strong>{deliveryZone}</strong></p>
                         <p>💰 Costo de envío: <strong>${deliveryFee}</strong></p>
                       </div>
                     )}
@@ -650,10 +623,8 @@ ${orderNotes ? `📝 Notas: ${orderNotes}\n\n` : ''}⏱️ Tiempo estimado: 30-4
             <div className="delivery-zones-info">
               <h3>📦 Tarifas de Envío</h3>
               <ul>
-                <li>🔵 0.8-2 km: <strong>$25</strong></li>
-                <li>🟡 2-4 km: <strong>$40</strong></li>
-                <li>🟠 4-8 km: <strong>$80</strong></li>
-                <li>🔴 8-15 km: <strong>$130</strong></li>
+                <li>🏘️ Arcos de la Hacienda, San Isidro, Parques, Cumbria: <strong>$35</strong></li>
+                <li>📍 Resto de colonias: <strong>$12/km</strong> (mínimo $35)</li>
               </ul>
             </div>
           </div>
