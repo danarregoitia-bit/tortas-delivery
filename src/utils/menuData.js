@@ -396,7 +396,8 @@ export const menuData = [
     { name: "Pepino", price: 0 },
     { name: "Pepino Limón", price: 0 },
     { name: "Horchata", price: 0 },
-    { name: "Jamaica", price: 0 }
+    { name: "Jamaica", price: 0 },
+    { name: "Limón", price: 0 }
   ]
 },
 {
@@ -413,26 +414,9 @@ export const menuData = [
     { name: "Pepino", price: 0 },
     { name: "Pepino Limón", price: 0 },
     { name: "Horchata", price: 0 },
-    { name: "Jamaica", price: 0 }
+    { name: "Jamaica", price: 0 },
+    { name: "Limón", price: 0 }
   ]
-},
-{
-  id: 'agua-limon-medio-litro',
-  name: "Agua de Limón ½ Litro",
-  price: 28,
-  category: "Bebidas",
-  image: "https://images.unsplash.com/photo-1546548970-71785318a17b?w=400",
-  description: "Agua de limón natural",
-  available: true,
-},
-{
-  id: 'agua-limon-litro',
-  name: "Agua de Limón 1 Litro",
-  price: 45,
-  category: "Bebidas",
-  image: "https://images.unsplash.com/photo-1546548970-71785318a17b?w=400",
-  description: "Agua de limón natural",
-  available: true,
 },
 
 
