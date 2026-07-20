@@ -162,7 +162,7 @@ export const menuData = [
     id: 'cecina-sabana',
     name: 'Cecina Sabana',
     description: 'Con guarnición',
-    price: 130,
+    price: 150,
     image: '/images/cecina.jpg',
     category: 'cecina',
     available: true,
@@ -399,6 +399,7 @@ export const menuData = [
     { name: "Jamaica", price: 0 },
     { name: "Limón", price: 0 }
   ]
+  
 },
 {
   id: 'agua-fresca-litro',
