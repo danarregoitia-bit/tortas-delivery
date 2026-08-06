@@ -50,7 +50,7 @@ export const menuData = [
     id: 'media-orden-sencillos',
     name: '½ Orden Tacos Sencillos',
     description: '3 tacos dorados sencillos',
-    price: 24,
+    price: 25,
     image: '/images/dorados-carne.jpg',
     category: 'tacos-dorados',
     available: true,
