@@ -115,8 +115,8 @@ function Checkout() {
 
   // Coordenadas del restaurante
   const restaurantLocation = {
-    lat: 19.6891,
-    lng: -99.2063
+    lat: 19.659376156078157,
+    lng: -99.21383300563916
   };
 
   // Calcular distancia en kilómetros (fórmula Haversine)
