@@ -39,7 +39,8 @@ const customerIcon = new L.Icon({
 function calcDeliveryCost(distanceKm, coloniaName) {
   const lower = (coloniaName || '').toLowerCase();
   if (lower.includes('ensueños') || lower.includes('ensuenos')) return 20;
-  return Math.round(20 + 10 * distanceKm);
+  if (distanceKm <= 1) return 20;
+  return Math.round(20 + 10 * (distanceKm - 1));
 }
 
 // Componente para capturar clicks en el mapa
@@ -114,8 +115,8 @@ function Checkout() {
 
   // Coordenadas del restaurante
   const restaurantLocation = {
-    lat: 19.659390,
-    lng: -99.214017
+    lat: 19.6891,
+    lng: -99.2063
   };
 
   // Calcular distancia en kilómetros (fórmula Haversine)
