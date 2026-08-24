@@ -38,8 +38,8 @@ const customerIcon = new L.Icon({
 
 function calcDeliveryCost(distanceKm, coloniaName) {
   const lower = (coloniaName || '').toLowerCase();
-  if (lower.includes('ensueños') || lower.includes('ensuenos')) return 25;
-  return Math.round(25 + 15 * distanceKm);
+  if (lower.includes('ensueños') || lower.includes('ensuenos')) return 20;
+  return Math.round(20 + 10 * distanceKm);
 }
 
 // Componente para capturar clicks en el mapa
