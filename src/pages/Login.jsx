@@ -29,8 +29,10 @@ function Login() {
       await signInWithEmailAndPassword(auth, email.trim(), password);
       navigate(redirectTo, { replace: true });
     } catch (err) {
-      console.log('Error al iniciar sesión:', err);
-      setError('Correo o contraseña incorrectos');
+      console.error('Error al iniciar sesión - code:', err.code);
+      console.error('Error al iniciar sesión - message:', err.message);
+      console.error('Error al iniciar sesión - objeto completo:', err);
+      setError(`Error: ${err.code || err.message}`);
     } finally {
       setLoading(false);
     }
