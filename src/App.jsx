@@ -4,6 +4,8 @@ import Cart from './components/cart/Cart';
 import Checkout from './components/checkout/Checkout';
 import AdminPanel from './pages/AdminPanel';  // ← ESTA LÍNEA ES NUEVA
 import Repartidor from './pages/Repartidor';
+import Login from './pages/Login';
+import PrivateRoute from './components/auth/PrivateRoute';
 import './index.css';
 
 function App() {
@@ -13,7 +15,8 @@ function App() {
     <Route path="/" element={<Home />} />
     <Route path="/cart" element={<Cart />} />
     <Route path="/checkout" element={<Checkout />} />
-    <Route path="/admin" element={<AdminPanel />} />
+    <Route path="/login" element={<Login />} />
+    <Route path="/admin" element={<PrivateRoute><AdminPanel /></PrivateRoute>} />
     <Route path="/repartidor" element={<Repartidor />} />
   </Routes>
 </BrowserRouter>

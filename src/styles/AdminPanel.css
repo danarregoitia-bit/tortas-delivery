@@ -498,3 +498,29 @@
   font-size: 0.9rem;
   color: #999;
 }
+.admin-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.admin-title-row h1 {
+  margin: 0;
+}
+
+.btn-logout {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  background: #e74c3c;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-logout:hover {
+  background: #c0392b;
+}

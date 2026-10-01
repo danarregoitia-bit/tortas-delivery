@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { collection, query, orderBy, onSnapshot, updateDoc, doc } from 'firebase/firestore';
-import { db } from '../firebase';
+import { signOut } from 'firebase/auth';
+import { db, auth } from '../firebase';
 import '../styles/AdminPanel.css';
 
 function AdminPanel() {
@@ -330,10 +331,22 @@ Ya está ocupado. ¿Te gustaría otro horario? Contáctanos y te ayudamos a enco
   const todayCompletedOrders = todayOrders.filter(o => o.status === 'completed');
   const todayReservations = reservations.filter(r => isToday(r.createdAt));
 
+  // Cerrar sesión de Firebase Auth (PrivateRoute redirige a /login)
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+    } catch (error) {
+      console.log('Error al cerrar sesión:', error);
+    }
+  };
+
   return (
     <div className="admin-panel">
       <div className="admin-header">
-        <h1>📊 Panel de Administración</h1>
+        <div className="admin-title-row">
+          <h1>📊 Panel de Administración</h1>
+          <button className="btn-logout" onClick={handleLogout}>🚪 Cerrar sesión</button>
+        </div>
         <div className="admin-stats">
           <div className="stat-card">
             <span className="stat-number">{todayOrders.length}</span>
