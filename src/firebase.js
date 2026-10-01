@@ -3,7 +3,7 @@ import { getFirestore } from "firebase/firestore";
 import { getAuth } from "firebase/auth";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBMPUR1SxffTQFhA6zbqv6fQjvKdWFQYF8",
+  apiKey: "AIzaSyBMPURiSxTfTQFh06zbqv6fQjvKdWFQYF8",
   authDomain: "tortas-delivery-3a908.firebaseapp.com",
   projectId: "tortas-delivery-3a908",
   storageBucket: "tortas-delivery-3a908.firebasestorage.app",
