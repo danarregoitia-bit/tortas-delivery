@@ -586,6 +586,10 @@ Ya está ocupado. ¿Te gustaría otro horario? Contáctanos y te ayudamos a enco
           );
         })}
       </div>
+      <footer style={{backgroundColor:'#000000',padding:'20px 0',textAlign:'center'}}>
+        <img src="/arregoitia-labs-logo.jpeg" alt="Arregoitia Labs" style={{height:'60px'}} />
+        <p style={{color:'#ffffff',margin:'10px 0 0 0'}}>© 2026 Arregoitia Labs. Todos los derechos reservados.</p>
+      </footer>
     </div>
   );
 }
