@@ -8,7 +8,8 @@ import '../styles/Home.css';
 
 function Home() {
   const [selectedCategory, setSelectedCategory] = useState('all');
-  const { addItem, getTotalItems } = useCartStore();
+  const { addItem, getTotalItems, getTotal } = useCartStore();
+  const cartCount = getTotalItems();
   const navigate = useNavigate();
 
   const [selectedVariant, setSelectedVariant] = useState({});
@@ -190,15 +191,15 @@ function Home() {
   const filteredItems = selectedCategory === 'all' ? menuData : menuData.filter(item => item.category === selectedCategory);
 
   return (
-    <div className="home">
+    <div className={`home${cartCount > 0 ? ' has-floating-cart' : ''}`}>
       <header className="header">
         <div className="container">
           <div className="header-brand">
             <img src="/images/logo.jpg" alt="Logo" className="header-logo" />
             <h1>{restaurantInfo.name}</h1>
           </div>
-          <button className="cart-button" onClick={() => navigate('/cart')}>
-            🛒 Carrito ({getTotalItems()})
+          <button className="cart-button" onClick={() => navigate('/cart')} aria-label={`Carrito (${cartCount})`}>
+            🛒 <span className="cart-label">Carrito </span><span className="cart-count">({cartCount})</span>
           </button>
         </div>
       </header>
@@ -357,6 +358,12 @@ function Home() {
         <img src="/arregoitia-labs-logo.jpeg" alt="Arregoitia Labs" />
         <p>© 2026 Arregoitia Labs. Todos los derechos reservados.</p>
       </footer>
+
+      {cartCount > 0 && (
+        <button className="floating-cart" onClick={() => navigate('/cart')}>
+          🛒 Ver carrito ({cartCount} {cartCount === 1 ? 'producto' : 'productos'}) - ${getTotal()}
+        </button>
+      )}
     </div>
   );
 }
