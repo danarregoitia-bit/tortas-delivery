@@ -193,8 +193,8 @@ function Home() {
     <div className="home">
       <header className="header">
         <div className="container">
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '20px' }}>
-            <img src="/images/logo.jpg" alt="Logo" style={{ height: '80px', width: 'auto' }} />
+          <div className="header-brand">
+            <img src="/images/logo.jpg" alt="Logo" className="header-logo" />
             <h1>{restaurantInfo.name}</h1>
           </div>
           <button className="cart-button" onClick={() => navigate('/cart')}>
@@ -331,31 +331,31 @@ function Home() {
       </section>
 
       {showVariantModal && currentItem && (
-        <div style={{position:'fixed',top:0,left:0,right:0,bottom:0,backgroundColor:'rgba(0,0,0,0.5)',display:'flex',alignItems:'center',justifyContent:'center',zIndex:1000}} onClick={() => setShowVariantModal(false)}>
-          <div style={{backgroundColor:'white',padding:'30px',borderRadius:'10px',maxWidth:'400px',width:'90%'}} onClick={(e) => e.stopPropagation()}>
+        <div className="variant-modal-overlay" onClick={() => setShowVariantModal(false)}>
+          <div className="variant-modal" onClick={(e) => e.stopPropagation()}>
             <h3>{currentItem.name}</h3>
-            <p style={{color:'#666',marginBottom:'20px'}}>${currentItem.price}</p>
-            <div style={{marginBottom:'20px'}}>
-              <label style={{display:'block',fontWeight:'bold',marginBottom:'10px'}}>Selecciona el sabor:</label>
+            <p className="variant-modal-price">${currentItem.price}</p>
+            <div className="variant-modal-options">
+              <label className="variant-modal-title">Selecciona el sabor:</label>
               {currentItem.variants.map((variant) => (
-                <div key={variant.name} style={{marginBottom:'8px'}}>
-                  <label style={{display:'flex',alignItems:'center',cursor:'pointer'}}>
-                    <input type="radio" name="variant" value={variant.name} checked={selectedVariant === variant.name} onChange={(e) => setSelectedVariant(e.target.value)} style={{marginRight:'10px'}} />
+                <div key={variant.name}>
+                  <label className="variant-option">
+                    <input type="radio" name="variant" value={variant.name} checked={selectedVariant === variant.name} onChange={(e) => setSelectedVariant(e.target.value)} />
                     {variant.name}
                   </label>
                 </div>
               ))}
             </div>
-            <div style={{display:'flex',gap:'10px'}}>
-              <button onClick={confirmAddToCart} style={{flex:1,padding:'12px',backgroundColor:'#dc2626',color:'white',border:'none',borderRadius:'5px',cursor:'pointer',fontWeight:'bold'}}>Agregar al Carrito</button>
-              <button onClick={() => setShowVariantModal(false)} style={{flex:1,padding:'12px',backgroundColor:'#6b7280',color:'white',border:'1px solid #ddd',borderRadius:'5px',cursor:'pointer'}}>Cancelar</button>
+            <div className="variant-modal-actions">
+              <button onClick={confirmAddToCart} className="variant-modal-confirm">Agregar al Carrito</button>
+              <button onClick={() => setShowVariantModal(false)} className="variant-modal-cancel">Cancelar</button>
             </div>
           </div>
         </div>
       )}
-      <footer style={{backgroundColor:'#000000',padding:'20px 0',textAlign:'center'}}>
-        <img src="/arregoitia-labs-logo.jpeg" alt="Arregoitia Labs" style={{height:'60px'}} />
-        <p style={{color:'#ffffff',margin:'10px 0 0 0'}}>© 2026 Arregoitia Labs. Todos los derechos reservados.</p>
+      <footer className="home-footer">
+        <img src="/arregoitia-labs-logo.jpeg" alt="Arregoitia Labs" />
+        <p>© 2026 Arregoitia Labs. Todos los derechos reservados.</p>
       </footer>
     </div>
   );
