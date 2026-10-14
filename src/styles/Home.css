@@ -250,13 +250,28 @@
 .category-filter .container {
   display: flex;
   gap: 10px;
-  overflow-x: auto;
+  overflow-x: scroll;
   padding: 8px 0;
-  scrollbar-width: none;
+  scrollbar-width: thin;
+  scrollbar-color: #e63946 #2a2a2a;
 }
 
 .category-filter .container::-webkit-scrollbar {
-  display: none;
+  height: 6px;
+}
+
+.category-filter .container::-webkit-scrollbar-track {
+  background: #2a2a2a;
+  border-radius: 10px;
+}
+
+.category-filter .container::-webkit-scrollbar-thumb {
+  background: #e63946;
+  border-radius: 10px;
+}
+
+.category-filter .container::-webkit-scrollbar-thumb:hover {
+  background: #c1121f;
 }
 
 .category-filter button {
