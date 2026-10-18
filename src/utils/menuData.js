@@ -17,7 +17,7 @@ export const menuData = [
     name: 'Torta Ahogada de Camarón',
     description: 'Torta ahogada con camarones frescos',
     price: 95,
-    image: '/images/torta-camaron.jpg',
+    image: '/images/tortaahogada-camaron.jpg',
     category: 'tortas',
     available: true,
     preparationTime: 25
@@ -31,7 +31,7 @@ export const menuData = [
     name: 'Tacos Dorados Sencillos (6pz)',
     description: '6 tacos dorados sencillos',
     price: 50,
-    image: '/images/dorados-carne.jpg',
+    image: '/images/tacosdorados-sencillos.jpg',
     category: 'tacos-dorados',
     available: true,
     preparationTime: 15
@@ -41,7 +41,7 @@ export const menuData = [
     name: 'Tacos Dorados con Carne (6pz)',
     description: '6 tacos dorados con carne',
     price: 62,
-    image: '/images/dorados-ccarne.jpg',
+    image: '/images/tacosdorados-carne.jpg',
     category: 'tacos-dorados',
     available: true,
     preparationTime: 15
@@ -85,7 +85,7 @@ export const menuData = [
     name: 'Orden de Carnitas Picadas con Tomate',
     description: 'Orden completa de carnitas con tomate',
     price: 75,
-    image: '/images/logo.jpg',
+    image: '/images/carnitas-picadas.jpg',
     category: 'carnitas',
     available: true,
     preparationTime: 15
