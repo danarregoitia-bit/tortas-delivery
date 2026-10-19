@@ -149,7 +149,7 @@ export const menuData = [
     name: 'Carne en su Jugo - Consomé',
     description: 'Solo sábados y domingos',
     price: 30,
-    image: '/images/logo.jpg',
+    image: '/images/consomecarne-jugo.jpeg',
     category: 'carne-jugo',
     available: true,
     preparationTime: 10
@@ -163,7 +163,7 @@ export const menuData = [
     name: 'Cecina Sabana',
     description: 'Con guarnición',
     price: 150,
-    image: '/images/cecina.jpg',
+    image: '/images/cecina-sabana.jpeg',
     category: 'cecina',
     available: true,
     preparationTime: 25
@@ -173,7 +173,7 @@ export const menuData = [
     name: 'Cecina - Tacos (orden de 3)',
     description: 'Orden de 3 tacos de cecina',
     price: 140,
-    image: '/images/logo.jpg',
+    image: '/images/tacos-cecina.jpg',
     category: 'cecina',
     available: true,
     preparationTime: 20
@@ -221,7 +221,7 @@ export const menuData = [
     name: 'Birria - Consomé',
     description: 'Consomé de birria',
     price: 35,
-    image: '/images/logo.jpg',
+    image: '/images/consome-birria.jpeg',
     category: 'birria',
     available: true,
     preparationTime: 10
@@ -231,7 +231,7 @@ export const menuData = [
     name: 'Birria - Tacos (orden de 3)',
     description: 'Orden de 3 tacos de birria',
     price: 120,
-    image: '/images/logo.jpg',
+    image: '/images/tacos-birria.jpeg',
     category: 'birria',
     available: true,
     preparationTime: 20
@@ -241,7 +241,7 @@ export const menuData = [
     name: 'Quesabirria de Maíz',
     description: 'Quesadilla de birria con maíz',
     price: 60,
-    image: '/images/logo.jpg',
+    image: '/images/quesabirria-maizahogada.jpeg',
     category: 'birria',
     available: true,
     preparationTime: 15
@@ -271,7 +271,7 @@ export const menuData = [
     name: 'Tostadas de Pata',
     description: 'Tostadas tradicionales de pata',
     price: 50,
-    image: '/images/logo.jpg',
+    image: '/images/tostada-pata.jpeg',
     category: 'tostadas',
     available: true,
     preparationTime: 15
@@ -285,7 +285,7 @@ export const menuData = [
     name: 'Quesadilla de Maíz Sencilla',
     description: 'Quesadilla simple de maíz',
     price: 25,
-    image: '/images/logo.jpg',
+    image: '/images/quesadillamaiz-sencilla.jpeg',
     category: 'quesadillas-maiz',
     available: true,
     preparationTime: 10
@@ -295,7 +295,7 @@ export const menuData = [
     name: 'Quesadilla de Maíz con Carnitas',
     description: 'Quesadilla de maíz rellena de carnitas',
     price: 40,
-    image: '/images/logo.jpg',
+    image: '/images/quesadillamaiz-carne.jpeg',
     category: 'quesadillas-maiz',
     available: true,
     preparationTime: 12
@@ -319,7 +319,7 @@ export const menuData = [
     name: 'Quesadilla de Harina Sencilla',
     description: 'Quesadilla simple de harina',
     price: 45,
-    image: '/images/logo.jpg',
+    image: '/images/quesadillaharina-sencilla.jpeg',
     category: 'quesadillas-harina',
     available: true,
     preparationTime: 10
@@ -339,7 +339,7 @@ export const menuData = [
     name: 'Quesadilla de Harina con Camarón',
     description: 'Quesadilla de harina rellena de camarón',
     price: 112,
-    image: '/images/logo.jpg',
+    image: '/images/quesadillaharina-camaron.jpeg',
     category: 'quesadillas-harina',
     available: true,
     preparationTime: 15
@@ -429,7 +429,7 @@ export const menuData = [
     name: 'Arroz con Leche',
     description: 'Arroz con leche tradicional',
     price: 35,
-    image: '/images/arroz.jpg',
+    image: '/images/arroz-leche.jpeg',
     category: 'postres',
     available: true,
     preparationTime: 5
