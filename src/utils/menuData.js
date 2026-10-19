@@ -83,7 +83,7 @@ export const menuData = [
   {
     id: 'orden-carnitas-tomate',
     name: 'Orden de Carnitas Picadas con Tomate',
-    description: 'Orden completa de carnitas con tomate',
+    description: 'Orden completa de carnitas Ahogadas',
     price: 75,
     image: '/images/carnitas-picadas-tomate.jpeg',
     category: 'carnitas',
@@ -103,7 +103,7 @@ export const menuData = [
   {
     id: 'media-carnitas-tomate',
     name: '½ Orden Carnitas con Tomate',
-    description: 'Media orden de carnitas con tomate',
+    description: 'Media orden de carnitas Ahogadas',
     price: 40,
     image: '/images/carnitasmedia-picadas-tomate.jpeg',
     category: 'carnitas',
