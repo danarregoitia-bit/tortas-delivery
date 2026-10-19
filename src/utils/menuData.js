@@ -105,7 +105,7 @@ export const menuData = [
     name: '½ Orden Carnitas con Tomate',
     description: 'Media orden de carnitas con tomate',
     price: 40,
-    image: '/images/logo.jpg',
+    image: '/images/carnitasmedia-picadas-tomate.jpeg',
     category: 'carnitas',
     available: true,
     preparationTime: 10
