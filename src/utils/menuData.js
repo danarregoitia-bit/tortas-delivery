@@ -387,7 +387,7 @@ export const menuData = [
   name: "Agua Fresca ½ Litro",
   price: 28,
   category: "Bebidas",
-  image: "https://images.unsplash.com/photo-1546548970-71785318a17b?w=400",
+  image: "/images/aguas.jpg",
   description: "Aguas frescas naturales del día",
   available: true,
   variants: [
@@ -406,7 +406,7 @@ export const menuData = [
   name: "Agua Fresca Litro",
   price: 45,
   category: "Bebidas",
-  image: "https://images.unsplash.com/photo-1546548970-71785318a17b?w=400",
+  image: "/images/aguas.jpg",
   description: "Aguas frescas naturales del día",
   available: true,
   variants: [
