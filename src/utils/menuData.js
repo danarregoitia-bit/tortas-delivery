@@ -211,7 +211,7 @@ export const menuData = [
     name: 'Birria - Plato',
     description: 'Plato de birria tradicional',
     price: 120,
-    image: '/images/logo.jpg',
+    image: '/images/platobirriagrande.jpg',
     category: 'birria',
     available: true,
     preparationTime: 20
