@@ -479,7 +479,7 @@ export const menuData = [
     name: 'Volcán de Chocolate con Helado',
     description: 'Volcán de chocolate con bola de helado',
     price: 55,
-    image: '/images/volcan.jpg',
+    image: '/images/volcan-helado.jpeg',
     category: 'postres',
     available: true,
     preparationTime: 10
