@@ -251,7 +251,7 @@ export const menuData = [
     name: 'Quesabirria de Harina',
     description: 'Quesadilla de birria con harina',
     price: 78,
-    image: '/images/logo.jpg',
+    image: '/images/quesabirria-ahogada.jpeg',
     category: 'birria',
     available: true,
     preparationTime: 15
