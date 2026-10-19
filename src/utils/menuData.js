@@ -329,7 +329,7 @@ export const menuData = [
     name: 'Quesadilla de Harina con Carnitas',
     description: 'Quesadilla de harina rellena de carnitas',
     price: 70,
-    image: '/images/quesadilla-harinacarne.jpg',
+    image: '/images/quesadilla-harina-carneahogada.jpeg',
     category: 'quesadillas-harina',
     available: true,
     preparationTime: 12
