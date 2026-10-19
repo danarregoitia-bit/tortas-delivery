@@ -439,7 +439,7 @@ export const menuData = [
     name: 'Jericayas',
     description: 'Postre tradicional jericayas',
     price: 41,
-    image: '/images/jericaya.jpg',
+    image: '/images/jericaya.jpeg',
     category: 'postres',
     available: true,
     preparationTime: 5
