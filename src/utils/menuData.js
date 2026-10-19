@@ -469,7 +469,7 @@ export const menuData = [
     name: 'Volcán de Chocolate',
     description: 'Volcán de chocolate caliente',
     price: 45,
-    image: '/images/logo.jpg',
+    image: '/images/volcancho.jpeg',
     category: 'postres',
     available: true,
     preparationTime: 10
