@@ -115,7 +115,7 @@ export const menuData = [
     name: 'Taco Suave de Carnitas',
     description: 'Taco individual suave de carnitas',
     price: 30,
-    image: '/images/taco-carne.jpg',
+    image: '/images/tacosuave.jpg',
     category: 'carnitas',
     available: true,
     preparationTime: 5
