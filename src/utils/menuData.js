@@ -75,7 +75,7 @@ export const menuData = [
     name: 'Orden de Carnitas Picadas',
     description: 'Orden completa de carnitas picadas',
     price: 70,
-    image: '/images/logo.jpg',
+    image: '/images/carnitas-picadas.jpeg',
     category: 'carnitas',
     available: true,
     preparationTime: 15
@@ -85,7 +85,7 @@ export const menuData = [
     name: 'Orden de Carnitas Picadas con Tomate',
     description: 'Orden completa de carnitas con tomate',
     price: 75,
-    image: '/images/carnitas-picadas.jpeg',
+    image: '/images/carnitas-picadas-tomate.jpeg',
     category: 'carnitas',
     available: true,
     preparationTime: 15
