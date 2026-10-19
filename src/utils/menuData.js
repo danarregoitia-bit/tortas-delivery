@@ -187,7 +187,7 @@ export const menuData = [
     name: 'Doradas de Papa Sencilla',
     description: 'Doradas tradicionales de papa',
     price: 17,
-    image: '/images/doradas-sencilla.jpg',
+    image: '/images/doradadepapasencilla.jpeg',
     category: 'doradas',
     available: true,
     preparationTime: 15
@@ -459,7 +459,7 @@ export const menuData = [
     name: 'Flan Napolitano o Cajeta',
     description: 'Flan tradicional napolitano o de cajeta',
     price: 50,
-    image: '/images/flan-caramelo.jpg',
+    image: '/images/flancaramelo.jpeg',
     category: 'postres',
     available: true,
     preparationTime: 5
