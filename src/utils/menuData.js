@@ -95,7 +95,7 @@ export const menuData = [
     name: '½ Orden Carnitas Sencillas',
     description: 'Media orden de carnitas',
     price: 35,
-    image: '/images/logo.jpg',
+    image: '/images/carnitas.jpeg',
     category: 'carnitas',
     available: true,
     preparationTime: 10
