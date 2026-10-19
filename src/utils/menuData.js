@@ -51,7 +51,7 @@ export const menuData = [
     name: '½ Orden Tacos Sencillos',
     description: '3 tacos dorados sencillos',
     price: 25,
-    image: '/images/dorados-carne.jpg',
+    image: '/images/tacosdorados-sencillosmedia.jpeg',
     category: 'tacos-dorados',
     available: true,
     preparationTime: 10
@@ -61,7 +61,7 @@ export const menuData = [
     name: '½ Orden Tacos con Carne',
     description: '3 tacos dorados con carne',
     price: 31,
-    image: '/images/dorados-ccarne.jpg',
+    image: '/images/tacosdorados-carnemedia.jpeg',
     category: 'tacos-dorados',
     available: true,
     preparationTime: 10
