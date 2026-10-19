@@ -129,7 +129,7 @@ export const menuData = [
     name: 'Carne en su Jugo - Plato Grande',
     description: 'Solo sábados y domingos',
     price: 120,
-    image: '/images/carne-jugo.jpg',
+    image: '/images/carnejugogrande.jpeg',
     category: 'carne-jugo',
     available: true,
     preparationTime: 20
@@ -139,7 +139,7 @@ export const menuData = [
     name: 'Carne en su Jugo - Plato Chico',
     description: 'Solo sábados y domingos',
     price: 90,
-    image: '/images/carne-jugo.jpg',
+    image: '/images/carnejugochico.jpeg',
     category: 'carne-jugo',
     available: true,
     preparationTime: 20
