@@ -449,7 +449,7 @@ export const menuData = [
     name: 'Fresas Congeladas con Crema',
     description: 'Fresas congeladas bañadas en crema',
     price: 55,
-    image: '/images/fresas.jpg',
+    image: '/images/copafresa.jpeg',
     category: 'postres',
     available: true,
     preparationTime: 5
