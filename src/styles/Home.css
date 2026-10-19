@@ -718,7 +718,8 @@
   left: 50%;
   transform: translateX(-50%);
   z-index: 1000;
-  background: var(--accent-gradient);
+  background: linear-gradient(270deg, #e63946, #ff6b35, #f7c59f, #e63946);
+  background-size: 400% 400%;
   color: white;
   border: none;
   border-radius: 50px;
@@ -732,7 +733,7 @@
   cursor: pointer;
   box-shadow: 0 10px 30px rgba(230, 57, 70, 0.45), 0 6px 20px rgba(0, 0, 0, 0.6);
   transition: filter var(--ease), box-shadow var(--ease), transform var(--ease);
-  animation: floatIn 0.3s ease both;
+  animation: gradientShift 3s ease infinite, pulse 2s ease-in-out infinite;
 }
 
 .floating-cart:hover {
@@ -776,6 +777,18 @@
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes pulse {
+  0% { transform: translateX(-50%) scale(1); }
+  50% { transform: translateX(-50%) scale(1.03); }
+  100% { transform: translateX(-50%) scale(1); }
 }
 
 @keyframes floatIn {
